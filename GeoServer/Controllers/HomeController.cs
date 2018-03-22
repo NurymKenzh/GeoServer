@@ -10,6 +10,13 @@ namespace GeoServer.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly GeoServerController _GeoServer;
+
+        public HomeController(GeoServerController GeoServer)
+        {
+            _GeoServer = GeoServer;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -25,6 +32,20 @@ namespace GeoServer.Controllers
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
+
+            return View();
+        }
+
+        public IActionResult Test()
+        {
+            try
+            {
+                ViewData["Message"] = "GeoServer Workspaces: " + string.Join(", ", _GeoServer.GetWorkspaces());
+            }
+            catch(Exception exception)
+            {
+                ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
+            }
 
             return View();
         }
