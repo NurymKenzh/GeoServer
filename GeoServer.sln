@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2011
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoServer", "GeoServer\GeoServer.csproj", "{9C060F61-8154-41D2-952D-7DC052B86EFA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C060F61-8154-41D2-952D-7DC052B86EFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C060F61-8154-41D2-952D-7DC052B86EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C060F61-8154-41D2-952D-7DC052B86EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C060F61-8154-41D2-952D-7DC052B86EFA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F79F5275-17AB-4CAA-838B-340E6D97B1C4}
+	EndGlobalSection
+EndGlobal
