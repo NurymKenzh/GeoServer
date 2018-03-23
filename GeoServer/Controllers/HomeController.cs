@@ -11,10 +11,13 @@ namespace GeoServer.Controllers
     public class HomeController : Controller
     {
         private readonly GeoServerController _GeoServer;
+        private readonly GDALController _GDAL;
 
-        public HomeController(GeoServerController GeoServer)
+        public HomeController(GeoServerController GeoServer,
+            GDALController GDAL)
         {
             _GeoServer = GeoServer;
+            _GDAL = GDAL;
         }
 
         public IActionResult Index()
@@ -38,11 +41,20 @@ namespace GeoServer.Controllers
 
         public IActionResult Test()
         {
+            //try
+            //{
+            //    ViewData["Message"] = "GeoServer workspaces: " + string.Join(", ", _GeoServer.GetWorkspaces());
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
+            //}
+
             try
             {
-                ViewData["Message"] = "GeoServer Workspaces: " + string.Join(", ", _GeoServer.GetWorkspaces());
+                ViewData["Message"] = "Raster bands count: " + _GDAL.GetRasterBandsCount(@"D:\Documents\MailCloud\Work\AtlasSolar\Maps\LandCover\glckz.tif").ToString();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
             }
