@@ -50,9 +50,20 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
             //}
 
+            //try
+            //{
+            //    ViewData["Message"] = "Raster bands count: " + _GDAL.GetRasterBandsCount(@"D:\Documents\MailCloud\Work\AtlasSolar\Maps\LandCover\glckz.tif").ToString();
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
+            //}
+
             try
             {
-                ViewData["Message"] = "Raster bands count: " + _GDAL.GetRasterBandsCount(@"D:\Documents\MailCloud\Work\AtlasSolar\Maps\LandCover\glckz.tif").ToString();
+                string workspaceName = "Test";
+                _GeoServer.CreateWorkspace(workspaceName);
+                ViewData["Message"] = "Create GeoServer workspace: " + workspaceName;
             }
             catch (Exception exception)
             {

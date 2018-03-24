@@ -17,6 +17,7 @@ namespace GeoServer.Controllers
             {
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.FileName = Startup.Configuration["GeoServer:CurlFullPath"];
                 process.StartInfo.Arguments = Arguments;
                 process.Start();
@@ -34,9 +35,10 @@ namespace GeoServer.Controllers
             {
                 Process process = CurlExecute($" -u " +
                 $"{Startup.Configuration["GeoServer:User"]}:" +
-                $"{Startup.Configuration["GeoServer:Password"]} -XGET \"http://" +
-                $"{Startup.Configuration["GeoServer:Address"]}:" +
-                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces\"");
+                $"{Startup.Configuration["GeoServer:Password"]}" +
+                $" -XGET" +
+                $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces");
                 string html = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
 
@@ -46,7 +48,7 @@ namespace GeoServer.Controllers
                 List<string> workspaces = new List<string>();
                 foreach (HtmlNode node in root.Descendants())
                 {
-                    if (node.Name == "p" && node.InnerText.Contains("No AuthenticationProvider found for org.springframework.security.authentication.UsernamePasswordAuthenticationToken"))
+                    if (node.Name == "title" && node.InnerText.ToLower().Contains("error"))
                     {
                         throw new Exception(node.InnerText);
                     }
@@ -55,8 +57,31 @@ namespace GeoServer.Controllers
                         workspaces.Add(node.InnerText);
                     }
                 }
-
                 return workspaces.ToArray();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public void CreateWorkspace(string WorkspaceName)
+        {
+            try
+            {
+                Process process = CurlExecute($" -v -u " +
+                $"{Startup.Configuration["GeoServer:User"]}:" +
+                $"{Startup.Configuration["GeoServer:Password"]}" +
+                $" -POST -H \"Content-type: text/xml\"" +
+                $" -d \"<workspace><name>{WorkspaceName}</name></workspace>\"" +
+                $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces");
+                string output = process.StandardOutput.ReadToEnd();
+                if (!string.IsNullOrEmpty(output))
+                {
+                    throw new Exception(output);
+                }
+                process.WaitForExit();
             }
             catch (Exception exception)
             {
