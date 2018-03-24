@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using GeoServer.Data;
 using GeoServer.Models;
 using GeoServer.Services;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace GeoServer
 {
@@ -46,7 +49,13 @@ namespace GeoServer
                 .AddTransient<Controllers.GeoServerController, Controllers.GeoServerController>()
                 .AddTransient<Controllers.GDALController, Controllers.GDALController>();
 
-            services.AddMvc();
+            services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
+
+            services
+                .AddMvc()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
+                    opts => { opts.ResourcesPath = "Resources"; })
+                .AddDataAnnotationsLocalization(); ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +71,19 @@ namespace GeoServer
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("ru"),
+                new CultureInfo("en"),
+                new CultureInfo("kk"),
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("ru"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseStaticFiles();
 

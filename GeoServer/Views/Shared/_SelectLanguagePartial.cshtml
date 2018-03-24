@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Localization
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = new List<SelectListItem> {
+        new SelectListItem(){ Value = "ru", Text = "Русский", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "ru" },
+        new SelectListItem(){ Value = "en", Text = "English", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "en" },
+        new SelectListItem(){ Value = "kk", Text = "Қазақ", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "kk" }};
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
+}
+
+<div title="Request culture provider: @requestCulture?.Provider?.GetType().Name">
+    <form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" method="post" class="form-horizontal" role="form">
+        <label asp-for="@requestCulture.RequestCulture.UICulture.Name">Language:</label>
+        <select name="culture" onchange="this.form.submit();" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
+    </form>
+</div>
