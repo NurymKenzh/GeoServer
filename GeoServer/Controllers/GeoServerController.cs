@@ -88,5 +88,28 @@ namespace GeoServer.Controllers
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
         }
+
+        public void DeleteWorkspace(string WorkspaceName)
+        {
+            try
+            {
+                Process process = CurlExecute($" -v -u " +
+                $"{Startup.Configuration["GeoServer:User"]}:" +
+                $"{Startup.Configuration["GeoServer:Password"]}" +
+                $" -XDELETE" +
+                $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}");
+                string output = process.StandardOutput.ReadToEnd();
+                if (!string.IsNullOrEmpty(output))
+                {
+                    throw new Exception(output);
+                }
+                process.WaitForExit();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
     }
 }

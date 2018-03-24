@@ -59,11 +59,22 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
             //}
 
+            //try
+            //{
+            //    string workspaceName = "Test";
+            //    _GeoServer.CreateWorkspace(workspaceName);
+            //    ViewData["Message"] = "Create GeoServer workspace: " + workspaceName;
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
+            //}
+
             try
             {
                 string workspaceName = "Test";
-                _GeoServer.CreateWorkspace(workspaceName);
-                ViewData["Message"] = "Create GeoServer workspace: " + workspaceName;
+                _GeoServer.DeleteWorkspace(workspaceName);
+                ViewData["Message"] = "Delete GeoServer workspace: " + workspaceName;
             }
             catch (Exception exception)
             {
