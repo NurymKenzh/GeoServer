@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -27,6 +28,11 @@ namespace GeoServer.Controllers
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
             return process;
+        }
+
+        private string GetWorkspaceDirectoryPath(string WorkspaceName)
+        {
+            return Path.Combine(Path.Combine(Startup.Configuration["GeoServer:DataDir"], "data"), WorkspaceName);
         }
 
         public string[] GetWorkspaces()
@@ -82,6 +88,7 @@ namespace GeoServer.Controllers
                     throw new Exception(output);
                 }
                 process.WaitForExit();
+                Directory.CreateDirectory(GetWorkspaceDirectoryPath(WorkspaceName));
             }
             catch (Exception exception)
             {
@@ -105,6 +112,7 @@ namespace GeoServer.Controllers
                     throw new Exception(output);
                 }
                 process.WaitForExit();
+                Directory.Delete(GetWorkspaceDirectoryPath(WorkspaceName), true);
             }
             catch (Exception exception)
             {
