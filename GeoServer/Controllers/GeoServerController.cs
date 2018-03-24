@@ -32,7 +32,14 @@ namespace GeoServer.Controllers
 
         private string GetWorkspaceDirectoryPath(string WorkspaceName)
         {
-            return Path.Combine(Path.Combine(Startup.Configuration["GeoServer:DataDir"], "data"), WorkspaceName);
+            try
+            {
+                return Path.Combine(Path.Combine(Startup.Configuration["GeoServer:DataDir"], "data"), WorkspaceName);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
         }
 
         public string[] GetWorkspaces()
@@ -113,6 +120,22 @@ namespace GeoServer.Controllers
                 }
                 process.WaitForExit();
                 Directory.Delete(GetWorkspaceDirectoryPath(WorkspaceName), true);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public string[] GetWorkspaceLayerFiles(string WorkspaceName)
+        {
+            try
+            {
+                string[] files = Directory
+                    .GetFiles(GetWorkspaceDirectoryPath(WorkspaceName), "*.tif", SearchOption.TopDirectoryOnly)
+                    .Select(Path.GetFileName)
+                    .ToArray();
+                return files;
             }
             catch (Exception exception)
             {

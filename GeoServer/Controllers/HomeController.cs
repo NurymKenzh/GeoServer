@@ -61,7 +61,7 @@ namespace GeoServer.Controllers
             //}
             //catch (Exception exception)
             //{
-            //    ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
             //try
@@ -70,7 +70,7 @@ namespace GeoServer.Controllers
             //}
             //catch (Exception exception)
             //{
-            //    ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
             //try
@@ -81,18 +81,27 @@ namespace GeoServer.Controllers
             //}
             //catch (Exception exception)
             //{
-            //    ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
+            //try
+            //{
+            //    string workspaceName = "Test";
+            //    _GeoServer.DeleteWorkspace(workspaceName);
+            //    ViewData["Message"] = "Delete GeoServer workspace: " + workspaceName;
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
             try
             {
-                string workspaceName = "Test";
-                _GeoServer.DeleteWorkspace(workspaceName);
-                ViewData["Message"] = "Delete GeoServer workspace: " + workspaceName;
+                ViewData["Message"] = "Test workspace files: " + string.Join(", ", _GeoServer.GetWorkspaceLayerFiles("Test"));
             }
             catch (Exception exception)
             {
-                ViewData["Message"] = $"{exception.ToString()}. {(exception.InnerException != null ? exception.InnerException.Message : string.Empty)}";
+                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             }
 
             return View();
