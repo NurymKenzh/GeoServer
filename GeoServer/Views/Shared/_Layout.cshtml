@@ -36,6 +36,7 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">@SharedLocalizer["Home"]</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+                    @await Html.PartialAsync("_UserPartial")
                     <li><a asp-area="" asp-controller="Home" asp-action="Test">Test</a></li>
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")

@@ -1,0 +1,10 @@
+﻿@{
+    var user = Context.User;
+    if (user.Identity.IsAuthenticated)
+    {
+        if (user.IsInRole("Administrator"))
+        {
+            <li>@Html.ActionLink("Administrator", "Index", "Administrator")</li>
+        }
+    }
+}
