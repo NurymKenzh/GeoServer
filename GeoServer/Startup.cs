@@ -14,6 +14,7 @@ using GeoServer.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace GeoServer
 {
@@ -51,12 +52,12 @@ namespace GeoServer
 
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 
-            //services.Configure<FormOptions>(x =>
-            //{
-            //    x.ValueLengthLimit = 100_000_000;
-            //    x.MultipartBodyLengthLimit = 100_000_000;
-            //    x.MultipartHeadersLengthLimit = 100_000_000;
-            //});
+            services.Configure<FormOptions>(x =>
+            {
+                x.ValueLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = long.MaxValue;
+                x.MultipartHeadersLengthLimit = int.MaxValue;
+            });
 
             services
                 .AddMvc()

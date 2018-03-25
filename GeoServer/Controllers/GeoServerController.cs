@@ -147,7 +147,7 @@ namespace GeoServer.Controllers
         }
 
         //[RequestSizeLimit(100_000_000)]
-        //[DisableRequestSizeLimit]
+        [DisableRequestSizeLimit]
         [Authorize(Roles = "Administrator, Moderator")]
         public IActionResult UploadWorkspaceLayerFile()
         {
@@ -158,7 +158,7 @@ namespace GeoServer.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //[RequestSizeLimit(100_000_000)]
-        //[DisableRequestSizeLimit]
+        [DisableRequestSizeLimit]
         [Authorize(Roles = "Administrator, Moderator")]
         public async Task<IActionResult> UploadWorkspaceLayerFile(string WorkspaceName, List<IFormFile> Files)
         {
