@@ -5,7 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GeoServer.Controllers
 {
@@ -126,7 +129,7 @@ namespace GeoServer.Controllers
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
         }
-
+        
         public string[] GetWorkspaceLayerFiles(string WorkspaceName)
         {
             try
@@ -141,6 +144,34 @@ namespace GeoServer.Controllers
             {
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
+        }
+
+        //[RequestSizeLimit(100_000_000)]
+        //[DisableRequestSizeLimit]
+        [Authorize(Roles = "Administrator, Moderator")]
+        public IActionResult UploadWorkspaceLayerFile()
+        {
+            ViewData["Workspaces"] = new SelectList(GetWorkspaces());
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //[RequestSizeLimit(100_000_000)]
+        //[DisableRequestSizeLimit]
+        [Authorize(Roles = "Administrator, Moderator")]
+        public async Task<IActionResult> UploadWorkspaceLayerFile(string WorkspaceName, List<IFormFile> Files)
+        {
+            foreach (IFormFile file in Files)
+            {
+                var filePath = Path.Combine(GetWorkspaceDirectoryPath(WorkspaceName), Path.GetFileName(file.FileName));
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+            }
+
+            return View();
         }
     }
 }

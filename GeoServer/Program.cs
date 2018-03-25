@@ -20,6 +20,8 @@ namespace GeoServer
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                //.UseKestrel(options => { options.Limits.MaxRequestBodySize = 100_000_000; })
+                //.UseHttpSys(options => { options.MaxRequestBodySize = 100_000_000; })
                 .Build();
     }
 }

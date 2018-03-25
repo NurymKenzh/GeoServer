@@ -95,14 +95,16 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            try
-            {
-                ViewData["Message"] = "Test workspace files: " + string.Join(", ", _GeoServer.GetWorkspaceLayerFiles("Test"));
-            }
-            catch (Exception exception)
-            {
-                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            }
+            //try
+            //{
+            //    ViewData["Message"] = "Test workspace files: " + string.Join(", ", _GeoServer.GetWorkspaceLayerFiles("Test"));
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
+            return RedirectToAction("UploadWorkspaceLayerFile", "GeoServer");
 
             return View();
         }

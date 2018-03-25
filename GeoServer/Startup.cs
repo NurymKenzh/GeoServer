@@ -51,11 +51,18 @@ namespace GeoServer
 
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 
+            //services.Configure<FormOptions>(x =>
+            //{
+            //    x.ValueLengthLimit = 100_000_000;
+            //    x.MultipartBodyLengthLimit = 100_000_000;
+            //    x.MultipartHeadersLengthLimit = 100_000_000;
+            //});
+
             services
                 .AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
                     opts => { opts.ResourcesPath = "Resources"; })
-                .AddDataAnnotationsLocalization(); ;
+                .AddDataAnnotationsLocalization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,6 +102,11 @@ namespace GeoServer
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //app.Run(async context =>
+            //{
+            //    context.Features.Get<IHttpMaxRequestBodySizeFeature>().MaxRequestBodySize = 100_000_000;
+            //});
 
             CreateRoles(serviceProvider).Wait();
         }
