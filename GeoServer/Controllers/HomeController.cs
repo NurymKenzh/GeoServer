@@ -104,7 +104,16 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            return RedirectToAction("UploadWorkspaceLayerFile", "GeoServer");
+            //return RedirectToAction("UploadWorkspaceLayerFile", "GeoServer");
+
+            try
+            {
+                ViewData["Message"] = "GeoServer layers: " + string.Join(", ", _GeoServer.GetLayers());
+            }
+            catch (Exception exception)
+            {
+                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            }
 
             return View();
         }

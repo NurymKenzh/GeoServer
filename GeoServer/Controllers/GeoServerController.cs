@@ -146,7 +146,6 @@ namespace GeoServer.Controllers
             }
         }
 
-        //[RequestSizeLimit(100_000_000)]
         [DisableRequestSizeLimit]
         [Authorize(Roles = "Administrator, Moderator")]
         public IActionResult UploadWorkspaceLayerFile()
@@ -157,7 +156,6 @@ namespace GeoServer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[RequestSizeLimit(100_000_000)]
         [DisableRequestSizeLimit]
         [Authorize(Roles = "Administrator, Moderator")]
         public async Task<IActionResult> UploadWorkspaceLayerFile(string WorkspaceName, List<IFormFile> Files)
@@ -172,6 +170,87 @@ namespace GeoServer.Controllers
             }
 
             return View();
+        }
+
+        //public string[] GetWorkspaceLayers(string WorkspaceName)
+        //{
+        //    try
+        //    {
+        //        if(!string.IsNullOrEmpty(WorkspaceName))
+        //        {
+        //            // curl -u admin:geoserver -XGET http://localhost:8080/geoserver/rest/workspaces/Pastures/layers.xml
+        //            Process process = CurlExecute($" -u " +
+        //            $"{Startup.Configuration["GeoServer:User"]}:" +
+        //            $"{Startup.Configuration["GeoServer:Password"]}" +
+        //            $" -XGET" +
+        //            $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+        //            $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/" +
+        //            $"{WorkspaceName}");
+        //            string html = process.StandardOutput.ReadToEnd();
+        //            process.WaitForExit();
+
+        //            HtmlDocument htmlDocument = new HtmlDocument();
+        //            htmlDocument.LoadHtml(html);
+        //            HtmlNode root = htmlDocument.DocumentNode;
+        //            List<string> workspaces = new List<string>();
+        //            foreach (HtmlNode node in root.Descendants())
+        //            {
+        //                if (node.Name == "title" && node.InnerText.ToLower().Contains("error"))
+        //                {
+        //                    throw new Exception(node.InnerText);
+        //                }
+        //                if (node.Name == "a")
+        //                {
+        //                    workspaces.Add(node.InnerText);
+        //                }
+        //            }
+        //            return workspaces.ToArray();
+        //        }
+        //        else
+        //        {
+        //            return new string[0];
+        //        }
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        throw new Exception(exception.ToString(), exception.InnerException);
+        //    }
+        //}
+
+        public string[] GetLayers()
+        {
+            try
+            {
+                Process process = CurlExecute($" -u " +
+                $"{Startup.Configuration["GeoServer:User"]}:" +
+                $"{Startup.Configuration["GeoServer:Password"]}" +
+                $" -XGET" +
+                $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/layers");
+                string html = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                HtmlDocument htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(html);
+                HtmlNode root = htmlDocument.DocumentNode;
+                List<string> layers = new List<string>();
+                foreach (HtmlNode node in root.Descendants())
+                {
+                    if (node.Name == "title" && node.InnerText.ToLower().Contains("error"))
+                    {
+                        throw new Exception(node.InnerText);
+                    }
+                    if (node.Name == "a")
+                    {
+                        layers.Add(node.InnerText);
+                    }
+                }
+                return layers.ToArray();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
         }
     }
 }
