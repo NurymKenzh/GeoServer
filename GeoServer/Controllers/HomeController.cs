@@ -115,9 +115,18 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
+            //try
+            //{
+            //    ViewData["Message"] = "adm1pol layer workspace: " + _GeoServer.GetLayerWorkspace("adm1pol");
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
             try
             {
-                ViewData["Message"] = "adm1pol layer workspace: " + _GeoServer.GetLayerWorkspace("adm1pol");
+                ViewData["Message"] = "GeoServer Pastures layers: " + string.Join(", ", _GeoServer.GetWorkspaceLayers("Pastures"));
             }
             catch (Exception exception)
             {

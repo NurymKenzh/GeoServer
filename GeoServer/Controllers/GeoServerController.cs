@@ -172,51 +172,6 @@ namespace GeoServer.Controllers
             return View();
         }
 
-        //public string[] GetWorkspaceLayers(string WorkspaceName)
-        //{
-        //    try
-        //    {
-        //        if(!string.IsNullOrEmpty(WorkspaceName))
-        //        {
-        //            // curl -u admin:geoserver -XGET http://localhost:8080/geoserver/rest/workspaces/Pastures/layers.xml
-        //            Process process = CurlExecute($" -u " +
-        //            $"{Startup.Configuration["GeoServer:User"]}:" +
-        //            $"{Startup.Configuration["GeoServer:Password"]}" +
-        //            $" -XGET" +
-        //            $" http://{Startup.Configuration["GeoServer:Address"]}:" +
-        //            $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/" +
-        //            $"{WorkspaceName}");
-        //            string html = process.StandardOutput.ReadToEnd();
-        //            process.WaitForExit();
-
-        //            HtmlDocument htmlDocument = new HtmlDocument();
-        //            htmlDocument.LoadHtml(html);
-        //            HtmlNode root = htmlDocument.DocumentNode;
-        //            List<string> workspaces = new List<string>();
-        //            foreach (HtmlNode node in root.Descendants())
-        //            {
-        //                if (node.Name == "title" && node.InnerText.ToLower().Contains("error"))
-        //                {
-        //                    throw new Exception(node.InnerText);
-        //                }
-        //                if (node.Name == "a")
-        //                {
-        //                    workspaces.Add(node.InnerText);
-        //                }
-        //            }
-        //            return workspaces.ToArray();
-        //        }
-        //        else
-        //        {
-        //            return new string[0];
-        //        }
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        throw new Exception(exception.ToString(), exception.InnerException);
-        //    }
-        //}
-
         public string[] GetLayers()
         {
             try
@@ -257,7 +212,6 @@ namespace GeoServer.Controllers
         {
             try
             {
-                // http://localhost:8080/geoserver/rest/layers/adm1pol.xml
                 Process process = CurlExecute($" -u " +
                 $"{Startup.Configuration["GeoServer:User"]}:" +
                 $"{Startup.Configuration["GeoServer:Password"]}" +
@@ -273,9 +227,16 @@ namespace GeoServer.Controllers
                 string layer = string.Empty;
                 foreach (HtmlNode node in root.Descendants())
                 {
-                    if (node.Name == "workspace")
+                    if (node.Name == "resource")
                     {
-                        layer = node.InnerText;
+                        foreach (HtmlNode nodeatom in node.Descendants())
+                        {
+                            if (nodeatom.Name == "atom:link")
+                            {
+                                string[] href = nodeatom.Attributes.First(a => a.Name == "href").Value.Split('/');
+                                layer = href[Array.IndexOf(href, "workspaces") + 1];
+                            }
+                        }
                     }
                 }
                 if(string.IsNullOrEmpty(layer))
@@ -283,6 +244,39 @@ namespace GeoServer.Controllers
                     throw new Exception(html);
                 }
                 return layer;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public string[] GetWorkspaceLayers(string WorkspaceName)
+        {
+            try
+            {
+                if(!GetWorkspaces().Contains(WorkspaceName))
+                {
+                    throw new Exception($"No workspace {WorkspaceName}!");
+                }
+                if (!string.IsNullOrEmpty(WorkspaceName))
+                {
+
+                    string[] layersall = GetLayers();
+                    List<string> layers = new List<string>();
+                    foreach (string layer in layersall)
+                    {
+                        if(GetLayerWorkspace(layer) == WorkspaceName)
+                        {
+                            layers.Add(layer);
+                        }
+                    }
+                    return layers.ToArray();
+                }
+                else
+                {
+                    throw new Exception("WorkspaceName must be non-empty!");
+                }
             }
             catch (Exception exception)
             {
