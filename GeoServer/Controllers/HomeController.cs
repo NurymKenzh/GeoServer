@@ -106,9 +106,18 @@ namespace GeoServer.Controllers
 
             //return RedirectToAction("UploadWorkspaceLayerFile", "GeoServer");
 
+            //try
+            //{
+            //    ViewData["Message"] = "GeoServer layers: " + string.Join(", ", _GeoServer.GetLayers());
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
             try
             {
-                ViewData["Message"] = "GeoServer layers: " + string.Join(", ", _GeoServer.GetLayers());
+                ViewData["Message"] = "adm1pol layer workspace: " + _GeoServer.GetLayerWorkspace("adm1pol");
             }
             catch (Exception exception)
             {

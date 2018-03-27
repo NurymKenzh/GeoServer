@@ -252,5 +252,42 @@ namespace GeoServer.Controllers
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
         }
+
+        public string GetLayerWorkspace(string LayerName)
+        {
+            try
+            {
+                // http://localhost:8080/geoserver/rest/layers/adm1pol.xml
+                Process process = CurlExecute($" -u " +
+                $"{Startup.Configuration["GeoServer:User"]}:" +
+                $"{Startup.Configuration["GeoServer:Password"]}" +
+                $" -XGET -H \"Content-type: text/xml\"" +
+                $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/layers/{LayerName}.xml");
+                string html = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                HtmlDocument htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(html);
+                HtmlNode root = htmlDocument.DocumentNode;
+                string layer = string.Empty;
+                foreach (HtmlNode node in root.Descendants())
+                {
+                    if (node.Name == "workspace")
+                    {
+                        layer = node.InnerText;
+                    }
+                }
+                if(string.IsNullOrEmpty(layer))
+                {
+                    throw new Exception(html);
+                }
+                return layer;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
     }
 }
