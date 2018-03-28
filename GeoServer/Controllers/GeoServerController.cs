@@ -251,38 +251,38 @@ namespace GeoServer.Controllers
             }
         }
 
-        public string[] GetWorkspaceLayers(string WorkspaceName)
-        {
-            try
-            {
-                if(!GetWorkspaces().Contains(WorkspaceName))
-                {
-                    throw new Exception($"No workspace {WorkspaceName}!");
-                }
-                if (!string.IsNullOrEmpty(WorkspaceName))
-                {
+        //public string[] GetWorkspaceLayers(string WorkspaceName)
+        //{
+        //    try
+        //    {
+        //        if(!GetWorkspaces().Contains(WorkspaceName))
+        //        {
+        //            throw new Exception($"No workspace {WorkspaceName}!");
+        //        }
+        //        if (!string.IsNullOrEmpty(WorkspaceName))
+        //        {
 
-                    string[] layersall = GetLayers();
-                    List<string> layers = new List<string>();
-                    foreach (string layer in layersall)
-                    {
-                        if(GetLayerWorkspace(layer) == WorkspaceName)
-                        {
-                            layers.Add(layer);
-                        }
-                    }
-                    return layers.ToArray();
-                }
-                else
-                {
-                    throw new Exception("WorkspaceName must be non-empty!");
-                }
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(exception.ToString(), exception.InnerException);
-            }
-        }
+        //            string[] layersall = GetLayers();
+        //            List<string> layers = new List<string>();
+        //            foreach (string layer in layersall)
+        //            {
+        //                if(GetLayerWorkspace(layer) == WorkspaceName)
+        //                {
+        //                    layers.Add(layer);
+        //                }
+        //            }
+        //            return layers.ToArray();
+        //        }
+        //        else
+        //        {
+        //            throw new Exception("WorkspaceName must be non-empty!");
+        //        }
+        //    }
+        //    catch (Exception exception)
+        //    {
+        //        throw new Exception(exception.ToString(), exception.InnerException);
+        //    }
+        //}
 
         public string[] GetWorkspaceStores(string WorkspaceName)
         {
@@ -366,6 +366,23 @@ namespace GeoServer.Controllers
                     {
                         layers.Add(node.InnerText);
                     }
+                }
+                return layers.ToArray();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public string[] GetWorkspaceLayers(string WorkspaceName)
+        {
+            try
+            {
+                List<string> layers = new List<string>();
+                foreach(string store in GetWorkspaceStores(WorkspaceName))
+                {
+                    layers.AddRange(GetStoreLayers(WorkspaceName, store));
                 }
                 return layers.ToArray();
             }

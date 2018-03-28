@@ -124,14 +124,14 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            //try
-            //{
-            //    ViewData["Message"] = "GeoServer tiger layers: " + string.Join(", ", _GeoServer.GetWorkspaceLayers("tiger"));
-            //}
-            //catch (Exception exception)
-            //{
-            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            //}
+            try
+            {
+                ViewData["Message"] = "GeoServer topp layers: " + string.Join(", ", _GeoServer.GetWorkspaceLayers("topp"));
+            }
+            catch (Exception exception)
+            {
+                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            }
 
             //try
             //{
@@ -142,14 +142,14 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            try
-            {
-                ViewData["Message"] = "GeoServer topp workspace taz_shapes store layers: " + string.Join(", ", _GeoServer.GetStoreLayers("topp", "taz_shapes"));
-            }
-            catch (Exception exception)
-            {
-                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            }
+            //try
+            //{
+            //    ViewData["Message"] = "GeoServer topp workspace taz_shapes store layers: " + string.Join(", ", _GeoServer.GetStoreLayers("topp", "taz_shapes"));
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
 
             return View();
         }
