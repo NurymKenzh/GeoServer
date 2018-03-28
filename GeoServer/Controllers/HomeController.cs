@@ -124,9 +124,27 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
+            //try
+            //{
+            //    ViewData["Message"] = "GeoServer tiger layers: " + string.Join(", ", _GeoServer.GetWorkspaceLayers("tiger"));
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
+            //try
+            //{
+            //    ViewData["Message"] = "GeoServer tiger stores: " + string.Join(", ", _GeoServer.GetWorkspaceStores("tiger1"));
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
             try
             {
-                ViewData["Message"] = "GeoServer Pastures layers: " + string.Join(", ", _GeoServer.GetWorkspaceLayers("Pastures"));
+                ViewData["Message"] = "GeoServer topp workspace taz_shapes store layers: " + string.Join(", ", _GeoServer.GetStoreLayers("topp", "taz_shapes"));
             }
             catch (Exception exception)
             {

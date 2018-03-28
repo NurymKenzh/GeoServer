@@ -50,11 +50,11 @@ namespace GeoServer.Controllers
             try
             {
                 Process process = CurlExecute($" -u " +
-                $"{Startup.Configuration["GeoServer:User"]}:" +
-                $"{Startup.Configuration["GeoServer:Password"]}" +
-                $" -XGET" +
-                $" http://{Startup.Configuration["GeoServer:Address"]}:" +
-                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces");
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -XGET" +
+                    $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                    $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces");
                 string html = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
 
@@ -86,12 +86,12 @@ namespace GeoServer.Controllers
             try
             {
                 Process process = CurlExecute($" -v -u " +
-                $"{Startup.Configuration["GeoServer:User"]}:" +
-                $"{Startup.Configuration["GeoServer:Password"]}" +
-                $" -POST -H \"Content-type: text/xml\"" +
-                $" -d \"<workspace><name>{WorkspaceName}</name></workspace>\"" +
-                $" http://{Startup.Configuration["GeoServer:Address"]}:" +
-                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces");
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -POST -H \"Content-type: text/xml\"" +
+                    $" -d \"<workspace><name>{WorkspaceName}</name></workspace>\"" +
+                    $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                    $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces");
                 string output = process.StandardOutput.ReadToEnd();
                 if (!string.IsNullOrEmpty(output))
                 {
@@ -111,11 +111,11 @@ namespace GeoServer.Controllers
             try
             {
                 Process process = CurlExecute($" -v -u " +
-                $"{Startup.Configuration["GeoServer:User"]}:" +
-                $"{Startup.Configuration["GeoServer:Password"]}" +
-                $" -XDELETE" +
-                $" http://{Startup.Configuration["GeoServer:Address"]}:" +
-                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}");
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -XDELETE" +
+                    $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                    $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}");
                 string output = process.StandardOutput.ReadToEnd();
                 if (!string.IsNullOrEmpty(output))
                 {
@@ -213,11 +213,11 @@ namespace GeoServer.Controllers
             try
             {
                 Process process = CurlExecute($" -u " +
-                $"{Startup.Configuration["GeoServer:User"]}:" +
-                $"{Startup.Configuration["GeoServer:Password"]}" +
-                $" -XGET -H \"Content-type: text/xml\"" +
-                $" http://{Startup.Configuration["GeoServer:Address"]}:" +
-                $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/layers/{LayerName}.xml");
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -XGET -H \"Content-type: text/xml\"" +
+                    $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                    $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/layers/{LayerName}.xml");
                 string html = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
 
@@ -277,6 +277,97 @@ namespace GeoServer.Controllers
                 {
                     throw new Exception("WorkspaceName must be non-empty!");
                 }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public string[] GetWorkspaceStores(string WorkspaceName)
+        {
+            try
+            {
+                if (!GetWorkspaces().Contains(WorkspaceName))
+                {
+                    throw new Exception($"No workspace {WorkspaceName}!");
+                }
+                if (!string.IsNullOrEmpty(WorkspaceName))
+                {
+                    Process process = CurlExecute($" -u " +
+                        $"{Startup.Configuration["GeoServer:User"]}:" +
+                        $"{Startup.Configuration["GeoServer:Password"]}" +
+                        $" -XGET" +
+                        $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                        $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}");
+                    string html = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+
+                    HtmlDocument htmlDocument = new HtmlDocument();
+                    htmlDocument.LoadHtml(html);
+                    HtmlNode root = htmlDocument.DocumentNode;
+                    List<string> stores = new List<string>();
+                    foreach (HtmlNode node in root.Descendants())
+                    {
+                        if (node.Name == "a")
+                        {
+                            stores.Add(node.InnerText);
+                        }
+                    }
+                    return stores.ToArray();
+                }
+                else
+                {
+                    throw new Exception("WorkspaceName must be non-empty!");
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public string[] GetStoreLayers(string WorkspaceName, string StoreName)
+        {
+            try
+            {
+                if (!GetWorkspaces().Contains(WorkspaceName))
+                {
+                    throw new Exception($"No workspace {WorkspaceName}!");
+                }
+                if (!GetWorkspaceStores(WorkspaceName).Contains(StoreName))
+                {
+                    throw new Exception($"No store {WorkspaceName} in workspace {WorkspaceName}!");
+                }
+                if (string.IsNullOrEmpty(WorkspaceName))
+                {
+                    throw new Exception("WorkspaceName must be non-empty!");
+                }
+                if (string.IsNullOrEmpty(StoreName))
+                {
+                    throw new Exception("StoreName must be non-empty!");
+                }
+                Process process = CurlExecute($" -u " +
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -XGET" +
+                    $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                    $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/datastores/{StoreName}");
+                string html = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                HtmlDocument htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(html);
+                HtmlNode root = htmlDocument.DocumentNode;
+                List<string> layers = new List<string>();
+                foreach (HtmlNode node in root.Descendants())
+                {
+                    if (node.Name == "a")
+                    {
+                        layers.Add(node.InnerText);
+                    }
+                }
+                return layers.ToArray();
             }
             catch (Exception exception)
             {
