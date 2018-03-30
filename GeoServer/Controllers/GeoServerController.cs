@@ -251,39 +251,6 @@ namespace GeoServer.Controllers
             }
         }
 
-        //public string[] GetWorkspaceLayers(string WorkspaceName)
-        //{
-        //    try
-        //    {
-        //        if(!GetWorkspaces().Contains(WorkspaceName))
-        //        {
-        //            throw new Exception($"No workspace {WorkspaceName}!");
-        //        }
-        //        if (!string.IsNullOrEmpty(WorkspaceName))
-        //        {
-
-        //            string[] layersall = GetLayers();
-        //            List<string> layers = new List<string>();
-        //            foreach (string layer in layersall)
-        //            {
-        //                if(GetLayerWorkspace(layer) == WorkspaceName)
-        //                {
-        //                    layers.Add(layer);
-        //                }
-        //            }
-        //            return layers.ToArray();
-        //        }
-        //        else
-        //        {
-        //            throw new Exception("WorkspaceName must be non-empty!");
-        //        }
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        throw new Exception(exception.ToString(), exception.InnerException);
-        //    }
-        //}
-
         public string[] GetWorkspaceStores(string WorkspaceName)
         {
             try
@@ -385,6 +352,43 @@ namespace GeoServer.Controllers
                     layers.AddRange(GetStoreLayers(WorkspaceName, store));
                 }
                 return layers.ToArray();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public void PublishGeoTIFF(string WorkspaceName, string FileName)
+        {
+            try
+            {
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileName);
+                Process process1 = CurlExecute($" -u " +
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -v -XPOST" +
+                    $" -H \"Content-type: text/xml\"" +
+                    $" \\ -d \"<coverageStore><name>{fileNameWithoutExtension}</name>" +
+                    $"<workspace>{WorkspaceName}</workspace>" +
+                    $"<enabled>true</enabled>" +
+                    $"<type>GeoTIFF</type>" +
+                    $"<url>/data/{WorkspaceName}/{FileName}</url></coverageStore>\"" +
+                    $" \\ http://{Startup.Configuration["GeoServer:Address"]}:" +
+                    $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/coveragestores?configure=all");
+                Process process2 = CurlExecute($" -u " +
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -v -XPOST" +
+                    $" -H \"Content-type: text/xml\"" +
+                    $" \\ -d \"<coverage><name>{fileNameWithoutExtension}</name>" +
+                    $"<title>{fileNameWithoutExtension}</title>" +
+                    $"<nativeCRS>EPSG:3857</nativeCRS>" +
+                    $"<srs>EPSG:3857</srs>" +
+                    $"<projectionPolicy>FORCE_DECLARED</projectionPolicy>" +
+                    $"<defaultInterpolationMethod><name>nearest neighbor</name></defaultInterpolationMethod></coverage>\"" +
+                    $" \\ \"http://{Startup.Configuration["GeoServer:Address"]}" +
+                    $":{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/coveragestores/{fileNameWithoutExtension}/coverages?recalculate=nativebbox\"");
             }
             catch (Exception exception)
             {

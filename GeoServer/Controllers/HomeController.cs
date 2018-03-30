@@ -124,14 +124,14 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            try
-            {
-                ViewData["Message"] = "GeoServer topp layers: " + string.Join(", ", _GeoServer.GetWorkspaceLayers("topp"));
-            }
-            catch (Exception exception)
-            {
-                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            }
+            //try
+            //{
+            //    ViewData["Message"] = "GeoServer topp layers: " + string.Join(", ", _GeoServer.GetWorkspaceLayers("topp"));
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
 
             //try
             //{
@@ -150,6 +150,16 @@ namespace GeoServer.Controllers
             //{
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
+
+            try
+            {
+                _GeoServer.PublishGeoTIFF("Test", "kz.tif");
+                ViewData["Message"] = "GeoServer workspace Test layer kz published";
+            }
+            catch (Exception exception)
+            {
+                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            }
 
             return View();
         }
