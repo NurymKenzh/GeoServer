@@ -104,7 +104,7 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            //return RedirectToAction("UploadWorkspaceLayerFile", "GeoServer");
+            return RedirectToAction("UploadWorkspaceLayerFile", "GeoServer");
 
             //try
             //{
@@ -151,15 +151,15 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            try
-            {
-                _GeoServer.PublishGeoTIFF("Test", "kz.tif");
-                ViewData["Message"] = "GeoServer workspace Test layer kz published";
-            }
-            catch (Exception exception)
-            {
-                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            }
+            //try
+            //{
+            //    _GeoServer.PublishGeoTIFF("Test", "kz.tif");
+            //    ViewData["Message"] = "GeoServer workspace Test layer kz published";
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
 
             return View();
         }

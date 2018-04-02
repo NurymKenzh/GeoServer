@@ -6,9 +6,12 @@
 
 <h2>UploadWorkspaceLayerFile</h2>
 
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/jquery-form/jquery.form.js"></script>
+
 <div class="row">
     <div class="col-md-4">
-        @using (Html.BeginForm("UploadWorkspaceLayerFile", "GeoServer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("UploadWorkspaceLayerFile", "GeoServer", FormMethod.Post, new { enctype = "multipart/form-data", id = "uploadform" }))
         {
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -25,3 +28,35 @@
         }
     </div>
 </div>
+
+<div class="progress" style="width:50%">
+    <div class="progress-bar"></div>
+    <div class="percent">0%</div>
+</div>
+
+<div id="status"></div>
+
+<script>
+    $.noConflict();
+    jQuery(document).ready(function ($) {
+        var bar = $('.progress-bar');
+        var percent = $('.percent');
+        var status = $('#status');
+        $('#uploadform').ajaxForm({
+            beforeSend: function () {
+                status.empty();
+                var percentVal = '0%';
+                bar.width(percentVal);
+                percent.html(percentVal);
+            },
+            uploadProgress: function (event, position, total, percentComplete) {
+                var percentVal = percentComplete + '%';
+                bar.width(percentVal);
+                percent.html(percentVal);
+            },
+            complete: function (xhr) {
+                status.html(xhr.responseText);
+            }
+        });
+    });
+</script>

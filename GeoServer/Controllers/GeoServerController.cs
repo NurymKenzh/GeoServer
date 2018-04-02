@@ -158,18 +158,16 @@ namespace GeoServer.Controllers
         [ValidateAntiForgeryToken]
         [DisableRequestSizeLimit]
         [Authorize(Roles = "Administrator, Moderator")]
-        public async Task<IActionResult> UploadWorkspaceLayerFile(string WorkspaceName, List<IFormFile> Files)
+        public void UploadWorkspaceLayerFile(string WorkspaceName, List<IFormFile> Files)
         {
             foreach (IFormFile file in Files)
             {
                 var filePath = Path.Combine(GetWorkspaceDirectoryPath(WorkspaceName), Path.GetFileName(file.FileName));
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    await file.CopyToAsync(fileStream);
+                    file.CopyTo(fileStream);
                 }
             }
-
-            return View();
         }
 
         public string[] GetLayers()
