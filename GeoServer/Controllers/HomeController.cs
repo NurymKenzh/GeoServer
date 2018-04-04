@@ -104,7 +104,7 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            return RedirectToAction("UploadWorkspaceLayerFile", "GeoServer");
+            //return RedirectToAction("UploadWorkspaceLayerFile", "GeoServer");
 
             //try
             //{
@@ -160,6 +160,15 @@ namespace GeoServer.Controllers
             //{
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
+
+            try
+            {
+                ViewData["Message"] = "Layer Coordinate System Name: " + _GDAL.GetLayerCoordinateSystemName(@"C:\Users\N\Documents\New\kz.tif");
+            }
+            catch (Exception exception)
+            {
+                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            }
 
             return View();
         }

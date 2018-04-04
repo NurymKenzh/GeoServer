@@ -109,5 +109,17 @@ namespace GeoServer.Controllers
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
         }
+
+        public string GetLayerCoordinateSystemName(string FilePath)
+        {
+            try
+            {
+                return PythonExecute("GetLayerCoordinateSystemName", FilePath);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
     }
 }
