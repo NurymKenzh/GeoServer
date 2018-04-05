@@ -163,7 +163,8 @@ namespace GeoServer.Controllers
 
             try
             {
-                ViewData["Message"] = "Layer Coordinate System Name: " + _GDAL.GetLayerCoordinateSystemName(@"C:\Users\N\Documents\New\kz.tif");
+                _GDAL.SaveLayerWithNewCoordinateSystem(@"D:\Documents\New\kz4326.tif", @"D:\\Documents\New\kz3857.tif", "EPSG:3857");
+                ViewData["Message"] = "SaveLayerWithNewCoordinateSystem";
             }
             catch (Exception exception)
             {

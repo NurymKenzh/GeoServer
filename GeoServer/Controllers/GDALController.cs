@@ -98,6 +98,39 @@ namespace GeoServer.Controllers
             }
         }
 
+        private string GDALShellExecute(params string[] Arguments)
+        {
+            Process process = new Process();
+            try
+            {
+                string startInfoFileName = Arguments[0];
+                string[] arguments = new string[Arguments.Count() - 1];
+                Array.Copy(Arguments, 1, arguments, 0, arguments.Count());
+
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.FileName = @"C:\Program Files (x86)\GDAL\gdalwarp.exe";
+                process.StartInfo.Arguments = string.Join(' ', arguments);
+                process.Start();
+                string shellOutput = process.StandardOutput.ReadToEnd();
+                string shellError = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+                if (!string.IsNullOrEmpty(shellError))
+                {
+                    throw new Exception(shellError);
+                }
+                else
+                {
+                    return shellOutput;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
         public int GetRasterBandsCount(string FilePath)
         {
             try
@@ -115,6 +148,18 @@ namespace GeoServer.Controllers
             try
             {
                 return PythonExecute("GetLayerCoordinateSystemName", FilePath);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public void SaveLayerWithNewCoordinateSystem(string FilePathFrom, string FilePathTo, string CoordinateSystem)
+        {
+            try
+            {
+                GDALShellExecute(Startup.Configuration["GDAL:gdalwarpFullPath"], FilePathFrom, FilePathTo, "-t_srs " + CoordinateSystem);
             }
             catch (Exception exception)
             {
