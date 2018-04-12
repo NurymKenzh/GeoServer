@@ -110,7 +110,7 @@ namespace GeoServer.Controllers
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.RedirectStandardOutput = true;
                 process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.FileName = @"C:\Program Files (x86)\GDAL\gdalwarp.exe";
+                process.StartInfo.FileName = startInfoFileName;
                 process.StartInfo.Arguments = string.Join(' ', arguments);
                 process.Start();
                 string shellOutput = process.StandardOutput.ReadToEnd();
