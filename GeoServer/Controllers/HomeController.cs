@@ -161,10 +161,28 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
+            //try
+            //{
+            //    _GDAL.SaveLayerWithNewCoordinateSystem(@"D:\Documents\New\maps\randomkz_250_3857_1b.tif", @"D:\\Documents\New\maps\randomkz_250_4326_1b.tif", "EPSG:4326");
+            //    ViewData["Message"] = "SaveLayerWithNewCoordinateSystem";
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
+            //try
+            //{
+            //    ViewData["Message"] = "Raster bands count: " + _GDAL.QGISGetRasterBandsCount(@"D:\\Documents\\New\\MOD13Q1\\MOD13Q1.A2017225.h21v03.006.2017250141803.hdf").ToString();
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
             try
             {
-                _GDAL.SaveLayerWithNewCoordinateSystem(@"D:\Documents\New\maps\randomkz_250_3857_1b.tif", @"D:\\Documents\New\randomkz_250_4326_1b.tif", "EPSG:4326");
-                ViewData["Message"] = "SaveLayerWithNewCoordinateSystem";
+                ViewData["Message"] = "GeoServer Eco styles: " + string.Join(", ", _GeoServer.GetWorkspaceStyles("Eco"));
             }
             catch (Exception exception)
             {

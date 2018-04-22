@@ -393,5 +393,48 @@ namespace GeoServer.Controllers
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
         }
+
+        public string[] GetWorkspaceStyles(string WorkspaceName)
+        {
+            try
+            {
+                if (!GetWorkspaces().Contains(WorkspaceName))
+                {
+                    throw new Exception($"No workspace {WorkspaceName}!");
+                }
+                if (!string.IsNullOrEmpty(WorkspaceName))
+                {
+                    Process process = CurlExecute($" -u " +
+                        $"{Startup.Configuration["GeoServer:User"]}:" +
+                        $"{Startup.Configuration["GeoServer:Password"]}" +
+                        $" -XGET" +
+                        $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                        $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/styles");
+                    string html = process.StandardOutput.ReadToEnd();
+                    process.WaitForExit();
+
+                    HtmlDocument htmlDocument = new HtmlDocument();
+                    htmlDocument.LoadHtml(html);
+                    HtmlNode root = htmlDocument.DocumentNode;
+                    List<string> stores = new List<string>();
+                    foreach (HtmlNode node in root.Descendants())
+                    {
+                        if (node.Name == "a")
+                        {
+                            stores.Add(node.InnerText);
+                        }
+                    }
+                    return stores.ToArray();
+                }
+                else
+                {
+                    throw new Exception("WorkspaceName must be non-empty!");
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
     }
 }

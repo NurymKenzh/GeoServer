@@ -98,6 +98,63 @@ namespace GeoServer.Controllers
             }
         }
 
+        private string QGISPythonExecute(params string[] Arguments)
+        {
+            Process process = new Process();
+            try
+            {
+                Arguments[0] = Path.GetFullPath(
+                    Path.ChangeExtension(
+                        Path.Combine(
+                            _hostingEnvironment.ContentRootPath,
+                            Path.Combine("Python", Arguments[0])),
+                        "py")
+                    );
+
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardInput = true;
+                process.StartInfo.RedirectStandardError = true;
+
+                string[] arguments = new string[3];
+                arguments[0] = Startup.Configuration["GDAL:QGISPythonO4wenvBatFullPath"];
+                arguments[1] = Startup.Configuration["GDAL:QGISPythonFullPath"];
+                arguments[2] = Path.GetFullPath(
+                    Path.ChangeExtension(
+                        Path.Combine(
+                            _hostingEnvironment.ContentRootPath,
+                            Path.Combine("Python", Arguments[0])),
+                        "py")
+                    );
+                process.StartInfo.FileName = Startup.Configuration["GDAL:CmdFullPath"];
+                process.StartInfo.CreateNoWindow = false;
+                process.Start();
+                process.StandardInput.WriteLine($"\"{arguments[0]}\"");
+                process.StandardInput.WriteLine($"\"{arguments[1]}\" \"{arguments[2]}\"");
+                for(int i=1;i< Arguments.Count();i++)
+                {
+                    process.StandardInput.WriteLine(Arguments[i]);
+                }
+                process.StandardInput.Flush();
+                process.StandardInput.Close();
+                string pyhonOutput = process.StandardOutput.ReadToEnd();
+                string pyhonError = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+                if (!string.IsNullOrEmpty(pyhonError))
+                {
+                    throw new Exception(pyhonError);
+                }
+                else
+                {
+                    return pyhonOutput;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
         private string GDALShellExecute(params string[] Arguments)
         {
             Process process = new Process();
@@ -160,6 +217,18 @@ namespace GeoServer.Controllers
             try
             {
                 GDALShellExecute(Startup.Configuration["GDAL:gdalwarpFullPath"], FilePathFrom, FilePathTo, "-t_srs " + CoordinateSystem);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public int QGISGetRasterBandsCount(string FilePath)
+        {
+            try
+            {
+                return Convert.ToInt32(QGISPythonExecute("QGISGdalTest", FilePath));
             }
             catch (Exception exception)
             {
