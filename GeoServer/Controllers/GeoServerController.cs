@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,6 +15,13 @@ namespace GeoServer.Controllers
 {
     public class GeoServerController : Controller
     {
+        private IHostingEnvironment _hostingEnvironment;
+
+        public GeoServerController(IHostingEnvironment hostingEnvironment)
+        {
+            _hostingEnvironment = hostingEnvironment;
+        }
+
         private Process CurlExecute(string Arguments)
         {
             Process process = new Process();
@@ -429,6 +437,63 @@ namespace GeoServer.Controllers
                 else
                 {
                     throw new Exception("WorkspaceName must be non-empty!");
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public void CreateWorkspaceStyle(string WorkspaceName, string StyleName, string[] StyleText)
+        {
+            try
+            {
+                if (!GetWorkspaces().Contains(WorkspaceName))
+                {
+                    throw new Exception($"No workspace {WorkspaceName}!");
+                }
+                string styleFileName = Path.Combine(
+                    _hostingEnvironment.ContentRootPath,
+                    Path.Combine(
+                        Startup.Configuration["GeoServer:SLDDir"],
+                        Path.ChangeExtension(
+                            StyleName,
+                            "sld")));
+                System.IO.File.WriteAllLines(styleFileName, StyleText);
+                if (!string.IsNullOrEmpty(WorkspaceName))
+                {
+                    Process process1 = CurlExecute($" -v -u " +
+                        $"{Startup.Configuration["GeoServer:User"]}:" +
+                        $"{Startup.Configuration["GeoServer:Password"]}" +
+                        $" -XPOST" +
+                        $" -H \"Content-type: text/xml\" +" +
+                        $" -d \"<style><name>{StyleName}</name><filename>{StyleName}.sld</filename></style>\"" +
+                        $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                        $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/styles");
+                    process1.WaitForExit();
+
+                    Process process2 = CurlExecute($" -v -u " +
+                        $"{Startup.Configuration["GeoServer:User"]}:" +
+                        $"{Startup.Configuration["GeoServer:Password"]}" +
+                        $" -XPUT" +
+                        $" -H \"Content-type: application/vnd.ogc.sld+xml\" +" +
+                        $" -d @{styleFileName}" +
+                        $" http://{Startup.Configuration["GeoServer:Address"]}:" +
+                        $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/styles/{StyleName}");
+                    process2.WaitForExit();
+                }
+                else
+                {
+                    throw new Exception("WorkspaceName must be non-empty!");
+                }
+                try
+                {
+                    System.IO.File.Delete(styleFileName);
+                }
+                catch
+                {
+
                 }
             }
             catch (Exception exception)
