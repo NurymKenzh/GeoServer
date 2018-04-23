@@ -365,7 +365,7 @@ namespace GeoServer.Controllers
             }
         }
 
-        public void PublishGeoTIFF(string WorkspaceName, string FileName)
+        public void PublishGeoTIFF(string WorkspaceName, string FileName, string Style)
         {
             try
             {
@@ -382,12 +382,13 @@ namespace GeoServer.Controllers
                     $"<url>/data/{WorkspaceName}/{FileName}</url></coverageStore>\"" +
                     $" \\ http://{Startup.Configuration["GeoServer:Address"]}:" +
                     $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/coveragestores?configure=all");
+                process1.WaitForExit();
                 Process process2 = CurlExecute($" -u " +
                     $"{Startup.Configuration["GeoServer:User"]}:" +
                     $"{Startup.Configuration["GeoServer:Password"]}" +
                     $" -v -XPOST" +
                     $" -H \"Content-type: text/xml\"" +
-                    $" \\ -d \"<coverage><name>{fileNameWithoutExtension}</name>" +
+                    $" -d \"<coverage><name>{fileNameWithoutExtension}</name>" +
                     $"<title>{fileNameWithoutExtension}</title>" +
                     $"<nativeCRS>EPSG:3857</nativeCRS>" +
                     $"<srs>EPSG:3857</srs>" +
@@ -395,6 +396,16 @@ namespace GeoServer.Controllers
                     $"<defaultInterpolationMethod><name>nearest neighbor</name></defaultInterpolationMethod></coverage>\"" +
                     $" \\ \"http://{Startup.Configuration["GeoServer:Address"]}" +
                     $":{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/coveragestores/{fileNameWithoutExtension}/coverages?recalculate=nativebbox\"");
+                process2.WaitForExit();
+                Process process3 = CurlExecute($" -v -u " +
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -XPUT" +
+                    $" -H \"Content-type: text/xml\"" +
+                    $" -d \"<layer><defaultStyle><name>{WorkspaceName}:{Style}</name></defaultStyle></layer>\"" +
+                    $" http://{Startup.Configuration["GeoServer:Address"]}" +
+                    $":{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/layers/{WorkspaceName}:{fileNameWithoutExtension}");
+                process3.WaitForExit();
             }
             catch (Exception exception)
             {

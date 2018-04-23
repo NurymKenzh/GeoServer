@@ -151,15 +151,15 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            //try
-            //{
-            //    _GeoServer.PublishGeoTIFF("Test", "kz.tif");
-            //    ViewData["Message"] = "GeoServer workspace Test layer kz published";
-            //}
-            //catch (Exception exception)
-            //{
-            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            //}
+            try
+            {
+                _GeoServer.PublishGeoTIFF("Test", "randomkz_10000_3857_1b.tif", "my_style");
+                ViewData["Message"] = "GeoServer workspace Test layer randomkz_10000_3857_1b published";
+            }
+            catch (Exception exception)
+            {
+                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            }
 
             //try
             //{
@@ -189,48 +189,48 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            try
-            {
-                _GeoServer.CreateWorkspaceStyle("Test", "my_style",
-                    new string[]
-                        {
-                            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-                            "<StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/sld",
-                            "http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd\" version=\"1.0.0\">",
-                            "  <NamedLayer>",
-                            "    <Name>my_style</Name>",
-                            "    <UserStyle>",
-                            "      <Title>my_style</Title>",
-                            "      <FeatureTypeStyle>",
-                            "        <Rule>",
-                            "          <RasterSymbolizer>",
-                            "            <Opacity>1.0</Opacity>",
-                            "            <ColorMap>",
-                            "              <ColorMapEntry color=\"#267300\" quantity=\"10\" opacity=\"0\"/>",
-                            "              <ColorMapEntry color=\"#267300\" quantity=\"20\" opacity=\"1\"/>",
-                            "              <ColorMapEntry color=\"#38a800\" quantity=\"30\" opacity=\"1\"/>",
-                            "              <ColorMapEntry color=\"#4ce600\" quantity=\"40\" opacity=\"1\"/>",
-                            "              <ColorMapEntry color=\"#a3ff73\" quantity=\"50\" opacity=\"1\"/>",
-                            "              <ColorMapEntry color=\"#e9ffbe\" quantity=\"60\" opacity=\"1\"/>",
-                            "              <ColorMapEntry color=\"#ffff73\" quantity=\"70\" opacity=\"1\"/>",
-                            "              <ColorMapEntry color=\"#ffd37f\" quantity=\"80\" opacity=\"1\"/>",
-                            "              <ColorMapEntry color=\"#ffaa00\" quantity=\"90\" opacity=\"1\"/>",
-                            "              <ColorMapEntry color=\"#e64c00\" quantity=\"100\" opacity=\"1\"/>",
-                            "            </ColorMap>",
-                            "          </RasterSymbolizer>",
-                            "        </Rule>",
-                            "      </FeatureTypeStyle>",
-                            "    </UserStyle>",
-                            "  </NamedLayer>",
-                            "</StyledLayerDescriptor>"
-                        }
-                    );
-                ViewData["Message"] = "GeoServer create style";
-            }
-            catch (Exception exception)
-            {
-                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            }
+            //try
+            //{
+            //    _GeoServer.CreateWorkspaceStyle("Test", "my_style",
+            //        new string[]
+            //            {
+            //                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+            //                "<StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/sld",
+            //                "http://schemas.opengis.net/sld/1.0.0/StyledLayerDescriptor.xsd\" version=\"1.0.0\">",
+            //                "  <NamedLayer>",
+            //                "    <Name>my_style</Name>",
+            //                "    <UserStyle>",
+            //                "      <Title>my_style</Title>",
+            //                "      <FeatureTypeStyle>",
+            //                "        <Rule>",
+            //                "          <RasterSymbolizer>",
+            //                "            <Opacity>1.0</Opacity>",
+            //                "            <ColorMap>",
+            //                "              <ColorMapEntry color=\"#267300\" quantity=\"10\" opacity=\"0\"/>",
+            //                "              <ColorMapEntry color=\"#267300\" quantity=\"20\" opacity=\"1\"/>",
+            //                "              <ColorMapEntry color=\"#38a800\" quantity=\"30\" opacity=\"1\"/>",
+            //                "              <ColorMapEntry color=\"#4ce600\" quantity=\"40\" opacity=\"1\"/>",
+            //                "              <ColorMapEntry color=\"#a3ff73\" quantity=\"50\" opacity=\"1\"/>",
+            //                "              <ColorMapEntry color=\"#e9ffbe\" quantity=\"60\" opacity=\"1\"/>",
+            //                "              <ColorMapEntry color=\"#ffff73\" quantity=\"70\" opacity=\"1\"/>",
+            //                "              <ColorMapEntry color=\"#ffd37f\" quantity=\"80\" opacity=\"1\"/>",
+            //                "              <ColorMapEntry color=\"#ffaa00\" quantity=\"90\" opacity=\"1\"/>",
+            //                "              <ColorMapEntry color=\"#e64c00\" quantity=\"100\" opacity=\"1\"/>",
+            //                "            </ColorMap>",
+            //                "          </RasterSymbolizer>",
+            //                "        </Rule>",
+            //                "      </FeatureTypeStyle>",
+            //                "    </UserStyle>",
+            //                "  </NamedLayer>",
+            //                "</StyledLayerDescriptor>"
+            //            }
+            //        );
+            //    ViewData["Message"] = "GeoServer create style";
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
 
             return View();
         }
