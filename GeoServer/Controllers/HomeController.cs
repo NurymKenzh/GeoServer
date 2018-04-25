@@ -151,15 +151,15 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            try
-            {
-                _GeoServer.PublishGeoTIFF("Test", "randomkz_10000_3857_1b.tif", "my_style");
-                ViewData["Message"] = "GeoServer workspace Test layer randomkz_10000_3857_1b published";
-            }
-            catch (Exception exception)
-            {
-                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            }
+            //try
+            //{
+            //    _GeoServer.PublishGeoTIFF("Test", "randomkz_10000_3857_1b.tif", "my_style");
+            //    ViewData["Message"] = "GeoServer workspace Test layer randomkz_10000_3857_1b published";
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
 
             //try
             //{
@@ -231,6 +231,16 @@ namespace GeoServer.Controllers
             //{
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
+
+            try
+            {
+                _GDAL.HdfToGeoTIFF(@"D:\Documents\New\MOD13Q1\MOD13Q1.A2017225.h21v03.006.2017250141803.hdf", "EPSG:3857");
+                ViewData["Message"] = "HdfToGeoTIFF";
+            }
+            catch (Exception exception)
+            {
+                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            }
 
             return View();
         }
