@@ -247,5 +247,17 @@ namespace GeoServer.Controllers
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
         }
+
+        public void MergeTifs(string MergedFilePath, params string[] FilesToMerge)
+        {
+            try
+            {
+                GDALShellExecute(Startup.Configuration["GDAL:gdalwarpFullPath"], MergedFilePath, string.Join(' ', FilesToMerge));
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
     }
 }
