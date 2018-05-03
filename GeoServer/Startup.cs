@@ -48,7 +48,8 @@ namespace GeoServer
             services
                 .AddTransient<IEmailSender, EmailSender>()
                 .AddTransient<Controllers.GeoServerController, Controllers.GeoServerController>()
-                .AddTransient<Controllers.GDALController, Controllers.GDALController>();
+                .AddTransient<Controllers.GDALController, Controllers.GDALController>()
+                .AddTransient<Controllers.ModisController, Controllers.ModisController>();
 
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 

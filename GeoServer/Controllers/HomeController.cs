@@ -14,12 +14,15 @@ namespace GeoServer.Controllers
     {
         private readonly GeoServerController _GeoServer;
         private readonly GDALController _GDAL;
+        private readonly ModisController _Modis;
 
         public HomeController(GeoServerController GeoServer,
-            GDALController GDAL)
+            GDALController GDAL,
+            ModisController Modis)
         {
             _GeoServer = GeoServer;
             _GDAL = GDAL;
+            _Modis = Modis;
         }
 
         public IActionResult Index()
@@ -232,10 +235,21 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
+            //try
+            //{
+            //    _GDAL.HdfToGeoTIFF(@"D:\Documents\New\MOD13Q1\MOD13Q1.A2017225.h21v03.006.2017250141803.hdf", "EPSG:3857");
+            //    ViewData["Message"] = "HdfToGeoTIFF";
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
             try
             {
-                _GDAL.HdfToGeoTIFF(@"D:\Documents\New\MOD13Q1\MOD13Q1.A2017225.h21v03.006.2017250141803.hdf", "EPSG:3857");
-                ViewData["Message"] = "HdfToGeoTIFF";
+                ViewData["Message"] = _Modis.GetYearByFilePath(@"C:\Users\N\Documents\New\MODIS\MOD13Q120060972103.hdf").ToString() +
+                    "." +
+                    _Modis.GetDayOfYearByFilePath(@"C:\Users\N\Documents\New\MODIS\MOD13Q120060972103.hdf").ToString();
             }
             catch (Exception exception)
             {
