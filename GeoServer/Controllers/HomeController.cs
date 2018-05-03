@@ -247,9 +247,7 @@ namespace GeoServer.Controllers
 
             try
             {
-                ViewData["Message"] = _Modis.GetYearByFilePath(@"C:\Users\N\Documents\New\MODIS\MOD13Q120060972103.hdf").ToString() +
-                    "." +
-                    _Modis.GetDayOfYearByFilePath(@"C:\Users\N\Documents\New\MODIS\MOD13Q120060972103.hdf").ToString();
+                ViewData["Message"] = string.Join("<br />", _Modis.GetHDFFilePaths().ToArray());
             }
             catch (Exception exception)
             {

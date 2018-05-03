@@ -50,5 +50,13 @@ namespace GeoServer.Controllers
             int dayOfYear = Convert.ToInt32(fileName.Substring(0, 3));
             return dayOfYear;
         }
+
+        public List<string> GetHDFFilePaths()
+        {
+            List<string> HDFFilePaths = Directory
+                .GetFiles(Startup.Configuration["Modis:ModisPath"], "*.hdf", SearchOption.TopDirectoryOnly)
+                .ToList();
+            return HDFFilePaths;
+        }
     }
 }
