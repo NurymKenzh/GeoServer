@@ -100,7 +100,6 @@ namespace GeoServer.Controllers
                 if(GetTifFileNamesOfHDF(HDFFilePath).Count()<12)
                 {
                     _GDAL.HdfToGeoTIFF(HDFFilePath, CoordinateSystem);
-                    break;
                 }
             }
         }
@@ -115,6 +114,58 @@ namespace GeoServer.Controllers
             }
             yearsdays = yearsdays.Distinct().ToList();
             return yearsdays;
+        }
+
+        public string GetBandByFilePath(string FilePath)
+        {
+            string band = Path.GetFileNameWithoutExtension(FilePath);
+            band = band.Substring(band.IndexOf('_') + 1, 2);
+            return band;
+        }
+
+        public List<string> GetTifPathsByYearDayBand(int Year, int DayOfYear, string Band)
+        {
+            List<string> TifFilePaths = GetTifFilePaths(),
+                TifPathsByYearDayBand = new List<string>();
+            foreach(string TifFilePath in TifFilePaths)
+            {
+                if(GetYearByFilePath(TifFilePath)==Year
+                    && GetDayOfYearByFilePath(TifFilePath)==DayOfYear
+                    && GetBandByFilePath(TifFilePath) == Band)
+                {
+                    TifPathsByYearDayBand.Add(TifFilePath);
+                }
+            }
+            return TifPathsByYearDayBand;
+        }
+
+        public void MergeTifs()
+        {
+            List<KeyValuePair<int, int>> yearsdays = GetHDFsYearsDaysOfYears();
+            List<string> bands = new List<string>();
+            for(int i=1;i<=12;i++)
+            {
+                string newband = i.ToString().Length  == 2 ? i.ToString() : "0" + i.ToString();
+                bands.Add(newband);
+            }
+            foreach(KeyValuePair<int, int> yearday in yearsdays)
+            {
+                foreach(string band in bands)
+                {
+                    List<string> tifPathsToMerge = GetTifPathsByYearDayBand(yearday.Key, yearday.Value, band);
+                    string year = yearday.Key.ToString(),
+                        day = yearday.Value.ToString();
+                    if(day.Length<3)
+                    {
+                        day = "0" + day;
+                    }
+                    if (day.Length < 3)
+                    {
+                        day = "0" + day;
+                    }
+                    _GDAL.MergeTifs(Path.Combine(Startup.Configuration["Modis:ModisPath"], $"MOD13Q1.A{year}{day}_{band}.tif"), tifPathsToMerge.ToArray());
+                }
+            }
         }
     }
 }

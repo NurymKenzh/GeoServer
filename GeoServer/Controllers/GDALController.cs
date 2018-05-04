@@ -155,6 +155,52 @@ namespace GeoServer.Controllers
             }
         }
 
+        private string QGISShellExecute(params string[] Arguments)
+        {
+            Process process = new Process();
+            try
+            {
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardInput = true;
+                process.StartInfo.RedirectStandardError = true;
+
+                string[] arguments = new string[3];
+                arguments[0] = Startup.Configuration["GDAL:QGISPythonO4wenvBatFullPath"];
+                arguments[1] = Startup.Configuration["GDAL:QGISPythonFullPath"];
+                arguments[2] = Path.GetFullPath(
+                    Path.ChangeExtension(
+                        Path.Combine(
+                            _hostingEnvironment.ContentRootPath,
+                            Path.Combine("Python", Arguments[0])),
+                        "py")
+                    );
+                process.StartInfo.FileName = Startup.Configuration["GDAL:CmdFullPath"];
+                process.StartInfo.CreateNoWindow = false;
+                process.Start();
+                process.StandardInput.WriteLine($"cd {Path.GetDirectoryName(Startup.Configuration["GDAL:QGISPythonO4wenvBatFullPath"])}");
+                process.StandardInput.WriteLine(Path.GetFileName(Startup.Configuration["GDAL:QGISPythonO4wenvBatFullPath"]));
+                process.StandardInput.WriteLine($"{Path.GetFileName(Startup.Configuration["GDAL:QGISPythonFullPath"])} {string.Join(' ', Arguments)}");
+                process.StandardInput.Flush();
+                process.StandardInput.Close();
+                string pyhonOutput = process.StandardOutput.ReadToEnd();
+                string pyhonError = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+                if (!string.IsNullOrEmpty(pyhonError))
+                {
+                    throw new Exception(pyhonError);
+                }
+                else
+                {
+                    return pyhonOutput;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
         private string GDALShellExecute(params string[] Arguments)
         {
             Process process = new Process();
@@ -252,7 +298,8 @@ namespace GeoServer.Controllers
         {
             try
             {
-                GDALShellExecute(Startup.Configuration["GDAL:gdalwarpFullPath"], MergedFilePath, string.Join(' ', FilesToMerge));
+                FilesToMerge = Array.ConvertAll(FilesToMerge, f => $"\"{f}\"");
+                QGISShellExecute("gdal_merge.py", "-o", MergedFilePath, string.Join(' ', FilesToMerge));
             }
             catch (Exception exception)
             {

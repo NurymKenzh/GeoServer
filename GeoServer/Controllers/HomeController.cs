@@ -288,17 +288,29 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            try
-            {
-                _GDAL.MergeTifs(@"C:\Users\N\Documents\New\tifs\merged.tif",
-                    @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v03.006.2015161233224_01.tif",
-                    @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v04.006.2015161232100_01.tif");
-                ViewData["Message"] = "MergeTifs";
-            }
-            catch (Exception exception)
-            {
-                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            }
+            //try
+            //{
+            //    _GDAL.MergeTifs(@"C:\Users\N\Documents\New\tifs\merged.tif",
+            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v03.006.2015161233224_01.tif",
+            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v04.006.2015161232100_01.tif");
+            //    ViewData["Message"] = "MergeTifs";
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
+
+            //try
+            //{
+            //    _GDAL.MergeTifs(@"C:\Users\N\Documents\New\tifs\merged.tif",
+            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v03.006.2015161233224_01.tif",
+            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v04.006.2015161232100_01.tif");
+            //    ViewData["Message"] = "MergeTifs";
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
 
             return View();
         }
