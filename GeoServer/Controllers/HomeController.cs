@@ -166,7 +166,7 @@ namespace GeoServer.Controllers
 
             //try
             //{
-            //    _GDAL.SaveLayerWithNewCoordinateSystem(@"D:\Documents\New\maps\randomkz_250_3857_1b.tif", @"D:\\Documents\New\maps\randomkz_250_4326_1b.tif", "EPSG:4326");
+            //    _GDAL.SaveLayerWithNewCoordinateSystem(@"C:\Users\N\Documents\New\MODIS\MOD13Q1.A2007097.h23v04.006.2015161232334_01.tif", @"C:\Users\N\Documents\New\MODIS\MOD13Q1.A2007097.h23v04.006.2015161232334_01_3857.tif", "EPSG:3857");
             //    ViewData["Message"] = "SaveLayerWithNewCoordinateSystem";
             //}
             //catch (Exception exception)
@@ -290,10 +290,8 @@ namespace GeoServer.Controllers
 
             //try
             //{
-            //    _GDAL.MergeTifs(@"C:\Users\N\Documents\New\tifs\merged.tif",
-            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v03.006.2015161233224_01.tif",
-            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v04.006.2015161232100_01.tif");
-            //    ViewData["Message"] = "MergeTifs";
+            //    _Modis.MergeTifs();
+            //    ViewData["Message"] = "Merge Modis Tifs";
             //}
             //catch (Exception exception)
             //{
@@ -311,6 +309,16 @@ namespace GeoServer.Controllers
             //{
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
+
+            try
+            {
+                _Modis.ReprojectTifs("EPSG:3857");
+                ViewData["Message"] = "Files converted";
+            }
+            catch (Exception exception)
+            {
+                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            }
 
             return View();
         }

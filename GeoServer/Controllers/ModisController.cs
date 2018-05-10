@@ -139,6 +139,42 @@ namespace GeoServer.Controllers
             return TifPathsByYearDayBand;
         }
 
+        public void ReprojectTifs(string CoordinateSystem)
+        {
+            List<KeyValuePair<int, int>> yearsdays = GetHDFsYearsDaysOfYears();
+            List<string> bands = new List<string>();
+            for (int i = 1; i <= 12; i++)
+            {
+                string newband = i.ToString().Length == 2 ? i.ToString() : "0" + i.ToString();
+                bands.Add(newband);
+            }
+            foreach (KeyValuePair<int, int> yearday in yearsdays)
+            {
+                foreach (string band in bands)
+                {
+                    List<string> tifPathsToReproject = GetTifPathsByYearDayBand(yearday.Key, yearday.Value, band);
+                    string year = yearday.Key.ToString(),
+                        day = yearday.Value.ToString();
+                    if (day.Length < 3)
+                    {
+                        day = "0" + day;
+                    }
+                    if (day.Length < 3)
+                    {
+                        day = "0" + day;
+                    }
+                    foreach (string tifPathToReproject in tifPathsToReproject)
+                    {
+                        _GDAL.SaveLayerWithNewCoordinateSystem(tifPathToReproject, 
+                            Path.Combine(Path.GetDirectoryName(tifPathToReproject), Path.GetFileNameWithoutExtension(tifPathToReproject) + "_bufer") + ".tif",
+                            CoordinateSystem);
+                        System.IO.File.Delete(tifPathToReproject);
+                        System.IO.File.Move(Path.Combine(Path.GetDirectoryName(tifPathToReproject), Path.GetFileNameWithoutExtension(tifPathToReproject) + "_bufer") + ".tif", tifPathToReproject);
+                    }
+                }
+            }
+        }
+
         public void MergeTifs()
         {
             List<KeyValuePair<int, int>> yearsdays = GetHDFsYearsDaysOfYears();
@@ -164,6 +200,14 @@ namespace GeoServer.Controllers
                         day = "0" + day;
                     }
                     _GDAL.MergeTifs(Path.Combine(Startup.Configuration["Modis:ModisPath"], $"MOD13Q1.A{year}{day}_{band}.tif"), tifPathsToMerge.ToArray());
+                    try
+                    {
+                        foreach(string tifPathToMerge in tifPathsToMerge)
+                        {
+                            System.IO.File.Delete(tifPathToMerge);
+                        }
+                    }
+                    catch { }
                 }
             }
         }

@@ -97,9 +97,11 @@ try:
             return statDict
 
         # Raster dataset
-        input_value_raster = 'D:/Documents/New/ZonalStatTest/SC_ZS110F140.tif'
+##        input_value_raster = 'D:/Documents/New/ZonalStatTest/SC_ZS110F140.tif'
+        input_value_raster = 'C:/Users/N/Documents/New/MODIS/.tif'
         # Vector dataset(zones)
-        input_zone_polygon = 'D:/Documents/New/ZonalStatTest/Test.shp'
+##        input_zone_polygon = 'D:/Documents/New/ZonalStatTest/Test.shp'
+        input_zone_polygon = 'C:/Users/N/Documents/New/admpol/adm1pol20180317.shp'
 
         print loop_zonal_stats(input_zone_polygon, input_value_raster)
 except Exception as exception:
