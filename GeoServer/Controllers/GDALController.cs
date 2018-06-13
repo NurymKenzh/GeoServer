@@ -56,6 +56,16 @@ namespace GeoServer.Controllers
             }
         }
 
+        /// <summary>
+        /// Запуск py-файла
+        /// </summary>
+        /// <param name="Arguments">
+        /// Первый элемент массива - название py-файла без пути и расширения.
+        /// Остальные элементы массива - параметры для передачи в Python
+        /// </param>
+        /// <returns>
+        /// Возвращает текс с Python
+        /// </returns>
         private string PythonExecute(params string[] Arguments)
         {
             Process process = new Process();
