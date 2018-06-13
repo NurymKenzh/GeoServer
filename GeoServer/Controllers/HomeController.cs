@@ -300,15 +300,15 @@ namespace GeoServer.Controllers
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
 
-            try
-            {
-                _Modis.ReprojectTifs("EPSG:3857");
-                ViewData["Message"] = "Files converted";
-            }
-            catch (Exception exception)
-            {
-                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            }
+            //try
+            //{
+            //    _Modis.ReprojectTifs("EPSG:3857");
+            //    ViewData["Message"] = "Files converted";
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
 
             //try
             //{
@@ -319,6 +319,16 @@ namespace GeoServer.Controllers
             //{
             //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             //}
+
+            try
+            {
+                _GDAL.ModisDownload();
+                ViewData["Message"] = "ModisDownload";
+            }
+            catch (Exception exception)
+            {
+                ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            }
 
             return View();
         }

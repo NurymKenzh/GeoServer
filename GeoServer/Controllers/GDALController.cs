@@ -108,6 +108,58 @@ namespace GeoServer.Controllers
             }
         }
 
+        /// <summary>
+        /// Запуск py-файла
+        /// </summary>
+        /// <param name="Arguments">
+        /// Первый элемент массива - название py-файла без пути и расширения.
+        /// Остальные элементы массива - параметры для передачи в Python
+        /// </param>
+        /// <returns>
+        /// Возвращает текс с Python
+        /// </returns>
+        private string PythonExecuteWithParameters(string FileName, params string[] Parameters)
+        {
+            Process process = new Process();
+            try
+            {
+                //FileName = Path.GetFullPath(
+                //    Path.ChangeExtension(
+                //        Path.Combine(
+                //            _hostingEnvironment.ContentRootPath,
+                //            Path.Combine("Python", FileName)),
+                //        "py")
+                //    );
+
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardInput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.FileName = Startup.Configuration["GDAL:CmdFullPath"];
+                process.StartInfo.Arguments = FileName + " " + string.Join(" ", Parameters);
+                process.Start();
+                //for (int i = 1; i < Arguments.Count(); i++)
+                //{
+                //    process.StandardInput.WriteLine(Arguments[i]);
+                //}
+                string pyhonOutput = process.StandardOutput.ReadToEnd();
+                string pyhonError = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+                if (!string.IsNullOrEmpty(pyhonError))
+                {
+                    throw new Exception(pyhonError);
+                }
+                else
+                {
+                    return pyhonOutput;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
         private string QGISPythonExecute(params string[] Arguments)
         {
             Process process = new Process();
@@ -237,6 +289,19 @@ namespace GeoServer.Controllers
                 {
                     return shellOutput;
                 }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public void ModisDownload()
+        {
+            try
+            {
+                //PythonExecute("ModisDownload", "-r - p MOD09GA.006 - f 2007 - 07 - 01 - e 2007 - 07 - 03 Downloads\\").Trim();
+                PythonExecuteWithParameters("modis_download.py", "-r - p MOD09GA.006 - f 2007 - 07 - 01 - e 2007 - 07 - 03 C:\\Users\\X\\Downloads\\").Trim();
             }
             catch (Exception exception)
             {
