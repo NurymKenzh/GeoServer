@@ -256,16 +256,6 @@ namespace GeoServer.Controllers
 
             //try
             //{
-            //    _Modis.ConvertHdfsToTifs("EPSG:3857");
-            //    ViewData["Message"] = "Files converted";
-            //}
-            //catch (Exception exception)
-            //{
-            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
-            //}
-
-            //try
-            //{
             //    ViewData["Message"] = string.Join("<br />", _Modis.GetTifFileNamesOfHDF(@"C:\Users\N\Documents\New\MODIS\MOD13Q1.A2007097.h21v03.006.2015161233224.hdf").ToArray());
             //}
             //catch (Exception exception)
@@ -290,8 +280,10 @@ namespace GeoServer.Controllers
 
             //try
             //{
-            //    _Modis.MergeTifs();
-            //    ViewData["Message"] = "Merge Modis Tifs";
+            //    _GDAL.MergeTifs(@"C:\Users\N\Documents\New\tifs\merged.tif",
+            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v03.006.2015161233224_01.tif",
+            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v04.006.2015161232100_01.tif");
+            //    ViewData["Message"] = "MergeTifs";
             //}
             //catch (Exception exception)
             //{
@@ -300,10 +292,8 @@ namespace GeoServer.Controllers
 
             //try
             //{
-            //    _GDAL.MergeTifs(@"C:\Users\N\Documents\New\tifs\merged.tif",
-            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v03.006.2015161233224_01.tif",
-            //        @"C:\Users\N\Documents\New\tifs\MOD13Q1.A2007097.h21v04.006.2015161232100_01.tif");
-            //    ViewData["Message"] = "MergeTifs";
+            //    _Modis.ConvertHdfsToTifs("EPSG:3857");
+            //    ViewData["Message"] = "Files converted";
             //}
             //catch (Exception exception)
             //{
@@ -319,6 +309,16 @@ namespace GeoServer.Controllers
             {
                 ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
             }
+
+            //try
+            //{
+            //    _Modis.MergeTifs();
+            //    ViewData["Message"] = "Merge Modis Tifs";
+            //}
+            //catch (Exception exception)
+            //{
+            //    ViewData["Message"] = $"{exception.ToString()}. {exception.InnerException?.Message}";
+            //}
 
             return View();
         }

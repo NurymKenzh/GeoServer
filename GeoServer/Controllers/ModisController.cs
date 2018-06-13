@@ -165,11 +165,14 @@ namespace GeoServer.Controllers
                     }
                     foreach (string tifPathToReproject in tifPathsToReproject)
                     {
-                        _GDAL.SaveLayerWithNewCoordinateSystem(tifPathToReproject, 
-                            Path.Combine(Path.GetDirectoryName(tifPathToReproject), Path.GetFileNameWithoutExtension(tifPathToReproject) + "_bufer") + ".tif",
-                            CoordinateSystem);
-                        System.IO.File.Delete(tifPathToReproject);
-                        System.IO.File.Move(Path.Combine(Path.GetDirectoryName(tifPathToReproject), Path.GetFileNameWithoutExtension(tifPathToReproject) + "_bufer") + ".tif", tifPathToReproject);
+                        if(_GDAL.GetLayerCoordinateSystemName(tifPathToReproject)!=CoordinateSystem)
+                        {
+                            _GDAL.SaveLayerWithNewCoordinateSystem(tifPathToReproject, 
+                                Path.Combine(Path.GetDirectoryName(tifPathToReproject), Path.GetFileNameWithoutExtension(tifPathToReproject) + "_bufer") + ".tif",
+                                CoordinateSystem);
+                            System.IO.File.Delete(tifPathToReproject);
+                            System.IO.File.Move(Path.Combine(Path.GetDirectoryName(tifPathToReproject), Path.GetFileNameWithoutExtension(tifPathToReproject) + "_bufer") + ".tif", tifPathToReproject);
+                        }
                     }
                 }
             }

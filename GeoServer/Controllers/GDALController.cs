@@ -250,7 +250,7 @@ namespace GeoServer.Controllers
         {
             try
             {
-                return PythonExecute("GetLayerCoordinateSystemName", FilePath);
+                return PythonExecute("GetLayerCoordinateSystemName", FilePath).Trim();
             }
             catch (Exception exception)
             {

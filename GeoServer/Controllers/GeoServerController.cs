@@ -325,7 +325,7 @@ namespace GeoServer.Controllers
                     $"{Startup.Configuration["GeoServer:Password"]}" +
                     $" -XGET" +
                     $" http://{Startup.Configuration["GeoServer:Address"]}:" +
-                    $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/datastores/{StoreName}");
+                    $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}.html");
                 string html = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
 
