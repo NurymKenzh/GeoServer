@@ -136,12 +136,13 @@ namespace GeoServer.Controllers
                 process.StartInfo.RedirectStandardInput = true;
                 process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.FileName = Startup.Configuration["GDAL:CmdFullPath"];
-                process.StartInfo.Arguments = FileName + " " + string.Join(" ", Parameters);
+                //process.StartInfo.Arguments = FileName + " " + string.Join(" ", Parameters);
                 process.Start();
                 //for (int i = 1; i < Arguments.Count(); i++)
                 //{
                 //    process.StandardInput.WriteLine(Arguments[i]);
                 //}
+                process.StandardInput.WriteLine(FileName + " " + string.Join(" ", Parameters));
                 string pyhonOutput = process.StandardOutput.ReadToEnd();
                 string pyhonError = process.StandardError.ReadToEnd();
                 process.WaitForExit();
@@ -301,7 +302,7 @@ namespace GeoServer.Controllers
             try
             {
                 //PythonExecute("ModisDownload", "-r - p MOD09GA.006 - f 2007 - 07 - 01 - e 2007 - 07 - 03 Downloads\\").Trim();
-                PythonExecuteWithParameters("modis_download.py", "-r - p MOD09GA.006 - f 2007 - 07 - 01 - e 2007 - 07 - 03 C:\\Users\\X\\Downloads\\").Trim();
+                PythonExecuteWithParameters("modis_download.py", "-r -p MOD09GA.006 -f 2007-07-01 -e 2007-07-03 D:\\Documents\\New\\").Trim();
             }
             catch (Exception exception)
             {
