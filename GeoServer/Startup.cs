@@ -15,6 +15,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Http.Features;
+using Hangfire;
+using Hangfire.PostgreSql;
 
 namespace GeoServer
 {
@@ -60,6 +62,9 @@ namespace GeoServer
                 x.MultipartHeadersLengthLimit = int.MaxValue;
             });
 
+            services.AddHangfire(config =>
+                config.UsePostgreSqlStorage(Configuration.GetConnectionString("DefaultConnection")));
+
             services
                 .AddMvc()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
@@ -70,6 +75,9 @@ namespace GeoServer
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
