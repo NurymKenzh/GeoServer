@@ -23,6 +23,8 @@ namespace GeoServer.Data
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
+
         public DbSet<GeoServer.Models.ModisSource> ModisSource { get; set; }
 
         public DbSet<GeoServer.Models.ModisProduct> ModisProduct { get; set; }
