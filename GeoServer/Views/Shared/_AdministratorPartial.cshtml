@@ -1,0 +1,17 @@
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    var user = Context.User;
+}
+@if (user.Identity.IsAuthenticated)
+{
+    if (user.IsInRole("Administrator"))
+    {
+        <li>@Html.ActionLink(SharedLocalizer["Administration"], "Administrator", "Home")</li>
+    }
+    if (user.IsInRole("Moderator"))
+    {
+
+    }
+}

@@ -44,6 +44,11 @@ namespace GeoServer.Controllers
             return View();
         }
 
+        public IActionResult Administrator()
+        {
+            return View();
+        }
+
         [HttpPost]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
