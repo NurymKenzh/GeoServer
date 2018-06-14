@@ -5,19 +5,25 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeoServer.Data;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GeoServer.Controllers
 {
     public class GDALController : Controller
     {
         private IHostingEnvironment _hostingEnvironment;
+        private readonly ApplicationDbContext _context;
 
-        public GDALController(IHostingEnvironment hostingEnvironment)
+        public GDALController(IHostingEnvironment hostingEnvironment,
+            ApplicationDbContext context)
         {
             _hostingEnvironment = hostingEnvironment;
+            _context = context;
         }
 
         private string PythonExecuteWithParameters(params string[] Arguments)
@@ -119,7 +125,7 @@ namespace GeoServer.Controllers
         /// <returns>
         /// Возвращает текс с Python
         /// </returns>
-        private string PythonExecuteWithParameters(string FileName, params string[] Parameters)
+        public string PythonExecuteWithParameters(string FileName, params string[] Parameters)
         {
             Process process = new Process();
             try
@@ -298,14 +304,23 @@ namespace GeoServer.Controllers
             }
         }
 
-        public void ModisDownload()
+        private void ModisDownload(string[] ModisSpan,
+            string ModisSource,
+            string ModisProduct,
+            DateTime DateStart,
+            DateTime DateFinish)
         {
             try
             {
                 //PythonExecute("ModisDownload", "-r - p MOD09GA.006 - f 2007 - 07 - 01 - e 2007 - 07 - 03 Downloads\\").Trim();
                 //PythonExecuteWithParameters("modis_download.py", "-r -p MOD09GA.006 -f 2007-07-01 -e 2007-07-03 D:\\Documents\\New\\").Trim();
-                var jobId = BackgroundJob.Enqueue(
-                    () => PythonExecuteWithParameters("modis_download.py", "-r -p MOD09GA.006 -f 2007-07-01 -e 2007-07-03 D:\\Documents\\New\\").Trim());
+                string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct);
+                Directory.CreateDirectory(folder);
+                //var jobId = BackgroundJob.Enqueue(
+                //    () => PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct} -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}").Trim());
+                var jobId = BackgroundJob.Schedule(
+                    () => PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct} -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}"),
+                    TimeSpan.FromMilliseconds(1000));
             }
             catch (Exception exception)
             {
@@ -385,6 +400,41 @@ namespace GeoServer.Controllers
             {
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
+        }
+
+        //===========================================================================================================
+
+        public IActionResult DownloadModis()
+        {
+            ViewBag.ModisSpan = new SelectList(_context.ModisSpan.OrderBy(m => m.Name), "Name", "Name");
+            ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name");
+            ViewBag.ModisProduct = new SelectList(_context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name), "Name", "Name");
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult DownloadModis(string[] ModisSpan,
+            string ModisSource,
+            string ModisProduct,
+            DateTime DateStart,
+            DateTime DateFinish)
+        {
+            ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
+            ViewBag.Message = "Operation started!";
+            ViewBag.ModisSpan = new SelectList(_context.ModisSpan.OrderBy(m => m.Name), "Name", "Name");
+            ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name");
+            ViewBag.ModisProduct = new SelectList(_context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name), "Name", "Name");
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetModisProductByModisSource(string ModisSource)
+        {
+            var modisProducts = _context.ModisProduct
+                .Where(m => m.ModisSource.Name == ModisSource);
+            JsonResult result = new JsonResult(modisProducts);
+            return result;
         }
     }
 }
