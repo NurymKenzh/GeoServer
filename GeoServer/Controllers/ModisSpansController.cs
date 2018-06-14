@@ -11,24 +11,23 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GeoServer.Controllers
 {
-    public class ModisProductsController : Controller
+    public class ModisSpansController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ModisProductsController(ApplicationDbContext context)
+        public ModisSpansController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: ModisProducts
+        // GET: ModisSpans
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.ModisProduct.Include(m => m.ModisSource);
-            return View(await applicationDbContext.ToListAsync());
+            return View(await _context.ModisSpan.ToListAsync());
         }
 
-        // GET: ModisProducts/Details/5
+        // GET: ModisSpans/Details/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -37,44 +36,41 @@ namespace GeoServer.Controllers
                 return NotFound();
             }
 
-            var modisProduct = await _context.ModisProduct
-                .Include(m => m.ModisSource)
+            var modisSpan = await _context.ModisSpan
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (modisProduct == null)
+            if (modisSpan == null)
             {
                 return NotFound();
             }
 
-            return View(modisProduct);
+            return View(modisSpan);
         }
 
-        // GET: ModisProducts/Create
+        // GET: ModisSpans/Create
         [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
-            ViewData["ModisSourceId"] = new SelectList(_context.ModisSource, "Id", "Name");
             return View();
         }
 
-        // POST: ModisProducts/Create
+        // POST: ModisSpans/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Create([Bind("Id,ModisSourceId,Name")] ModisProduct modisProduct)
+        public async Task<IActionResult> Create([Bind("Id,Name")] ModisSpan modisSpan)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(modisProduct);
+                _context.Add(modisSpan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ModisSourceId"] = new SelectList(_context.ModisSource, "Id", "Name", modisProduct.ModisSourceId);
-            return View(modisProduct);
+            return View(modisSpan);
         }
 
-        // GET: ModisProducts/Edit/5
+        // GET: ModisSpans/Edit/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -83,24 +79,23 @@ namespace GeoServer.Controllers
                 return NotFound();
             }
 
-            var modisProduct = await _context.ModisProduct.SingleOrDefaultAsync(m => m.Id == id);
-            if (modisProduct == null)
+            var modisSpan = await _context.ModisSpan.SingleOrDefaultAsync(m => m.Id == id);
+            if (modisSpan == null)
             {
                 return NotFound();
             }
-            ViewData["ModisSourceId"] = new SelectList(_context.ModisSource, "Id", "Name", modisProduct.ModisSourceId);
-            return View(modisProduct);
+            return View(modisSpan);
         }
 
-        // POST: ModisProducts/Edit/5
+        // POST: ModisSpans/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ModisSourceId,Name")] ModisProduct modisProduct)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] ModisSpan modisSpan)
         {
-            if (id != modisProduct.Id)
+            if (id != modisSpan.Id)
             {
                 return NotFound();
             }
@@ -109,12 +104,12 @@ namespace GeoServer.Controllers
             {
                 try
                 {
-                    _context.Update(modisProduct);
+                    _context.Update(modisSpan);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ModisProductExists(modisProduct.Id))
+                    if (!ModisSpanExists(modisSpan.Id))
                     {
                         return NotFound();
                     }
@@ -125,11 +120,10 @@ namespace GeoServer.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ModisSourceId"] = new SelectList(_context.ModisSource, "Id", "Name", modisProduct.ModisSourceId);
-            return View(modisProduct);
+            return View(modisSpan);
         }
 
-        // GET: ModisProducts/Delete/5
+        // GET: ModisSpans/Delete/5
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -138,32 +132,31 @@ namespace GeoServer.Controllers
                 return NotFound();
             }
 
-            var modisProduct = await _context.ModisProduct
-                .Include(m => m.ModisSource)
+            var modisSpan = await _context.ModisSpan
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (modisProduct == null)
+            if (modisSpan == null)
             {
                 return NotFound();
             }
 
-            return View(modisProduct);
+            return View(modisSpan);
         }
 
-        // POST: ModisProducts/Delete/5
+        // POST: ModisSpans/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var modisProduct = await _context.ModisProduct.SingleOrDefaultAsync(m => m.Id == id);
-            _context.ModisProduct.Remove(modisProduct);
+            var modisSpan = await _context.ModisSpan.SingleOrDefaultAsync(m => m.Id == id);
+            _context.ModisSpan.Remove(modisSpan);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ModisProductExists(int id)
+        private bool ModisSpanExists(int id)
         {
-            return _context.ModisProduct.Any(e => e.Id == id);
+            return _context.ModisSpan.Any(e => e.Id == id);
         }
     }
 }

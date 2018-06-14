@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Hangfire;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -302,7 +303,9 @@ namespace GeoServer.Controllers
             try
             {
                 //PythonExecute("ModisDownload", "-r - p MOD09GA.006 - f 2007 - 07 - 01 - e 2007 - 07 - 03 Downloads\\").Trim();
-                PythonExecuteWithParameters("modis_download.py", "-r -p MOD09GA.006 -f 2007-07-01 -e 2007-07-03 D:\\Documents\\New\\").Trim();
+                //PythonExecuteWithParameters("modis_download.py", "-r -p MOD09GA.006 -f 2007-07-01 -e 2007-07-03 D:\\Documents\\New\\").Trim();
+                var jobId = BackgroundJob.Enqueue(
+                    () => PythonExecuteWithParameters("modis_download.py", "-r -p MOD09GA.006 -f 2007-07-01 -e 2007-07-03 D:\\Documents\\New\\").Trim());
             }
             catch (Exception exception)
             {
