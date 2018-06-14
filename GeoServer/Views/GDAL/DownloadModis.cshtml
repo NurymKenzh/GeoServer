@@ -53,8 +53,8 @@
             success: function (data) {
                 var optionhtml = '';
                 $.each(data, function (i) {
-                    optionhtml += '<option value="' + data[i]['id'] + '"' +
-                        (data[i]['id'] == $('#ModisProduct').val() ? 'selected' : '') +
+                    optionhtml += '<option value="' + data[i]['name'] + '"' +
+                        (data[i]['name'] == $('#ModisProduct').val() ? 'selected' : '') +
                         '>' + data[i]['name'] +
                         '</option>';
                 });
