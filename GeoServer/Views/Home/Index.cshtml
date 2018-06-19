@@ -1,5 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["HomePage"];
 }
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">

@@ -117,4 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddInformation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Administrator" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Hangfire" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value />
+  </data>
+  <data name="HomePage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LogIn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LoginWithARecoveryCode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Marketing" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RecoveryCodeVerification" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ResetPasswordConfirmation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Signedout" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Test" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TwoFactorAuthentication" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UploadWorkspaceLayerFile" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value />
+  </data>
 </root>

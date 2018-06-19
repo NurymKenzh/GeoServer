@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GeoServer.Data;
 using Hangfire;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace GeoServer.Controllers
 {
@@ -125,7 +127,7 @@ namespace GeoServer.Controllers
         /// <returns>
         /// Возвращает текс с Python
         /// </returns>
-        public string PythonExecuteWithParameters(string FileName, params string[] Parameters)
+        public void PythonExecuteWithParameters(string FileName, params string[] Parameters)
         {
             Process process = new Process();
             try
@@ -159,7 +161,7 @@ namespace GeoServer.Controllers
                 }
                 else
                 {
-                    return pyhonOutput;
+                    //return pyhonOutput;
                 }
             }
             catch (Exception exception)
@@ -304,6 +306,18 @@ namespace GeoServer.Controllers
             }
         }
 
+        public void Test1()
+        {
+            Thread.Sleep(60000);
+            Console.WriteLine("Fire-and-forget!");
+        }
+
+        public void Test2()
+        {
+            Thread.Sleep(60000);
+            Console.WriteLine("Delayed!");
+        }
+
         private void ModisDownload(string[] ModisSpan,
             string ModisSource,
             string ModisProduct,
@@ -312,15 +326,67 @@ namespace GeoServer.Controllers
         {
             try
             {
-                //PythonExecute("ModisDownload", "-r - p MOD09GA.006 - f 2007 - 07 - 01 - e 2007 - 07 - 03 Downloads\\").Trim();
-                //PythonExecuteWithParameters("modis_download.py", "-r -p MOD09GA.006 -f 2007-07-01 -e 2007-07-03 D:\\Documents\\New\\").Trim();
                 string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct);
                 Directory.CreateDirectory(folder);
-                //var jobId = BackgroundJob.Enqueue(
-                //    () => PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct} -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}").Trim());
-                var jobId = BackgroundJob.Schedule(
-                    () => PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct} -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}"),
-                    TimeSpan.FromMilliseconds(1000));
+                //var jobId = BackgroundJob.Schedule(
+                //    () => PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct} -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}"),
+                //    TimeSpan.FromMilliseconds(1000));
+
+                //var jobId1 = BackgroundJob.Enqueue(
+                //    () => Test1());
+
+                //var jobId2 = BackgroundJob.Schedule(
+                //    () => Test2(),
+                //    TimeSpan.FromMilliseconds(1000));
+
+                var jobId = BackgroundJob.Enqueue(
+                    () => PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct} -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}"));
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        private void MosaicModis(string ModisSource,
+            string ModisProduct,
+            string[] ModisDataSet,
+            string File,
+            string FileName)
+        {
+            string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
+                batfile = Path.Combine(folder, "bat.bat");
+            using (var sw = new StreamWriter(batfile))
+            {
+                sw.WriteLine("modis_mosaic.py -o 250m_16_days_EVI.tif -s \"0 1\"  D:\\GeoServer\\MODIS\\MOLT\\MOD13Q1\\listfileMYD09A1.006.txt");
+            }
+
+            Process process = new Process();
+            try
+            {
+                //process.StartInfo.UseShellExecute = false;
+
+                //process.StartInfo.RedirectStandardOutput = true;
+                //process.StartInfo.RedirectStandardInput = true;
+                //process.StartInfo.RedirectStandardError = true;
+
+                process.StartInfo.WorkingDirectory = folder;
+                process.StartInfo.FileName = batfile;
+                process.Start();
+
+                //string pyhonOutput = process.StandardOutput.ReadToEnd();
+                //string pyhonError = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+                //if (!string.IsNullOrEmpty(pyhonError))
+                //{
+                //    throw new Exception(pyhonError);
+                //}
+                //else
+                //{
+                //    //return pyhonOutput;
+                //}
+
+                System.IO.File.Delete(batfile);
             }
             catch (Exception exception)
             {
@@ -406,9 +472,11 @@ namespace GeoServer.Controllers
 
         public IActionResult DownloadModis()
         {
-            ViewBag.ModisSpan = new SelectList(_context.ModisSpan.OrderBy(m => m.Name), "Name", "Name");
+            ViewBag.ModisSpan = new MultiSelectList(_context.ModisSpan.OrderBy(m => m.Name), "Name", "Name", _context.ModisSpan.Select(m => m.Name));
             ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name");
             ViewBag.ModisProduct = new SelectList(_context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name), "Name", "Name");
+            ViewBag.DateStart = DateTime.Now;
+            ViewBag.DateFinish = DateTime.Now;
             return View();
         }
 
@@ -421,9 +489,11 @@ namespace GeoServer.Controllers
         {
             ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
             ViewBag.Message = "Operation started!";
-            ViewBag.ModisSpan = new SelectList(_context.ModisSpan.OrderBy(m => m.Name), "Name", "Name");
-            ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name");
-            ViewBag.ModisProduct = new SelectList(_context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name), "Name", "Name");
+            ViewBag.ModisSpan = new MultiSelectList( _context.ModisSpan.OrderBy(m => m.Name), "Name", "Name", ModisSpan);
+            ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name", ModisSource);
+            ViewBag.ModisProduct = new SelectList(_context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name), "Name", "Name", ModisProduct);
+            ViewBag.DateStart = DateStart;
+            ViewBag.DateFinish = DateFinish;
             return View();
         }
 
@@ -434,6 +504,68 @@ namespace GeoServer.Controllers
             var modisProducts = _context.ModisProduct
                 .Where(m => m.ModisSource.Name == ModisSource);
             JsonResult result = new JsonResult(modisProducts);
+            return result;
+        }
+
+        public IActionResult ModisMosaic()
+        {
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name");
+            var modisProducts = _context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name");
+            ViewBag.File = new SelectList(GetModisListFiles(modisSources.FirstOrDefault().Name, modisProducts.FirstOrDefault().Name));
+            ViewBag.ModisDataSet = new MultiSelectList(_context.ModisDataSet.Where(m => m.ModisProductId == modisProducts.FirstOrDefault().Id).OrderBy(m => m.Index), "Id", "IndexName");
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ModisMosaic(string ModisSource,
+            string ModisProduct,
+            string[] ModisDataSet,
+            string File,
+            string FileName)
+        {
+
+            MosaicModis(ModisSource, ModisProduct, ModisDataSet, File, FileName);
+            ViewBag.Message = "Operation started!";
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
+            var modisProducts = _context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name", ModisProduct);
+            ViewBag.File = new SelectList(GetModisListFiles(ModisSource, ModisProduct), File);
+            ViewBag.ModisDataSet = new MultiSelectList(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index), "Id", "IndexName", ModisDataSet);
+            ViewBag.FileName = FileName;
+            return View();
+        }
+
+        private List<string> GetModisListFiles(string ModisSource,
+            string ModisProduct)
+        {
+            string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct);
+            if(Directory.Exists(folder))
+            {
+                return Directory.GetFiles(folder, "*.txt").Select(f => Path.GetFileName(f)).ToList();
+            }
+            else
+            {
+                return new List<string>();
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetModisTextFiles(string ModisSource,
+            string ModisProduct)
+        {
+            JsonResult result = new JsonResult(GetModisListFiles(ModisSource, ModisProduct));
+            return result;
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetModisDataSets(string ModisProduct)
+        {
+            JsonResult result = new JsonResult(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index).ToArray());
             return result;
         }
     }

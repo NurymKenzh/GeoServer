@@ -30,5 +30,7 @@ namespace GeoServer.Data
         public DbSet<GeoServer.Models.ModisProduct> ModisProduct { get; set; }
 
         public DbSet<GeoServer.Models.ModisSpan> ModisSpan { get; set; }
+
+        public DbSet<GeoServer.Models.ModisDataSet> ModisDataSet { get; set; }
     }
 }

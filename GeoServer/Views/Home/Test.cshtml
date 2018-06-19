@@ -1,7 +1,10 @@
-﻿@{
-    ViewData["Title"] = "Test";
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Test"];
 }
 <h2>@ViewData["Title"]</h2>
 <h3>@ViewData["Message"]</h3>
 
-@*<p>Use this area to provide additional information.</p>*@
+@*<p>SharedLocalizer["AddInformation"]</p>*@

@@ -1,6 +1,8 @@
-﻿
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
-    ViewData["Title"] = "UploadWorkspaceLayerFile";
+    ViewData["Title"] = SharedLocalizer["UploadWorkspaceLayerFile"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 

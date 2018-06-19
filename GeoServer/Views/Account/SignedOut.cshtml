@@ -1,5 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Signed out";
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Signedout"];
 }
 
 <h2>@ViewData["Title"]</h2>

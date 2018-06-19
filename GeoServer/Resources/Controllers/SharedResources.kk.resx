@@ -117,7 +117,73 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About" xml:space="preserve">
+    <value>Шамамен</value>
+  </data>
+  <data name="AddInformation" xml:space="preserve">
+    <value>Қосымша ақпарат беру үшін осы аумақты пайдаланыңыз</value>
+  </data>
+  <data name="Administrator" xml:space="preserve">
+    <value>Әкімші</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Құпия сөзді Растау</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Байланыс</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Электрондық пошта</value>
+  </data>
+  <data name="Hangfire" xml:space="preserve">
+    <value>Ханзада</value>
+  </data>
   <data name="Home" xml:space="preserve">
     <value>Үй</value>
+  </data>
+  <data name="HomePage" xml:space="preserve">
+    <value>Басты бет</value>
+  </data>
+  <data name="LogIn" xml:space="preserve">
+    <value>Кіру</value>
+  </data>
+  <data name="LoginWithARecoveryCode" xml:space="preserve">
+    <value>Сіз қалпына келтіру кодымен кіруді сұрадыңыз. Бұл логин логин аутентификациясын қолданушы кодын енгізгенше немесе 2FA өшіріп, қайтадан кірмейінше есте сақтамайды</value>
+  </data>
+  <data name="Marketing" xml:space="preserve">
+    <value>Маркетинг</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Құпия сөз</value>
+  </data>
+  <data name="RecoveryCodeVerification" xml:space="preserve">
+    <value>Қалпына келтіру кодын тексеру</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Тіркелу</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>Құпиясөзді қалпына келтіру</value>
+  </data>
+  <data name="ResetPasswordConfirmation" xml:space="preserve">
+    <value>Құпия сөзді растауды қалпына келтіру</value>
+  </data>
+  <data name="Signedout" xml:space="preserve">
+    <value>Қол қойылды</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>Қолдау</value>
+  </data>
+  <data name="Test" xml:space="preserve">
+    <value>Сынақ</value>
+  </data>
+  <data name="TwoFactorAuthentication" xml:space="preserve">
+    <value>Екі факторлы аутентификация</value>
+  </data>
+  <data name="UploadWorkspaceLayerFile" xml:space="preserve">
+    <value>Жұмыс кеңістігі қабаты файлын жүктеңіз</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Пайдаланушылар</value>
   </data>
 </root>
