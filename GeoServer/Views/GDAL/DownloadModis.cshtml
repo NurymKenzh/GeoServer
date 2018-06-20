@@ -17,7 +17,7 @@
         <form asp-action="DownloadModis">
             <div class="form-group">
                 <label class="control-label">ModisSpan</label>
-                @Html.DropDownList("ModisSpan", (IEnumerable<SelectListItem>)ViewBag.ModisSpan, htmlAttributes: new { @class = "form-control", @id = "ModisSpan", @multiple = "multiple" })
+                <select asp-items="ViewBag.ModisSpan" name="ModisSpan" multiple="multiple" class="form-control" id="ModisSpan"></select>
             </div>
             <div class="form-group">
                 <label class="control-label">ModisSpan</label>
@@ -29,15 +29,22 @@
             </div>
             <div class="form-group">
                 <label class="control-label">DateStart</label>
-                <input id="DateStart" name="DateStart" type="date" class="form-control" />
+                @{ 
+                    DateTime DateStart = (DateTime)ViewBag.DateStart;
+                }
+                <input asp-for="@DateStart" value="@DateStart" id="DateStart" name="DateStart" type="date" class="form-control" />
             </div>
             <div class="form-group">
                 <label class="control-label">DateFinish</label>
-                <input id="DateFinish" name="DateFinish" type="date" class="form-control" />
+                @{
+                    DateTime DateFinish = (DateTime)ViewBag.DateFinish;
+                }
+                <input asp-for="@DateFinish" id="DateFinish" name="DateFinish" type="date" class="form-control" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
+
         </form>
     </div>
 </div>

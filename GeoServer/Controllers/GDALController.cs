@@ -340,7 +340,7 @@ namespace GeoServer.Controllers
                 //    TimeSpan.FromMilliseconds(1000));
 
                 var jobId = BackgroundJob.Enqueue(
-                    () => PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct} -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}"));
+                    () => PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct}.006 -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}"));
             }
             catch (Exception exception)
             {
@@ -350,15 +350,19 @@ namespace GeoServer.Controllers
 
         private void MosaicModis(string ModisSource,
             string ModisProduct,
-            string[] ModisDataSet,
+            int[] ModisDataSet,
             string File,
             string FileName)
         {
             string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
-                batfile = Path.Combine(folder, "bat.bat");
+                batfile = Path.Combine(folder, "bat.bat"),
+                indexes = "";
+
+
+
             using (var sw = new StreamWriter(batfile))
             {
-                sw.WriteLine("modis_mosaic.py -o 250m_16_days_EVI.tif -s \"0 1\"  D:\\GeoServer\\MODIS\\MOLT\\MOD13Q1\\listfileMYD09A1.006.txt");
+                sw.WriteLine($"modis_mosaic.py -o {FileName}.tif -s \"{indexes}\"  {folder}\\{File}");
             }
 
             Process process = new Process();
@@ -521,7 +525,7 @@ namespace GeoServer.Controllers
         [HttpPost]
         public IActionResult ModisMosaic(string ModisSource,
             string ModisProduct,
-            string[] ModisDataSet,
+            int[] ModisDataSet,
             string File,
             string FileName)
         {
