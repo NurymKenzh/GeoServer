@@ -1,6 +1,9 @@
-﻿@model ErrorViewModel
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = SharedLocalizer["Error"];
 }
 
 <h1 class="text-danger">Error.</h1>

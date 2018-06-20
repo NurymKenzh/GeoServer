@@ -1,5 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Confirm email";
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = @SharedLocalizer["ConfirmEmail"];
 }
 
 <h2>@ViewData["Title"]</h2>

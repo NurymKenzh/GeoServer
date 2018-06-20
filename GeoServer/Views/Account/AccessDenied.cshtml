@@ -1,5 +1,8 @@
-﻿@{
-    ViewData["Title"] = "Access denied";
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["AccessDenied"];
 }
 
 <header>

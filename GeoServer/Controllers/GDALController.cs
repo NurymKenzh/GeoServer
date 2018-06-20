@@ -497,6 +497,35 @@ namespace GeoServer.Controllers
             return View();
         }
 
+        public IActionResult DownloadModisDelta()
+        {
+            ViewBag.ModisSpan = new MultiSelectList(_context.ModisSpan.OrderBy(m => m.Name), "Name", "Name", _context.ModisSpan.Select(m => m.Name));
+            ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name");
+            ViewBag.ModisProduct = new SelectList(_context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name), "Name", "Name");
+            ViewBag.Delta = 1;
+            ViewBag.DateFinish = DateTime.Now;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult DownloadModisDelta(string[] ModisSpan,
+            string ModisSource,
+            string ModisProduct,
+            int Delta,
+            DateTime DateFinish)
+        {
+
+            DateTime DateStart = DateFinish.AddDays(-Delta);
+            ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
+            ViewBag.Message = "Operation started!";
+            ViewBag.ModisSpan = new MultiSelectList(_context.ModisSpan.OrderBy(m => m.Name), "Name", "Name", ModisSpan);
+            ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name", ModisSource);
+            ViewBag.ModisProduct = new SelectList(_context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name), "Name", "Name", ModisProduct);
+            ViewBag.DateStart = DateStart;
+            ViewBag.DateFinish = DateFinish;
+            return View();
+        }
+
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         public JsonResult GetModisProductByModisSource(string ModisSource)

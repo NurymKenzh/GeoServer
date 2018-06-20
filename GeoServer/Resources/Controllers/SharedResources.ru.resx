@@ -120,11 +120,23 @@
   <data name="About" xml:space="preserve">
     <value>О приложении</value>
   </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Доступ закрыт</value>
+  </data>
   <data name="AddInformation" xml:space="preserve">
     <value>Используйте эту область, чтобы предоставить дополнительную информацию</value>
   </data>
+  <data name="Administration" xml:space="preserve">
+    <value>Aдминистрация</value>
+  </data>
   <data name="Administrator" xml:space="preserve">
     <value>Администратор</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>Обратно к списку</value>
+  </data>
+  <data name="ConfirmEmail" xml:space="preserve">
+    <value>Подтвердите адрес электронной почты</value>
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Подтвердите Пароль</value>
@@ -132,8 +144,23 @@
   <data name="Contact" xml:space="preserve">
     <value>Контакт</value>
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Pедактировать</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>Эл. адрес</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Oшибка</value>
+  </data>
+  <data name="Files" xml:space="preserve">
+    <value>Файлы</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Найти</value>
+  </data>
+  <data name="ForgotPasswordConfirmation" xml:space="preserve">
+    <value>Забыли пароль</value>
   </data>
   <data name="Hangfire" xml:space="preserve">
     <value>Замедленное воспламенение</value>
@@ -144,11 +171,20 @@
   <data name="HomePage" xml:space="preserve">
     <value>Главная страница</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Язык</value>
+  </data>
+  <data name="LockedОut" xml:space="preserve">
+    <value>Закрыто</value>
+  </data>
   <data name="LogIn" xml:space="preserve">
     <value>Авторизоваться</value>
   </data>
   <data name="LoginWithARecoveryCode" xml:space="preserve">
     <value>Вы запросили логин с кодом восстановления. Этот логин не запомнится, пока вы не укажете код приложения-аутентификатора при входе в систему или не отключите 2FA и войдите в систему снова</value>
+  </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Выйти</value>
   </data>
   <data name="Marketing" xml:space="preserve">
     <value>Маркетинг</value>
@@ -162,14 +198,23 @@
   <data name="Register" xml:space="preserve">
     <value>Pегистр</value>
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Сброс</value>
+  </data>
   <data name="ResetPassword" xml:space="preserve">
     <value>Сброс пароля</value>
   </data>
   <data name="ResetPasswordConfirmation" xml:space="preserve">
     <value>Сбросить подтверждение пароля</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
   <data name="Signedout" xml:space="preserve">
     <value>Подписано</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Отправить</value>
   </data>
   <data name="Support" xml:space="preserve">
     <value>Поддержка</value>
@@ -180,10 +225,19 @@
   <data name="TwoFactorAuthentication" xml:space="preserve">
     <value>Двухфакторная аутентификация</value>
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Загрузить</value>
+  </data>
   <data name="UploadWorkspaceLayerFile" xml:space="preserve">
     <value>Загрузить файл слоя рабочего пространства</value>
   </data>
+  <data name="User" xml:space="preserve">
+    <value>Пользователь</value>
+  </data>
   <data name="Users" xml:space="preserve">
     <value>Пользователи</value>
+  </data>
+  <data name="Workspace" xml:space="preserve">
+    <value>Рабочее пространство</value>
   </data>
 </root>
