@@ -120,11 +120,23 @@
   <data name="About" xml:space="preserve">
     <value>About</value>
   </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Access denied</value>
+  </data>
   <data name="AddInformation" xml:space="preserve">
     <value>Use this area to provide additional information</value>
   </data>
+  <data name="Administration" xml:space="preserve">
+    <value>Administration</value>
+  </data>
   <data name="Administrator" xml:space="preserve">
     <value>Administrator</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>Back to list</value>
+  </data>
+  <data name="ConfirmEmail" xml:space="preserve">
+    <value>Confirm email</value>
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Confirm password</value>
@@ -132,8 +144,23 @@
   <data name="Contact" xml:space="preserve">
     <value>Contact</value>
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>Email</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Files" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Find</value>
+  </data>
+  <data name="ForgotPasswordConfirmation" xml:space="preserve">
+    <value>Forgot password confirmation</value>
   </data>
   <data name="Hangfire" xml:space="preserve">
     <value>Hangfire</value>
@@ -144,11 +171,20 @@
   <data name="HomePage" xml:space="preserve">
     <value>Home Page</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="LockedОut" xml:space="preserve">
+    <value>Locked оut</value>
+  </data>
   <data name="LogIn" xml:space="preserve">
     <value>Log in</value>
   </data>
   <data name="LoginWithARecoveryCode" xml:space="preserve">
     <value>You have requested to login with a recovery code. This login will not be remembered until you provide an authenticator app code at login or disable 2FA and login again</value>
+  </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Log оut</value>
   </data>
   <data name="Marketing" xml:space="preserve">
     <value>Marketing</value>
@@ -162,14 +198,23 @@
   <data name="Register" xml:space="preserve">
     <value>Register</value>
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
   <data name="ResetPassword" xml:space="preserve">
     <value>Reset password</value>
   </data>
   <data name="ResetPasswordConfirmation" xml:space="preserve">
     <value>Reset password confirmation</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
   <data name="Signedout" xml:space="preserve">
     <value>Signed out</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
   </data>
   <data name="Support" xml:space="preserve">
     <value>Support</value>
@@ -180,10 +225,19 @@
   <data name="TwoFactorAuthentication" xml:space="preserve">
     <value>Two-factor authentication</value>
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
   <data name="UploadWorkspaceLayerFile" xml:space="preserve">
     <value>Upload workspace layer file</value>
   </data>
+  <data name="User" xml:space="preserve">
+    <value>User</value>
+  </data>
   <data name="Users" xml:space="preserve">
     <value>Users</value>
+  </data>
+  <data name="Workspace" xml:space="preserve">
+    <value>Workspace</value>
   </data>
 </root>

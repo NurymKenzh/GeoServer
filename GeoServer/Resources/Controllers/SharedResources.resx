@@ -120,10 +120,22 @@
   <data name="About" xml:space="preserve">
     <value />
   </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value />
+  </data>
   <data name="AddInformation" xml:space="preserve">
     <value />
   </data>
+  <data name="Administration" xml:space="preserve">
+    <value />
+  </data>
   <data name="Administrator" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ConfirmEmail" xml:space="preserve">
     <value />
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
@@ -132,7 +144,22 @@
   <data name="Contact" xml:space="preserve">
     <value />
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value />
+  </data>
   <data name="Email" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Files" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ForgotPasswordConfirmation" xml:space="preserve">
     <value />
   </data>
   <data name="Hangfire" xml:space="preserve">
@@ -144,10 +171,19 @@
   <data name="HomePage" xml:space="preserve">
     <value />
   </data>
+  <data name="Language" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LockedОut" xml:space="preserve">
+    <value />
+  </data>
   <data name="LogIn" xml:space="preserve">
     <value />
   </data>
   <data name="LoginWithARecoveryCode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LogOut" xml:space="preserve">
     <value />
   </data>
   <data name="Marketing" xml:space="preserve">
@@ -162,13 +198,22 @@
   <data name="Register" xml:space="preserve">
     <value />
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value />
+  </data>
   <data name="ResetPassword" xml:space="preserve">
     <value />
   </data>
   <data name="ResetPasswordConfirmation" xml:space="preserve">
     <value />
   </data>
+  <data name="Save" xml:space="preserve">
+    <value />
+  </data>
   <data name="Signedout" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Submit" xml:space="preserve">
     <value />
   </data>
   <data name="Support" xml:space="preserve">
@@ -180,10 +225,19 @@
   <data name="TwoFactorAuthentication" xml:space="preserve">
     <value />
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value />
+  </data>
   <data name="UploadWorkspaceLayerFile" xml:space="preserve">
     <value />
   </data>
+  <data name="User" xml:space="preserve">
+    <value />
+  </data>
   <data name="Users" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Workspace" xml:space="preserve">
     <value />
   </data>
 </root>

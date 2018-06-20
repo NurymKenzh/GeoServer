@@ -6,7 +6,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>UploadWorkspaceLayerFile</h2>
+<h2>@SharedLocalizer["UploadWorkspaceLayerFile"]</h2>
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/jquery-form/jquery.form.js"></script>
@@ -17,15 +17,15 @@
         {
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label class="control-label">Workspace</label>
+                <label class="control-label">@SharedLocalizer["Workspace"]</label>
                 <select class="form-control" name="WorkspaceName" asp-items="ViewBag.Workspaces"></select>
             </div>
             <div class="form-group">
-                <label class="col-md-2 control-label">Files</label>
+                <label class="col-md-2 control-label">@SharedLocalizer["Files"]</label>
                 <input type="file" name="Files" multiple />
             </div>
             <div class="form-group">
-                <input type="submit" value="Upload" class="btn btn-default" />
+                <input type="submit" value=@SharedLocalizer["Upload"] class="btn btn-default" />
             </div>
         }
     </div>

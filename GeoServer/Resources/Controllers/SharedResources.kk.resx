@@ -120,11 +120,23 @@
   <data name="About" xml:space="preserve">
     <value>Шамамен</value>
   </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Рұқсат жоқ</value>
+  </data>
   <data name="AddInformation" xml:space="preserve">
     <value>Қосымша ақпарат беру үшін осы аумақты пайдаланыңыз</value>
   </data>
+  <data name="Administration" xml:space="preserve">
+    <value>Әкімшілік</value>
+  </data>
   <data name="Administrator" xml:space="preserve">
     <value>Әкімші</value>
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value>Тізімге оралу</value>
+  </data>
+  <data name="ConfirmEmail" xml:space="preserve">
+    <value>Электронды поштаны растау</value>
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
     <value>Құпия сөзді Растау</value>
@@ -132,8 +144,23 @@
   <data name="Contact" xml:space="preserve">
     <value>Байланыс</value>
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Өңдеу</value>
+  </data>
   <data name="Email" xml:space="preserve">
     <value>Электрондық пошта</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Қате</value>
+  </data>
+  <data name="Files" xml:space="preserve">
+    <value>Файлдар</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Табу</value>
+  </data>
+  <data name="ForgotPasswordConfirmation" xml:space="preserve">
+    <value>Құпия сөзді растауды ұмыттыңыз</value>
   </data>
   <data name="Hangfire" xml:space="preserve">
     <value>Ханзада</value>
@@ -144,11 +171,20 @@
   <data name="HomePage" xml:space="preserve">
     <value>Басты бет</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Тіл</value>
+  </data>
+  <data name="LockedОut" xml:space="preserve">
+    <value>Құлыпталды</value>
+  </data>
   <data name="LogIn" xml:space="preserve">
     <value>Кіру</value>
   </data>
   <data name="LoginWithARecoveryCode" xml:space="preserve">
     <value>Сіз қалпына келтіру кодымен кіруді сұрадыңыз. Бұл логин логин аутентификациясын қолданушы кодын енгізгенше немесе 2FA өшіріп, қайтадан кірмейінше есте сақтамайды</value>
+  </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Шығу</value>
   </data>
   <data name="Marketing" xml:space="preserve">
     <value>Маркетинг</value>
@@ -162,14 +198,23 @@
   <data name="Register" xml:space="preserve">
     <value>Тіркелу</value>
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Қалпына келтіру</value>
+  </data>
   <data name="ResetPassword" xml:space="preserve">
     <value>Құпиясөзді қалпына келтіру</value>
   </data>
   <data name="ResetPasswordConfirmation" xml:space="preserve">
     <value>Құпия сөзді растауды қалпына келтіру</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сақтау</value>
+  </data>
   <data name="Signedout" xml:space="preserve">
     <value>Қол қойылды</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Жіберу</value>
   </data>
   <data name="Support" xml:space="preserve">
     <value>Қолдау</value>
@@ -180,10 +225,19 @@
   <data name="TwoFactorAuthentication" xml:space="preserve">
     <value>Екі факторлы аутентификация</value>
   </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Жүктеп салу</value>
+  </data>
   <data name="UploadWorkspaceLayerFile" xml:space="preserve">
     <value>Жұмыс кеңістігі қабаты файлын жүктеңіз</value>
   </data>
+  <data name="User" xml:space="preserve">
+    <value>Пайдаланушы</value>
+  </data>
   <data name="Users" xml:space="preserve">
     <value>Пайдаланушылар</value>
+  </data>
+  <data name="Workspace" xml:space="preserve">
+    <value>Жұмыс кеңістігі</value>
   </data>
 </root>

@@ -1,5 +1,8 @@
 @using Microsoft.AspNetCore.Identity
 @using GeoServer.Models
+@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
@@ -12,7 +15,7 @@
                 <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
             </li>
             <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">Log out</button>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">@SharedLocalizer["LogOut"]</button>
             </li>
         </ul>
     </form>
@@ -20,7 +23,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
-        <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
+        <li><a asp-area="" asp-controller="Account" asp-action="Register">@SharedLocalizer["Register"]</a></li>
+        <li><a asp-area="" asp-controller="Account" asp-action="Login">@SharedLocalizer["LogIn"]</a></li>
     </ul>
 }
