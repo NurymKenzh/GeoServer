@@ -520,12 +520,12 @@ namespace GeoServer.Controllers
         {
 
             DateTime DateStart = DateFinish.AddDays(-Delta);
-            ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
+            //ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
             ViewBag.Message = "Operation started!";
             ViewBag.ModisSpan = new MultiSelectList(_context.ModisSpan.OrderBy(m => m.Name), "Name", "Name", ModisSpan);
             ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name", ModisSource);
             ViewBag.ModisProduct = new SelectList(_context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name), "Name", "Name", ModisProduct);
-            ViewBag.DateStart = DateStart;
+            ViewBag.Delta = Delta;
             ViewBag.DateFinish = DateFinish;
             return View();
         }
