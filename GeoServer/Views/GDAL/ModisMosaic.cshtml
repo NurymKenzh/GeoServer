@@ -91,7 +91,7 @@
             success: function (data) {
                 var optionhtml = '';
                 $.each(data, function (i) {
-                    optionhtml += '<option value="' + data[i]['id'] + '"' +
+                    optionhtml += '<option value="' + data[i]['index'] + '"' +
                         (data[i]['indexName'] == $('#File').val() ? 'selected' : '') +
                         '>' + data[i]['indexName'] +
                         '</option>';

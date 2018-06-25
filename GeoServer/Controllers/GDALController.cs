@@ -395,7 +395,7 @@ namespace GeoServer.Controllers
 
             string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
                 batfile = Path.Combine(folder, "bat.bat"),
-                indexes = sb.ToString();
+                indexes = sb.ToString().Replace("\r\n", "");
 
 
             using (var sw = new StreamWriter(batfile))
