@@ -358,8 +358,6 @@ namespace GeoServer.Controllers
                 batfile = Path.Combine(folder, "bat.bat"),
                 indexes = "";
 
-
-
             using (var sw = new StreamWriter(batfile))
             {
                 sw.WriteLine($"modis_mosaic.py -o {FileName}.tif -s \"{indexes}\"  {folder}\\{File}");
@@ -368,28 +366,10 @@ namespace GeoServer.Controllers
             Process process = new Process();
             try
             {
-                //process.StartInfo.UseShellExecute = false;
-
-                //process.StartInfo.RedirectStandardOutput = true;
-                //process.StartInfo.RedirectStandardInput = true;
-                //process.StartInfo.RedirectStandardError = true;
-
                 process.StartInfo.WorkingDirectory = folder;
                 process.StartInfo.FileName = batfile;
                 process.Start();
-
-                //string pyhonOutput = process.StandardOutput.ReadToEnd();
-                //string pyhonError = process.StandardError.ReadToEnd();
                 process.WaitForExit();
-                //if (!string.IsNullOrEmpty(pyhonError))
-                //{
-                //    throw new Exception(pyhonError);
-                //}
-                //else
-                //{
-                //    //return pyhonOutput;
-                //}
-
                 System.IO.File.Delete(batfile);
             }
             catch (Exception exception)
