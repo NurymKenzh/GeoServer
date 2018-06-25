@@ -353,10 +353,50 @@ namespace GeoServer.Controllers
             int[] ModisDataSet,
             string File,
             string FileName)
-        {
+        {                     
+            int a = ModisDataSet.Last();
+            string[] s = new string[a + 1];
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                    for (int j = 0; j < ModisDataSet.Length; j++)
+                    {
+
+                        if (i == ModisDataSet[j])
+                        {
+                            s[i] = "1";
+                            break;
+                        }
+                        else
+                        {
+                            if (j == ModisDataSet.Length - 1)
+                            {
+                                s[i] = "0";
+                                break;
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+
+                    }
+            }
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < s.Length; i++)
+            {
+                sb.AppendFormat("{0} ", s[i]);
+                if (i < s.Length - 1)
+                {
+                    sb.AppendLine();
+                }
+            }
+
             string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
                 batfile = Path.Combine(folder, "bat.bat"),
-                indexes = "";
+                indexes = sb.ToString();
+
 
             using (var sw = new StreamWriter(batfile))
             {
