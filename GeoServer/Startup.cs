@@ -142,8 +142,8 @@ namespace GeoServer
             var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
             ApplicationUser user = userManager.Users.FirstOrDefault(u => u.Email == "n.a.k@bk.ru");
             await userManager.AddToRoleAsync(user, "Administrator");
-            //ApplicationUser user1 = userManager.Users.FirstOrDefault(u1 => u1.Email == "testirdar@gmail.com");
-            //await userManager.AddToRoleAsync(user1, "Administrator");
+            ApplicationUser user1 = userManager.Users.FirstOrDefault(u1 => u1.Email == "testirdar@gmail.com");
+            await userManager.AddToRoleAsync(user1, "Administrator");
         }
     }
 }

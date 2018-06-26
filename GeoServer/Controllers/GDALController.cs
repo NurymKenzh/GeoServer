@@ -339,8 +339,7 @@ namespace GeoServer.Controllers
                 //    () => Test2(),
                 //    TimeSpan.FromMilliseconds(1000));
 
-                var jobId = BackgroundJob.Enqueue(
-                    () => PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct}.006 -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}"));
+                PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct}.006 -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}");
             }
             catch (Exception exception)
             {
@@ -404,6 +403,35 @@ namespace GeoServer.Controllers
             }
 
             Process process = new Process();
+            try
+            {
+                process.StartInfo.WorkingDirectory = folder;
+                process.StartInfo.FileName = batfile;
+                process.Start();
+                process.WaitForExit();
+                System.IO.File.Delete(batfile);
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public void callReproject(string ModisSource,
+            string ModisProduct,
+            string File,
+            string CoordinateSystem)
+        {
+            string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
+                batfile = Path.Combine(folder, "bat.bat");
+
+            using (var sw = new StreamWriter(batfile))
+            {
+                //sw.WriteLine($"modis_mosaic.py -r {folder}\\{File} -s \"{CoordinateSystem}\" -o {folder}\\Reproject\\{File}");
+            }
+
+            Process process = new Process();
+
             try
             {
                 process.StartInfo.WorkingDirectory = folder;
@@ -591,6 +619,37 @@ namespace GeoServer.Controllers
             return View();
         }
 
+        public IActionResult Reproject()
+        {
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name");
+            var modisProducts = _context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name");
+            ViewBag.File = new SelectList(GetReprojectFiles(modisSources.FirstOrDefault().Name, modisProducts.FirstOrDefault().Name));
+            var coordinateSystem = _context.CoordinateSystems.OrderBy(m => m.Name);
+            ViewBag.CoordinateSystem = new SelectList(coordinateSystem, "Name", "Name");
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Reproject(string ModisSource,
+            string ModisProduct,
+            string File,
+            string CoordinateSystem)
+        {
+
+            callReproject(ModisSource, ModisProduct, File, CoordinateSystem);
+            ViewBag.Message = "Operation started!";
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
+            var modisProducts = _context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name", ModisProduct);
+            ViewBag.File = new SelectList(GetReprojectFiles(ModisSource, ModisProduct), File);
+            var coordinateSystem = _context.CoordinateSystems.OrderBy(m => m.Name);
+            ViewBag.CoordinateSystem = new SelectList(coordinateSystem, "Name", "Name", CoordinateSystem);
+            return View();
+        }
+
         private List<string> GetModisListFiles(string ModisSource,
             string ModisProduct)
         {
@@ -598,6 +657,20 @@ namespace GeoServer.Controllers
             if(Directory.Exists(folder))
             {
                 return Directory.GetFiles(folder, "*.txt").Select(f => Path.GetFileName(f)).ToList();
+            }
+            else
+            {
+                return new List<string>();
+            }
+        }
+
+        private List<string> GetReprojectFiles(string ModisSource,
+            string ModisProduct)
+        {
+            string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct);
+            if (Directory.Exists(folder))
+            {
+                return Directory.GetFiles(folder, "*.tif").Select(f => Path.GetFileName(f)).ToList();
             }
             else
             {
