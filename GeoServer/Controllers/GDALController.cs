@@ -417,28 +417,27 @@ namespace GeoServer.Controllers
             }
         }
 
-        public void callReproject(string ModisSource,
+        private static string CleanFileName(string fileName)
+        {
+            //return Path.GetInvalidPathChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
+            char[] invalid = new char[1] { ':' };
+            return String.Join("", fileName.Split(invalid));
+        }
+
+        public void ReprojectGeoTif(string ModisSource,
             string ModisProduct,
             string File,
             string CoordinateSystem)
         {
             string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
-                batfile = Path.Combine(folder, "bat.bat");
-
-            using (var sw = new StreamWriter(batfile))
-            {
-                //sw.WriteLine($"modis_mosaic.py -r {folder}\\{File} -s \"{CoordinateSystem}\" -o {folder}\\Reproject\\{File}");
-            }
-
-            Process process = new Process();
+                foldernew = Path.Combine(folder, CleanFileName(CoordinateSystem)),
+                filepath = Path.Combine(folder, File),
+                filepathnew = Path.Combine(foldernew, File);
 
             try
             {
-                process.StartInfo.WorkingDirectory = folder;
-                process.StartInfo.FileName = batfile;
-                process.Start();
-                process.WaitForExit();
-                System.IO.File.Delete(batfile);
+                Directory.CreateDirectory(foldernew);
+                SaveLayerWithNewCoordinateSystem(filepath, filepathnew, CoordinateSystem);
             }
             catch (Exception exception)
             {
@@ -638,12 +637,13 @@ namespace GeoServer.Controllers
         [HttpPost]
         public IActionResult Reproject(string ModisSource,
             string ModisProduct,
-            string File,
+            string[] File,
             string CoordinateSystem)
         {
-
-            Task t = new Task(() => { callReproject(ModisSource, ModisProduct, File, CoordinateSystem); });
-            t.Start();
+            foreach(string file in File)
+            {
+                ReprojectGeoTif(ModisSource, ModisProduct, file, CoordinateSystem);
+            }
             ViewBag.Message = "Operation started!";
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
             ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
@@ -689,6 +689,15 @@ namespace GeoServer.Controllers
             string ModisProduct)
         {
             JsonResult result = new JsonResult(GetModisListFiles(ModisSource, ModisProduct));
+            return result;
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetModisGeoTifFiles(string ModisSource,
+            string ModisProduct)
+        {
+            JsonResult result = new JsonResult(GetReprojectFiles(ModisSource, ModisProduct));
             return result;
         }
 
