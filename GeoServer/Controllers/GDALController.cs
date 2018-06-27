@@ -539,7 +539,9 @@ namespace GeoServer.Controllers
             DateTime DateStart,
             DateTime DateFinish)
         {
-            ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
+            //ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
+            Task t = new Task(() => { ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish); });
+            t.Start();
             ViewBag.Message = "Operation started!";
             ViewBag.ModisSpan = new MultiSelectList( _context.ModisSpan.OrderBy(m => m.Name), "Name", "Name", ModisSpan);
             ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name", ModisSource);
@@ -568,7 +570,8 @@ namespace GeoServer.Controllers
         {
 
             DateTime DateStart = DateFinish.AddDays(-Delta);
-            ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
+            Task t = new Task(() => { ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish); });
+            t.Start();
             ViewBag.Message = "Operation started!";
             ViewBag.ModisSpan = new MultiSelectList(_context.ModisSpan.OrderBy(m => m.Name), "Name", "Name", ModisSpan);
             ViewBag.ModisSource = new SelectList(_context.ModisSource.OrderBy(m => m.Name), "Name", "Name", ModisSource);
@@ -607,7 +610,8 @@ namespace GeoServer.Controllers
             string FileName)
         {
 
-            MosaicModis(ModisSource, ModisProduct, ModisDataSet, File, FileName);
+            Task t = new Task( () => { MosaicModis(ModisSource, ModisProduct, ModisDataSet, File, FileName); });
+            t.Start();
             ViewBag.Message = "Operation started!";
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
             ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
@@ -638,7 +642,8 @@ namespace GeoServer.Controllers
             string CoordinateSystem)
         {
 
-            callReproject(ModisSource, ModisProduct, File, CoordinateSystem);
+            Task t = new Task(() => { callReproject(ModisSource, ModisProduct, File, CoordinateSystem); });
+            t.Start();
             ViewBag.Message = "Operation started!";
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
             ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
