@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -151,6 +152,10 @@ namespace GeoServer.Controllers
                 //{
                 //    process.StandardInput.WriteLine(Arguments[i]);
                 //}
+
+                process.StandardInput.WriteLine("cd \\");
+                process.StandardInput.WriteLine("cd Python27\\Scripts");
+
                 process.StandardInput.WriteLine(FileName + " " + string.Join(" ", Parameters));
                 string pyhonOutput = process.StandardOutput.ReadToEnd();
                 string pyhonError = process.StandardError.ReadToEnd();
@@ -318,6 +323,26 @@ namespace GeoServer.Controllers
             Console.WriteLine("Delayed!");
         }
 
+        public void LogTask(string Email,
+            DateTime DateTime,
+            string Function,
+            string Operation,
+            string Parameters)
+        {
+            Models.Log logs = new Models.Log
+            {
+                Email = Email,
+                DateTime = DateTime,
+                Function = Function,
+                Operation = Operation,
+                Parameters = Parameters
+            };
+
+            _context.Log.Add(logs);
+            _context.SaveChanges();
+
+        }
+
         private void ModisDownload(string[] ModisSpan,
             string ModisSource,
             string ModisProduct,
@@ -326,6 +351,19 @@ namespace GeoServer.Controllers
         {
             try
             {
+                string userName = User.Identity.Name.ToString();
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < ModisSpan.Length; i++)
+                {
+                    sb.AppendFormat("{0} ", ModisSpan[i]);
+                    if (i < ModisSpan.Length - 1)
+                    {
+                        sb.AppendLine();
+                    }
+                }
+                string modisSpan = sb.ToString().Replace(",", "");
+                LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "start",
+                    "ModisSourse = " + ModisSource + ", ModisProduct = " + ModisProduct + ", ModisSpan = " + modisSpan + ", DateStart = " + DateStart  + ", DateFinish = " + DateFinish);
                 string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct);
                 Directory.CreateDirectory(folder);
                 //var jobId = BackgroundJob.Schedule(
@@ -339,7 +377,10 @@ namespace GeoServer.Controllers
                 //    () => Test2(),
                 //    TimeSpan.FromMilliseconds(1000));
 
-                PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct}.006 -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}");
+                //PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct}.006 -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}");
+                Thread.Sleep(5000);
+                LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "finish",
+                    "ModisSourse = " + ModisSource + ", ModisProduct = " + ModisProduct + ", ModisSpan = " + modisSpan + ", DateStart = " + DateStart + ", DateFinish = " + DateFinish);
             }
             catch (Exception exception)
             {

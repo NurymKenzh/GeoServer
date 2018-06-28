@@ -34,5 +34,7 @@ namespace GeoServer.Data
         public DbSet<GeoServer.Models.ModisDataSet> ModisDataSet { get; set; }
 
         public DbSet<GeoServer.Models.CoordinateSystems> CoordinateSystems { get; set; }
+
+        public DbSet<GeoServer.Models.Log> Log { get; set; }
     }
 }
