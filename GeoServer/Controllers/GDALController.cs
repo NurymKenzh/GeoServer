@@ -362,8 +362,12 @@ namespace GeoServer.Controllers
                     }
                 }
                 string modisSpan = sb.ToString().Replace(",", "");
+
+                //LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "start",
+                //    "ModisSourse = " + ModisSource + ", ModisProduct = " + ModisProduct + ", ModisSpan = " + modisSpan + ", DateStart = " + DateStart  + ", DateFinish = " + DateFinish);
                 LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "start",
-                    "ModisSourse = " + ModisSource + ", ModisProduct = " + ModisProduct + ", ModisSpan = " + modisSpan + ", DateStart = " + DateStart  + ", DateFinish = " + DateFinish);
+                    $"ModisSourse = \"{ModisSource}\", ModisProduct = \"{ModisProduct}\", ModisSpan = \"{string.Join(", ", ModisSpan)}\", DateStart = \"{DateStart.ToShortDateString()}\", DateFinish = \"{DateFinish.ToShortDateString()}\"");
+
                 string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct);
                 Directory.CreateDirectory(folder);
                 //var jobId = BackgroundJob.Schedule(
