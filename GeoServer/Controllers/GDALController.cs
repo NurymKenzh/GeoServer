@@ -338,8 +338,14 @@ namespace GeoServer.Controllers
                 Parameters = Parameters
             };
 
-            _context.Log.Add(logs);
-            _context.SaveChanges();
+            //_context.Log.Add(logs);
+            //_context.SaveChanges();
+
+            using (var context = new MyContext())
+            {
+                context.Log.Add(logs);
+                context.SaveChanges();
+            }
 
         }
 

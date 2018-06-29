@@ -37,4 +37,22 @@ namespace GeoServer.Data
 
         public DbSet<GeoServer.Models.Log> Log { get; set; }
     }
+
+    public class MyContext : DbContext
+    {
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseNpgsql(Startup.Configuration["ConnectionStrings:DefaultConnection"]);
+
+        public DbSet<GeoServer.Models.ModisSource> ModisSource { get; set; }
+
+        public DbSet<GeoServer.Models.ModisProduct> ModisProduct { get; set; }
+
+        public DbSet<GeoServer.Models.ModisSpan> ModisSpan { get; set; }
+
+        public DbSet<GeoServer.Models.ModisDataSet> ModisDataSet { get; set; }
+
+        public DbSet<GeoServer.Models.CoordinateSystems> CoordinateSystems { get; set; }
+
+        public DbSet<GeoServer.Models.Log> Log { get; set; }
+    }
 }
