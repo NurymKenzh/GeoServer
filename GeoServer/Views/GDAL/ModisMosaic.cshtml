@@ -29,7 +29,8 @@
             </div>
             <div class="form-group">
                 <label class="control-label">ModisDataSet</label>
-                <select asp-items="ViewBag.ModisDataSet" name="ModisDataSet" multiple="multiple" class="form-control" id="ModisDataSet"></select>
+                @*<select asp-items="ViewBag.ModisDataSet" name="ModisDataSet" multiple="multiple" class="form-control" id="ModisDataSet"></select>*@
+                <select asp-items="ViewBag.ModisDataSet" name="ModisDataSet" class="form-control" id="ModisDataSet"></select>
             </div>
             <div class="form-group">
                 <label class="control-label">FileName</label>
@@ -98,19 +99,19 @@
                 });
                 $("#ModisDataSet").empty();
                 $('#ModisDataSet').append(optionhtml);                
-                $('#ModisDataSet').multiselect('rebuild');
+                //$('#ModisDataSet').multiselect('rebuild');
             },
             error: function () {
             }
         });
     };
 
-    $('#ModisDataSet').multiselect({
-        includeSelectAllOption: true,
-        //nonSelectedText: $('#NothingSelected').val(),
-        //selectAllText: $('#SelectAll').val(),
-        //allSelectedText: $('#All').val(),
-        //nSelectedText: $('#selected').val(),
-        maxHeight: 270
-    });
+    //$('#ModisDataSet').multiselect({
+    //    includeSelectAllOption: true,
+    //    //nonSelectedText: $('#NothingSelected').val(),
+    //    //selectAllText: $('#SelectAll').val(),
+    //    //allSelectedText: $('#All').val(),
+    //    //nSelectedText: $('#selected').val(),
+    //    maxHeight: 270
+    //});
 </script>
