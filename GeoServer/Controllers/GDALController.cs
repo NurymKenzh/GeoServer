@@ -617,7 +617,7 @@ namespace GeoServer.Controllers
             DateTime DateStart,
             DateTime DateFinish)
         {
-            //ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
+            ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish);
             Task t = new Task(() => { ModisDownload(ModisSpan, ModisSource, ModisProduct, DateStart, DateFinish); });
             t.Start();
             ViewBag.Message = "Operation started!";
