@@ -358,16 +358,16 @@ namespace GeoServer.Controllers
             try
             {
                 string userName = User.Identity.Name.ToString();
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < ModisSpan.Length; i++)
-                {
-                    sb.AppendFormat("{0} ", ModisSpan[i]);
-                    if (i < ModisSpan.Length - 1)
-                    {
-                        sb.AppendLine();
-                    }
-                }
-                string modisSpan = sb.ToString().Replace(",", "");
+                //StringBuilder sb = new StringBuilder();
+                //for (int i = 0; i < ModisSpan.Length; i++)
+                //{
+                //    sb.AppendFormat("{0} ", ModisSpan[i]);
+                //    if (i < ModisSpan.Length - 1)
+                //    {
+                //        sb.AppendLine();
+                //    }
+                //}
+                //string modisSpan = sb.ToString().Replace(",", "");
 
                 //LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "start",
                 //    "ModisSourse = " + ModisSource + ", ModisProduct = " + ModisProduct + ", ModisSpan = " + modisSpan + ", DateStart = " + DateStart  + ", DateFinish = " + DateFinish);
@@ -387,10 +387,12 @@ namespace GeoServer.Controllers
                 //    () => Test2(),
                 //    TimeSpan.FromMilliseconds(1000));
 
-                //PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct}.006 -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}");
-                Thread.Sleep(5000);
+                PythonExecuteWithParameters("modis_download.py", $"-r -s {ModisSource} -p {ModisProduct}.006 -t {string.Join(',', ModisSpan)} -f {DateStart.Year}-{DateStart.Month}-{DateStart.Day} -e {DateFinish.Year}-{DateFinish.Month}-{DateFinish.Day} {folder}");
+                //Thread.Sleep(5000);
+                //LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "finish",
+                //    "ModisSourse = " + ModisSource + ", ModisProduct = " + ModisProduct + ", ModisSpan = " + modisSpan + ", DateStart = " + DateStart + ", DateFinish = " + DateFinish);
                 LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "finish",
-                    "ModisSourse = " + ModisSource + ", ModisProduct = " + ModisProduct + ", ModisSpan = " + modisSpan + ", DateStart = " + DateStart + ", DateFinish = " + DateFinish);
+                    $"ModisSourse = \"{ModisSource}\", ModisProduct = \"{ModisProduct}\", ModisSpan = \"{string.Join(", ", ModisSpan)}\", DateStart = \"{DateStart.ToShortDateString()}\", DateFinish = \"{DateFinish.ToShortDateString()}\"");
             }
             catch (Exception exception)
             {
@@ -400,26 +402,26 @@ namespace GeoServer.Controllers
 
         private void MosaicModis(string ModisSource,
             string ModisProduct,
-            int[] ModisDataSet,
+            int ModisDataSet,
             string File,
             string FileName)
         {                     
-            int a = ModisDataSet.Last();
+            int a = ModisDataSet;
             string[] s = new string[a + 1];
 
             for (int i = 0; i < s.Length; i++)
             {
-                    for (int j = 0; j < ModisDataSet.Length; j++)
+                    for (int j = 0; j <= ModisDataSet; j++)
                     {
 
-                        if (i == ModisDataSet[j])
+                        if (i == ModisDataSet)
                         {
                             s[i] = "1";
                             break;
                         }
                         else
                         {
-                            if (j == ModisDataSet.Length - 1)
+                            if (j == ModisDataSet - 1)
                             {
                                 s[i] = "0";
                                 break;
@@ -443,6 +445,11 @@ namespace GeoServer.Controllers
                 }
             }
 
+            string userName = User.Identity.Name.ToString();
+            LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "start",
+                    $"ModisSourse = \"{ModisSource}\", ModisProduct = \"{ModisProduct}\", ModisDataSet = \"{ModisDataSet}\", File = \"{File}\", FileName = \"{FileName}\"");
+
+
             string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
                 batfile = Path.Combine(folder, "bat.bat"),
                 indexes = sb.ToString().Replace("\r\n", "");
@@ -450,7 +457,8 @@ namespace GeoServer.Controllers
 
             using (var sw = new StreamWriter(batfile))
             {
-                sw.WriteLine($"modis_mosaic.py -o {FileName}.tif -s \"{indexes}\"  {folder}\\{File}");
+                //sw.WriteLine($"modis_mosaic.py -o {FileName}.tif -s \"{indexes}\"  {folder}\\{File}");
+                sw.WriteLine($"modis_mosaic.py -s \"{indexes}\" -o {FileName} -v {folder}\\{File}");
             }
 
             Process process = new Process();
@@ -461,6 +469,9 @@ namespace GeoServer.Controllers
                 process.Start();
                 process.WaitForExit();
                 System.IO.File.Delete(batfile);
+
+                LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "finish",
+                    $"ModisSourse = \"{ModisSource}\", ModisProduct = \"{ModisProduct}\", ModisDataSet = \"{ModisDataSet}\", File = \"{File}\", FileName = \"{FileName}\"");
             }
             catch (Exception exception)
             {
@@ -475,25 +486,64 @@ namespace GeoServer.Controllers
             return String.Join("", fileName.Split(invalid));
         }
 
-        public void ReprojectGeoTif(string ModisSource,
+        public void ReprojectVrt(string ModisSource,
             string ModisProduct,
-            string File,
+            string[] File,
+            string FileName,
             string CoordinateSystem)
         {
-            string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
-                foldernew = Path.Combine(folder, CleanFileName(CoordinateSystem)),
-                filepath = Path.Combine(folder, File),
-                filepathnew = Path.Combine(foldernew, File);
+            string userName = User.Identity.Name.ToString();
+            LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "start",
+                    $"ModisSourse = \"{ModisSource}\", ModisProduct = \"{ModisProduct}\", File = \"{string.Join(", ", File)}\", FileName = \"{FileName}\", CoordinateSystem = \"{CoordinateSystem}\"");
 
-            try
+            for (int i=0; i<File.Length; i++)
             {
-                Directory.CreateDirectory(foldernew);
-                SaveLayerWithNewCoordinateSystem(filepath, filepathnew, CoordinateSystem);
+                string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
+               batfile = Path.Combine(folder, "bat.bat");
+                string CoordinateSys = CoordinateSystem.Remove(0, CoordinateSystem.IndexOf(":") + 1);
+                string dataset = "( 1 )";
+                string FileNames = FileName.ToString() + File[i].ToString();
+
+                using (var sw = new StreamWriter(batfile))
+                {
+                    //sw.WriteLine($"modis_mosaic.py -o {FileName}.tif -s \"{indexes}\"  {folder}\\{File}");
+                    sw.WriteLine($"modis_convert.py -v -s \"{dataset}\" -o {FileNames} -e {CoordinateSys} {folder}\\{File[i]}");
+                }
+
+                Process process = new Process();
+                try
+                {
+                    process.StartInfo.WorkingDirectory = folder;
+                    process.StartInfo.FileName = batfile;
+                    process.Start();
+                    process.WaitForExit();
+                    System.IO.File.Delete(batfile);
+
+                    //LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "finish",
+                    //    $"ModisSourse = \"{ModisSource}\", ModisProduct = \"{ModisProduct}\", File = \"{string.Join(", ", File)}\", FileName = \"{FileName}\", CoordinateSystem = \"{CoordinateSystem}\"");
+                }
+                catch (Exception exception)
+                {
+                    throw new Exception(exception.ToString(), exception.InnerException);
+                }
             }
-            catch (Exception exception)
-            {
-                throw new Exception(exception.ToString(), exception.InnerException);
-            }
+            LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "finish",
+                    $"ModisSourse = \"{ModisSource}\", ModisProduct = \"{ModisProduct}\", File = \"{string.Join(", ", File)}\", FileName = \"{FileName}\", CoordinateSystem = \"{CoordinateSystem}\"");
+
+            //string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct),
+            //foldernew = Path.Combine(folder, CleanFileName(CoordinateSystem)),
+            //filepath = Path.Combine(folder, File),
+            //filepathnew = Path.Combine(foldernew, File);
+
+            //try
+            //{
+            //    Directory.CreateDirectory(foldernew);
+            //    SaveLayerWithNewCoordinateSystem(filepath, filepathnew, CoordinateSystem);
+            //}
+            //catch (Exception exception)
+            //{
+            //    throw new Exception(exception.ToString(), exception.InnerException);
+            //}
         }
 
         public int GetRasterBandsCount(string FilePath)
@@ -648,14 +698,15 @@ namespace GeoServer.Controllers
             var modisProducts = _context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name);
             ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name");
             ViewBag.File = new SelectList(GetModisListFiles(modisSources.FirstOrDefault().Name, modisProducts.FirstOrDefault().Name));
-            ViewBag.ModisDataSet = new MultiSelectList(_context.ModisDataSet.Where(m => m.ModisProductId == modisProducts.FirstOrDefault().Id).OrderBy(m => m.Index), "Id", "IndexName");
+            //ViewBag.ModisDataSet = new MultiSelectList(_context.ModisDataSet.Where(m => m.ModisProductId == modisProducts.FirstOrDefault().Id).OrderBy(m => m.Index), "Id", "IndexName");
+            ViewBag.ModisDataSet = new SelectList(_context.ModisDataSet.Where(m => m.ModisProductId == modisProducts.FirstOrDefault().Id).OrderBy(m => m.Index), "Id", "IndexName");
             return View();
         }
 
         [HttpPost]
         public IActionResult ModisMosaic(string ModisSource,
             string ModisProduct,
-            int[] ModisDataSet,
+            int ModisDataSet,
             string File,
             string FileName)
         {
@@ -668,7 +719,8 @@ namespace GeoServer.Controllers
             var modisProducts = _context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name);
             ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name", ModisProduct);
             ViewBag.File = new SelectList(GetModisListFiles(ModisSource, ModisProduct), File);
-            ViewBag.ModisDataSet = new MultiSelectList(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index), "Id", "IndexName", ModisDataSet);
+            //ViewBag.ModisDataSet = new MultiSelectList(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index), "Id", "IndexName", ModisDataSet);
+            ViewBag.ModisDataSet = new SelectList(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index), "Id", "IndexName", ModisDataSet);
             ViewBag.FileName = FileName;
             return View();
         }
@@ -679,7 +731,7 @@ namespace GeoServer.Controllers
             ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name");
             var modisProducts = _context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name);
             ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name");
-            ViewBag.File = new SelectList(GetReprojectFiles(modisSources.FirstOrDefault().Name, modisProducts.FirstOrDefault().Name));
+            ViewBag.File = new MultiSelectList(GetReprojectVrtFiles(modisSources.FirstOrDefault().Name, modisProducts.FirstOrDefault().Name));
             var coordinateSystem = _context.CoordinateSystems.OrderBy(m => m.Name);
             ViewBag.CoordinateSystem = new SelectList(coordinateSystem, "Name", "Name");
             return View();
@@ -689,18 +741,25 @@ namespace GeoServer.Controllers
         public IActionResult Reproject(string ModisSource,
             string ModisProduct,
             string[] File,
+            //string File,
+             string FileName,
             string CoordinateSystem)
         {
-            foreach(string file in File)
-            {
-                ReprojectGeoTif(ModisSource, ModisProduct, file, CoordinateSystem);
-            }
+            //foreach(string file in File)
+            //{
+            //    ReprojectGeoTif(ModisSource, ModisProduct, file, CoordinateSystem);
+            //}
+
+            //ReprojectVrt(ModisSource, ModisProduct, File, FileName, CoordinateSystem);
+            Task t = new Task(() => { ReprojectVrt(ModisSource, ModisProduct, File, FileName, CoordinateSystem); });
+            t.Start();
             ViewBag.Message = "Operation started!";
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
             ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
             var modisProducts = _context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name);
             ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name", ModisProduct);
-            ViewBag.File = new SelectList(GetReprojectFiles(ModisSource, ModisProduct), File);
+            ViewBag.File = new MultiSelectList(GetReprojectVrtFiles(ModisSource, ModisProduct), File);
+            ViewBag.FileName = FileName;
             var coordinateSystem = _context.CoordinateSystems.OrderBy(m => m.Name);
             ViewBag.CoordinateSystem = new SelectList(coordinateSystem, "Name", "Name", CoordinateSystem);
             return View();
@@ -734,6 +793,20 @@ namespace GeoServer.Controllers
             }
         }
 
+        private List<string> GetReprojectVrtFiles(string ModisSource,
+            string ModisProduct)
+        {
+            string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct);
+            if (Directory.Exists(folder))
+            {
+                return Directory.GetFiles(folder, "*.vrt").Select(f => Path.GetFileName(f)).ToList();
+            }
+            else
+            {
+                return new List<string>();
+            }
+        }
+
         [HttpPost]
         [Authorize(Roles = "Administrator")]
         public JsonResult GetModisTextFiles(string ModisSource,
@@ -749,6 +822,15 @@ namespace GeoServer.Controllers
             string ModisProduct)
         {
             JsonResult result = new JsonResult(GetReprojectFiles(ModisSource, ModisProduct));
+            return result;
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetModisVrtFiles(string ModisSource,
+            string ModisProduct)
+        {
+            JsonResult result = new JsonResult(GetReprojectVrtFiles(ModisSource, ModisProduct));
             return result;
         }
 
