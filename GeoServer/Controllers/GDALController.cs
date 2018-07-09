@@ -511,7 +511,10 @@ namespace GeoServer.Controllers
                 using (var sw = new StreamWriter(batfile))
                 {
                     //sw.WriteLine($"modis_mosaic.py -o {FileName}.tif -s \"{indexes}\"  {folder}\\{File}");
-                    sw.WriteLine($"modis_convert.py -v -s \"{dataset}\" -o {FileNames} -e {CoordinateSys} {folder}\\{File[i]}");
+                    sw.WriteLine($"modis_convert.py -v -s \"{dataset}\" -o \"{Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct, FileNames)}\" -e {CoordinateSys} {folder}\\{File[i]}");
+                    bool exists = Directory.Exists(Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct));
+                    if (!exists)
+                        Directory.CreateDirectory(Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct));
                 }
 
                 Process process = new Process();
@@ -832,7 +835,7 @@ namespace GeoServer.Controllers
         {
             foreach(string file in File)
             {
-                string RasterFilePath = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct, file);
+                string RasterFilePath = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct, file);
                 ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO1"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
                 ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO2"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
                 ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO3"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
@@ -862,7 +865,8 @@ namespace GeoServer.Controllers
         private List<string> GetReprojectFiles(string ModisSource,
             string ModisProduct)
         {
-            string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct);
+            //string folder = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct);
+            string folder = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct);
             if (Directory.Exists(folder))
             {
                 return Directory.GetFiles(folder, "*.tif").Select(f => Path.GetFileName(f)).ToList();
