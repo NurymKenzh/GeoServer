@@ -8,12 +8,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GeoServer.Data;
+using GeoServer.Models;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace GeoServer.Controllers
 {
@@ -94,7 +97,7 @@ namespace GeoServer.Controllers
                 process.StartInfo.RedirectStandardInput= true;
                 process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.FileName = Startup.Configuration["GDAL:PythonFullPath"];
-                process.StartInfo.Arguments = Arguments[0];
+                process.StartInfo.Arguments = $"\"{Arguments[0]}\"";
                 process.Start();
                 for(int i = 1; i < Arguments.Count(); i++)
                 {
@@ -341,11 +344,11 @@ namespace GeoServer.Controllers
             //_context.Log.Add(logs);
             //_context.SaveChanges();
 
-            using (var context = new MyContext())
-            {
-                context.Log.Add(logs);
-                context.SaveChanges();
-            }
+            //using (var context = new MyContext())
+            //{
+            //    context.Log.Add(logs);
+            //    context.SaveChanges();
+            //}
 
         }
 
@@ -489,9 +492,10 @@ namespace GeoServer.Controllers
         public void ReprojectVrt(string ModisSource,
             string ModisProduct,
             string[] File,
-            string FileName,
+            //string FileName,
             string CoordinateSystem)
         {
+            string FileName = $"{ModisSource}_{ModisProduct}_";
             string userName = User.Identity.Name.ToString();
             LogTask(userName, DateTime.Now.ToLocalTime(), MethodBase.GetCurrentMethod().Name, "start",
                     $"ModisSourse = \"{ModisSource}\", ModisProduct = \"{ModisProduct}\", File = \"{string.Join(", ", File)}\", FileName = \"{FileName}\", CoordinateSystem = \"{CoordinateSystem}\"");
@@ -613,6 +617,52 @@ namespace GeoServer.Controllers
             {
                 FilesToMerge = Array.ConvertAll(FilesToMerge, f => $"\"{f}\"");
                 QGISShellExecute("gdal_merge.py", "-o", MergedFilePath, string.Join(' ', FilesToMerge));
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
+        public void ZonalStatAsTableKATO(string ShapeFilePath, string RasterFilePath, string Field)
+        {
+            try
+            {
+                string dataJson = PythonExecute("ZonalStatAsTable", ShapeFilePath, RasterFilePath, Field);
+                string[] data = new string[1];
+                data = JsonConvert.DeserializeObject<string[]>(dataJson);
+                foreach(string s in data)
+                {
+                    string[] rasterFilePathData = Path.GetFileNameWithoutExtension(RasterFilePath).Split('_');
+                    string KATO = s.Split(':')[0],
+                        year_day = rasterFilePathData[rasterFilePathData.Length - 2].Substring(rasterFilePathData[rasterFilePathData.Length - 2].Length - 7),
+                        DataSet = rasterFilePathData.Last().Split('.').First(),
+                        ModisSource = rasterFilePathData.First(),
+                        ModisProduct = rasterFilePathData[1];
+                    int year = Convert.ToInt32(year_day.Substring(0, 4)),
+                        day = Convert.ToInt32(year_day.Substring(year_day.Length - 3));
+                    decimal value = 0;
+                    try
+                    {
+                        value = Convert.ToDecimal(s.Split(':')[1]);
+                    }
+                    catch
+                    {
+                        value = Convert.ToDecimal(s.Split(':')[1].Replace('.', ','));
+                    }
+                    ZonalStatKATO zonalStatKATO = new ZonalStatKATO()
+                    {
+                        KATO = KATO,
+                        Year = year,
+                        DayOfYear = day,
+                        ModisSource = ModisSource,
+                        ModisProduct = ModisProduct,
+                        DataSet = DataSet,
+                        Value = value
+                    };
+                    _context.ZonalStatKATO.Add(zonalStatKATO);
+                }
+                _context.SaveChanges();
             }
             catch (Exception exception)
             {
@@ -742,7 +792,7 @@ namespace GeoServer.Controllers
             string ModisProduct,
             string[] File,
             //string File,
-             string FileName,
+             //string FileName,
             string CoordinateSystem)
         {
             //foreach(string file in File)
@@ -751,7 +801,7 @@ namespace GeoServer.Controllers
             //}
 
             //ReprojectVrt(ModisSource, ModisProduct, File, FileName, CoordinateSystem);
-            Task t = new Task(() => { ReprojectVrt(ModisSource, ModisProduct, File, FileName, CoordinateSystem); });
+            Task t = new Task(() => { ReprojectVrt(ModisSource, ModisProduct, File, CoordinateSystem); });
             t.Start();
             ViewBag.Message = "Operation started!";
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
@@ -759,9 +809,39 @@ namespace GeoServer.Controllers
             var modisProducts = _context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name);
             ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name", ModisProduct);
             ViewBag.File = new MultiSelectList(GetReprojectVrtFiles(ModisSource, ModisProduct), File);
-            ViewBag.FileName = FileName;
+            //ViewBag.FileName = FileName;
             var coordinateSystem = _context.CoordinateSystems.OrderBy(m => m.Name);
             ViewBag.CoordinateSystem = new SelectList(coordinateSystem, "Name", "Name", CoordinateSystem);
+            return View();
+        }
+
+        public IActionResult ZonalStatKATO()
+        {
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name");
+            var modisProducts = _context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name");
+            ViewBag.File = new MultiSelectList(GetReprojectFiles(modisSources.FirstOrDefault().Name, modisProducts.FirstOrDefault().Name));
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ZonalStatKATO(string ModisSource,
+            string ModisProduct,
+            string[] File)
+        {
+            foreach(string file in File)
+            {
+                string RasterFilePath = Path.Combine(Startup.Configuration["Modis:ModisPath"], ModisSource, ModisProduct, file);
+                ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO1"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
+                ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO2"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
+                ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO3"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
+            }
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
+            var modisProducts = _context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name", ModisProduct);
+            ViewBag.File = new MultiSelectList(GetReprojectFiles(ModisSource, ModisProduct), File);
             return View();
         }
 

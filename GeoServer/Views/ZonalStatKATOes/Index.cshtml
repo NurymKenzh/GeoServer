@@ -1,0 +1,72 @@
+﻿@model IEnumerable<GeoServer.Models.ZonalStatKATO>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.KATO)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Year)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DayOfYear)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ModisSource)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ModisProduct)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataSet)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Value)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.KATO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DayOfYear)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModisSource)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModisProduct)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataSet)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

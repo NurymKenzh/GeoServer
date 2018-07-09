@@ -1,0 +1,61 @@
+﻿@model GeoServer.Models.ZonalStatKATO
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ZonalStatKATO</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.KATO)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.KATO)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DayOfYear)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DayOfYear)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ModisSource)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ModisSource)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ModisProduct)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ModisProduct)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DataSet)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DataSet)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Value)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Value)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
