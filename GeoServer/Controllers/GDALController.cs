@@ -752,7 +752,7 @@ namespace GeoServer.Controllers
             ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name");
             ViewBag.File = new SelectList(GetModisListFiles(modisSources.FirstOrDefault().Name, modisProducts.FirstOrDefault().Name));
             //ViewBag.ModisDataSet = new MultiSelectList(_context.ModisDataSet.Where(m => m.ModisProductId == modisProducts.FirstOrDefault().Id).OrderBy(m => m.Index), "Id", "IndexName");
-            ViewBag.ModisDataSet = new SelectList(_context.ModisDataSet.Where(m => m.ModisProductId == modisProducts.FirstOrDefault().Id).OrderBy(m => m.Index), "Id", "IndexName");
+            ViewBag.ModisDataSet = new SelectList(_context.ModisDataSet.Where(m => m.ModisProductId == modisProducts.FirstOrDefault().Id).OrderBy(m => m.Index), "Index", "IndexName");
             return View();
         }
 
@@ -763,7 +763,11 @@ namespace GeoServer.Controllers
             string File,
             string FileName)
         {
-
+            FileName = _context.ModisDataSet
+                .Include(m => m.ModisProduct)
+                .Include(m => m.ModisProduct.ModisSource)
+                .FirstOrDefault(m => m.ModisProduct.Name == ModisProduct && m.ModisProduct.ModisSource.Name == ModisSource && m.Index == ModisDataSet)
+                .Name;
             Task t = new Task( () => { MosaicModis(ModisSource, ModisProduct, ModisDataSet, File, FileName); });
             t.Start();
             ViewBag.Message = "Operation started!";
@@ -773,7 +777,7 @@ namespace GeoServer.Controllers
             ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name", ModisProduct);
             ViewBag.File = new SelectList(GetModisListFiles(ModisSource, ModisProduct), File);
             //ViewBag.ModisDataSet = new MultiSelectList(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index), "Id", "IndexName", ModisDataSet);
-            ViewBag.ModisDataSet = new SelectList(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index), "Id", "IndexName", ModisDataSet);
+            ViewBag.ModisDataSet = new SelectList(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index), "Index", "IndexName", ModisDataSet);
             ViewBag.FileName = FileName;
             return View();
         }
