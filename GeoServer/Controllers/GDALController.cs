@@ -760,10 +760,9 @@ namespace GeoServer.Controllers
         public IActionResult ModisMosaic(string ModisSource,
             string ModisProduct,
             int ModisDataSet,
-            string File,
-            string FileName)
+            string File)
         {
-            FileName = _context.ModisDataSet
+            string FileName = _context.ModisDataSet
                 .Include(m => m.ModisProduct)
                 .Include(m => m.ModisProduct.ModisSource)
                 .FirstOrDefault(m => m.ModisProduct.Name == ModisProduct && m.ModisProduct.ModisSource.Name == ModisSource && m.Index == ModisDataSet)
@@ -778,7 +777,6 @@ namespace GeoServer.Controllers
             ViewBag.File = new SelectList(GetModisListFiles(ModisSource, ModisProduct), File);
             //ViewBag.ModisDataSet = new MultiSelectList(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index), "Id", "IndexName", ModisDataSet);
             ViewBag.ModisDataSet = new SelectList(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index), "Index", "IndexName", ModisDataSet);
-            ViewBag.FileName = FileName;
             return View();
         }
 
