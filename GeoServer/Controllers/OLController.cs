@@ -19,6 +19,13 @@ namespace GeoServer.Controllers
 
         public IActionResult ViewModis()
         {
+            ViewBag.KATOType = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text="Области", Value="adm1pol"},
+                new SelectListItem() { Text="Районы", Value="adm2pol"},
+                new SelectListItem() { Text="Сельские округи", Value="adm3pol"}
+            };
+
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
             ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name");
             var modisProducts = _context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name);

@@ -8,6 +8,9 @@
 <h2>ViewModis</h2>
 
 <div class="col-md-4">
+    <label class="control-label">KATOType</label>
+    @Html.DropDownList("KATOType", (IEnumerable<SelectListItem>)ViewBag.KATOType, htmlAttributes: new { @class = "form-control", @id = "KATOType", @onchange = "ChangeKATOType()" })
+
     <label class="control-label">ModisSource</label>
     @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control", @id = "ModisSource", @onchange = "ChangeModisSource()" })
 
@@ -166,6 +169,21 @@
             serverType: 'geoserver'
         });
         var l = map.getLayers().getArray()[1];
+        l.setSource(Source_New);
+    }
+
+    function ChangeKATOType() {
+        var Source_New = new ol.source.TileWMS({
+            url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+            params: {
+                'LAYERS': 'GeoServer:' + $("#KATOType").val(),
+                'VERSION': '1.1.0',
+                'FORMAT': 'image/png',
+                'TILED': true
+            },
+            serverType: 'geoserver'
+        });
+        var l = map.getLayers().getArray()[2];
         l.setSource(Source_New);
     }
 </script>
