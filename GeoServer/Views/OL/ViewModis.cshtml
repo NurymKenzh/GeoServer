@@ -7,6 +7,24 @@
 <script src="~/lib/ol/ol.js"></script>
 <h2>ViewModis</h2>
 
+<div class="col-md-4">
+    <label class="control-label">ModisSource</label>
+    @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control", @id = "ModisSource", @onchange = "ChangeModisSource()" })
+
+    <label class="control-label">ModisProduct</label>
+    @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control", @id = "ModisProduct", @onchange = "ChangeModisProduct()" })
+
+    <label class="control-label">ModisDataSet</label>
+    <select asp-items="ViewBag.ModisDataSet" name="ModisDataSet" class="form-control" id="ModisDataSet" onchange="ChangeModisDataSet()"></select>
+
+    <label class="control-label">Date</label>
+    @{
+        DateTime Date = new DateTime();
+        Date = DateTime.Today;
+    }
+    <input asp-for="@Date" id="Date" name="Date" type="date" class="form-control" onchange="ChangeDate()" />
+</div>
+
 <div id="map"></div>
 
 <script type="text/javascript">
@@ -22,7 +40,7 @@
     var Source_Modis = new ol.source.TileWMS({
         url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
         params: {
-            'LAYERS': 'GeoServer:MOLT_MOD13Q1_A2018001_250m16daysNDVI',
+            'LAYERS': 'GeoServer:No',
             'VERSION': '1.1.0',
             'FORMAT': 'image/png',
             'TILED': true
@@ -64,4 +82,90 @@
             zoom: 4
         })
     });
+</script>
+
+<script>
+    function ChangeModisSource() {
+        $.ajax({
+            url: '@Url.Action("GetModisProductByModisSource", "GDAL")',
+            data: { ModisSource: $('#ModisSource').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    optionhtml += '<option value="' + data[i]['name'] + '"' +
+                        (data[i]['name'] == $('#ModisProduct').val() ? 'selected' : '') +
+                        '>' + data[i]['name'] +
+                        '</option>';
+                });
+                $("#ModisProduct").empty();
+                $('#ModisProduct').append(optionhtml);
+                ChangeModisProduct();
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeModisProduct() {
+        $.ajax({
+            url: '@Url.Action("GetModisDataSets", "GDAL")',
+            data: { ModisProduct: $('#ModisProduct').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    optionhtml += '<option value="' + data[i]['name'] + '"' +
+                        (data[i]['indexName'] == $('#File').val() ? 'selected' : '') +
+                        '>' + data[i]['indexName'] +
+                        '</option>';
+                });
+                $("#ModisDataSet").empty();
+                $('#ModisDataSet').append(optionhtml);
+                ChangeModis();
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeModisDataSet() {
+        ChangeModis();
+    };
+
+    function ChangeDate() {
+        ChangeModis();
+    };
+
+    function ChangeModis() {
+        var d = new Date($('#Date').val());
+
+        var start = new Date(d.getFullYear(), 0, 0);
+        var diff = d - start;
+        var oneDay = 1000 * 60 * 60 * 24;
+        var day = Math.floor(diff / oneDay).toString();
+
+        var year = d.getFullYear();
+
+        if (day.length < 3) day = '0' + day;
+        if (day.length < 3) day = '0' + day;
+        
+        var layer_Modis = $('#ModisSource').val();
+        layer_Modis += '_' + $('#ModisProduct').val();
+        layer_Modis += '_A' + [year, day].join('');
+        layer_Modis += '_' + $("#ModisDataSet").val();
+
+        var Source_New = new ol.source.TileWMS({
+            url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+            params: {
+                'LAYERS': 'GeoServer:' + layer_Modis,
+                'VERSION': '1.1.0',
+                'FORMAT': 'image/png',
+                'TILED': true
+            },
+            serverType: 'geoserver'
+        });
+        var l = map.getLayers().getArray()[1];
+        l.setSource(Source_New);
+    }
 </script>
