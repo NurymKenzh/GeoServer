@@ -24,12 +24,15 @@ namespace GeoServer.Controllers
     {
         private IHostingEnvironment _hostingEnvironment;
         private readonly ApplicationDbContext _context;
+        private readonly GeoServerController _GeoServer;
 
         public GDALController(IHostingEnvironment hostingEnvironment,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            GeoServerController GeoServer)
         {
             _hostingEnvironment = hostingEnvironment;
             _context = context;
+            _GeoServer = GeoServer;
         }
 
         private string PythonExecuteWithParameters(params string[] Arguments)
@@ -511,7 +514,7 @@ namespace GeoServer.Controllers
                 using (var sw = new StreamWriter(batfile))
                 {
                     //sw.WriteLine($"modis_mosaic.py -o {FileName}.tif -s \"{indexes}\"  {folder}\\{File}");
-                    sw.WriteLine($"modis_convert.py -v -s \"{dataset}\" -o \"{Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct, FileNames)}\" -e {CoordinateSys} {folder}\\{File[i]}");
+                    sw.WriteLine($"modis_convert.py -v -s \"{dataset}\" -o \"{Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct, FileNames).Replace(".vrt", "")}\" -e {CoordinateSys} {folder}\\{File[i]}");
                     bool exists = Directory.Exists(Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct));
                     if (!exists)
                         Directory.CreateDirectory(Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct));
@@ -841,6 +844,34 @@ namespace GeoServer.Controllers
                 ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO1"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
                 ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO2"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
                 ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO3"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
+            }
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
+            var modisProducts = _context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name", ModisProduct);
+            ViewBag.File = new MultiSelectList(GetReprojectFiles(ModisSource, ModisProduct), File);
+            return View();
+        }
+
+        public IActionResult PublishGeoTiff()
+        {
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name");
+            var modisProducts = _context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name");
+            ViewBag.File = new MultiSelectList(GetReprojectFiles(modisSources.FirstOrDefault().Name, modisProducts.FirstOrDefault().Name));
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult PublishGeoTiff(string ModisSource,
+            string ModisProduct,
+            string[] File)
+        {
+            foreach (string file in File)
+            {
+                string DataSet = file.Split('_').Last().Split('.').First();
+                _GeoServer.PublishGeoTIFF(Startup.Configuration["GeoServer:Workspace"], Path.Combine(ModisSource, ModisProduct, file), DataSet);
             }
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
             ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
