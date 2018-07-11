@@ -16,4 +16,10 @@ namespace GeoServer.Models
         public string DataSet { get; set; }
         public decimal Value { get; set; }
     }
+
+    public class ZonalStatKATOIndexPageViewModel
+    {
+        public IEnumerable<ZonalStatKATO> Items { get; set; }
+        public Pager Pager { get; set; }
+    }
 }

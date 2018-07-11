@@ -20,9 +20,110 @@ namespace GeoServer.Controllers
         }
 
         // GET: ZonalStatKATOes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string SortOrder,
+            string KATO,
+            int? Year,
+            int? DayOfYear,
+            string ModisSource,
+            string ModisProduct,
+            string DataSet,
+            int? Page)
         {
-            return View(await _context.ZonalStatKATO.ToListAsync());
+            var zonalStatKATOes = _context.ZonalStatKATO
+                .Where(z => true);
+
+            ViewBag.KATOFilter = KATO;
+            ViewBag.YearFilter = Year;
+            ViewBag.DayOfYearFilter = DayOfYear;
+            ViewBag.ModisSourceFilter = ModisSource;
+            ViewBag.ModisProductFilter = ModisProduct;
+            ViewBag.DataSetFilter = DataSet;
+
+            ViewBag.KATOSort = SortOrder == "KATO" ? "KATODesc" : "KATO";
+            ViewBag.YearSort = SortOrder == "Year" ? "YearDesc" : "Year";
+            ViewBag.DayOfYearSort = SortOrder == "DayOfYear" ? "DayOfYearDesc" : "DayOfYear";
+            ViewBag.ModisSourceSort = SortOrder == "ModisSource" ? "ModisSourceDesc" : "ModisSource";
+            ViewBag.ModisProductSort = SortOrder == "ModisProduct" ? "ModisProductDesc" : "ModisProduct";
+            ViewBag.DataSetSort = SortOrder == "DataSet" ? "DataSetDesc" : "DataSet";
+
+            if (!string.IsNullOrEmpty(KATO))
+            {
+                zonalStatKATOes = zonalStatKATOes.Where(z => z.KATO.ToLower().Contains(KATO.ToLower()));
+            }
+            if (Year!=null)
+            {
+                zonalStatKATOes = zonalStatKATOes.Where(z => z.Year == Year);
+            }
+            if (DayOfYear != null)
+            {
+                zonalStatKATOes = zonalStatKATOes.Where(z => z.DayOfYear == DayOfYear);
+            }
+            if (!string.IsNullOrEmpty(ModisSource))
+            {
+                zonalStatKATOes = zonalStatKATOes.Where(z => z.ModisSource.ToLower().Contains(ModisSource.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(ModisProduct))
+            {
+                zonalStatKATOes = zonalStatKATOes.Where(z => z.ModisProduct.ToLower().Contains(ModisProduct.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(DataSet))
+            {
+                zonalStatKATOes = zonalStatKATOes.Where(z => z.DataSet.ToLower().Contains(DataSet.ToLower()));
+            }
+
+            switch (SortOrder)
+            {
+                case "KATO":
+                    zonalStatKATOes = zonalStatKATOes.OrderBy(z => z.KATO);
+                    break;
+                case "KATODesc":
+                    zonalStatKATOes = zonalStatKATOes.OrderByDescending(z => z.KATO);
+                    break;
+                case "Year":
+                    zonalStatKATOes = zonalStatKATOes.OrderBy(z => z.Year);
+                    break;
+                case "YearDesc":
+                    zonalStatKATOes = zonalStatKATOes.OrderByDescending(z => z.Year);
+                    break;
+                case "DayOfYear":
+                    zonalStatKATOes = zonalStatKATOes.OrderBy(z => z.DayOfYear);
+                    break;
+                case "DayOfYearDesc":
+                    zonalStatKATOes = zonalStatKATOes.OrderByDescending(z => z.DayOfYear);
+                    break;
+                case "ModisSource":
+                    zonalStatKATOes = zonalStatKATOes.OrderBy(z => z.ModisSource);
+                    break;
+                case "ModisSourceDesc":
+                    zonalStatKATOes = zonalStatKATOes.OrderByDescending(z => z.ModisSource);
+                    break;
+                case "ModisProduct":
+                    zonalStatKATOes = zonalStatKATOes.OrderBy(z => z.ModisProduct);
+                    break;
+                case "ModisProductDesc":
+                    zonalStatKATOes = zonalStatKATOes.OrderByDescending(z => z.ModisProduct);
+                    break;
+                case "DataSet":
+                    zonalStatKATOes = zonalStatKATOes.OrderBy(z => z.DataSet);
+                    break;
+                case "DataSetDesc":
+                    zonalStatKATOes = zonalStatKATOes.OrderByDescending(z => z.DataSet);
+                    break;
+                default:
+                    zonalStatKATOes = zonalStatKATOes.OrderBy(z => z.Id);
+                    break;
+            }
+            ViewBag.SortOrder = SortOrder;
+
+            var pager = new Pager(zonalStatKATOes.Count(), Page);
+
+            var viewModel = new ZonalStatKATOIndexPageViewModel
+            {
+                Items = zonalStatKATOes.Skip((pager.CurrentPage - 1) * pager.PageSize).Take(pager.PageSize),
+                Pager = pager
+            };
+
+            return View(viewModel);
         }
 
         // GET: ZonalStatKATOes/Details/5

@@ -1,44 +1,106 @@
-﻿@model IEnumerable<GeoServer.Models.ZonalStatKATO>
-
+﻿@model GeoServer.Models.ZonalStatKATOIndexPageViewModel
+@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@using System.Net
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = SharedLocalizer["ZonalStatKATOes"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
-
+<h2>@SharedLocalizer["ZonalStatKATOes"]</h2>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@SharedLocalizer["Create"]</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
+@using (Html.BeginForm("Index", "ZonalStatKATOes", new { SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  }, FormMethod.Get))
+{
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
+    @if (Model.Pager.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (Model.Pager.CurrentPage > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                             new { SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                             new { Page = Model.Pager.CurrentPage - 1, SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+            }
+
+            @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+            {
+                <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                             new { Page = page, SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+            }
+
+            @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                             new { Page = Model.Pager.CurrentPage + 1, SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                             new { Page = Model.Pager.TotalPages, SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+            }
+        </ul>
+    }
+    <table class="table">
+        <thead>
+            <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.KATO)
+                    @Html.ActionLink(Html.DisplayNameFor(b => b.Items.FirstOrDefault().KATO).ToString(), "Index",
+                             new { SortOrder = ViewBag.KATOSort, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                    <br />
+                    @Html.Editor("KATO", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Year)
+                    @Html.ActionLink(Html.DisplayNameFor(b => b.Items.FirstOrDefault().Year).ToString(), "Index",
+                             new { SortOrder = ViewBag.YearSort, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                    <br />
+                    @Html.Editor("Year", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.DayOfYear)
+                    @Html.ActionLink(Html.DisplayNameFor(b => b.Items.FirstOrDefault().DayOfYear).ToString(), "Index",
+                             new { SortOrder = ViewBag.DayOfYearSort, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                    <br />
+                    @Html.Editor("DayOfYear", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.ModisSource)
+                    @Html.ActionLink(Html.DisplayNameFor(b => b.Items.FirstOrDefault().ModisSource).ToString(), "Index",
+                             new { SortOrder = ViewBag.ModisSourceSort, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                    <br />
+                    @Html.Editor("ModisSource", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.ModisProduct)
+                    @Html.ActionLink(Html.DisplayNameFor(b => b.Items.FirstOrDefault().ModisProduct).ToString(), "Index",
+                             new { SortOrder = ViewBag.KATOSort, KATO = ViewBag.ModisProductFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                    <br />
+                    @Html.Editor("ModisProduct", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.DataSet)
+                    @Html.ActionLink(Html.DisplayNameFor(b => b.Items.FirstOrDefault().DataSet).ToString(), "Index",
+                             new { SortOrder = ViewBag.DataSetSort, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                    <br />
+                    @Html.Editor("DataSet", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Value)
+                    @Html.DisplayNameFor(b => b.Items.FirstOrDefault().Value)
                 </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
+                <th>
+                    <br />
+                    <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-default">
+                </th>
+            </tr>
+        </thead>
+        @foreach (var item in Model.Items)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.KATO)
@@ -62,11 +124,47 @@
                 @Html.DisplayFor(modelItem => item.Value)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">@SharedLocalizer["Edit"]</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">@SharedLocalizer["Details"]</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">@SharedLocalizer["Delete"]</a>
             </td>
         </tr>
+        }
+    </table>
+    @if (Model.Pager.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (Model.Pager.CurrentPage > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                             new { SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                             new { Page = Model.Pager.CurrentPage - 1, SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+            }
+
+            @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+            {
+                <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                             new { Page = page, SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+            }
+
+            @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                             new { Page = Model.Pager.CurrentPage + 1, SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                             new { Page = Model.Pager.TotalPages, SortOrder = ViewBag.SortOrdert, KATO = ViewBag.KATOFilter, Year = ViewBag.YearFilter, DayOfYear = ViewBag.DayOfYearFilter, ModisSource = ViewBag.ModisSourceFilter, ModisProduct = ViewBag.ModisProductFilter, DataSet = ViewBag.DataSetFilter  })
+                </li>
+            }
+        </ul>
+    }
 }
-    </tbody>
-</table>
