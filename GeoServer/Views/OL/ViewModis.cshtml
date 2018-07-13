@@ -152,7 +152,7 @@
 
         if (day.length < 3) day = '0' + day;
         if (day.length < 3) day = '0' + day;
-        
+
         var layer_Modis = $('#ModisSource').val();
         layer_Modis += '_' + $('#ModisProduct').val();
         layer_Modis += '_A' + [year, day].join('');
@@ -186,4 +186,114 @@
         var l = map.getLayers().getArray()[2];
         l.setSource(Source_New);
     }
+</script>
+
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>*@
+<script src="~/lib/chart.js/Chart.js"></script>
+<canvas id="myChart" width="400" height="200"></canvas>
+<script>
+    var myLineChart = null;
+    map.on('singleclick', function (evt) {
+        var viewResolution = (map.getView().getResolution());
+        var url = layers[2].getSource().getGetFeatureInfoUrl(
+            evt.coordinate, viewResolution, 'EPSG:3857',
+            {
+                'INFO_FORMAT': 'text/javascript'
+                //'FEATURE_COUNT': '10000'
+            });
+        if (url) {
+            var parser = new ol.format.GeoJSON();
+            $.ajax({
+                url: url,
+                dataType: 'jsonp',
+                jsonpCallback: 'parseResponse',
+                error: function (xhr, status, error) {
+                    //alert(err.Message);
+                }
+            }).then(function (response) {
+                var result = parser.readFeatures(response);
+                if (result.length>0) {
+                    var d = new Date($('#Date').val());
+                    $.ajax({
+                        url: '@Url.Action("GetKATOZonalStat")',
+                        data: {
+                            KATO: result[0].get('kato_te'),
+                            Year: d.getFullYear(),
+                            ModisSource: $('#ModisSource').val(),
+                            ModisProduct: $('#ModisProduct').val(),
+                            ModisDataSet: $('#ModisDataSet').val()
+                        },
+                        type: 'POST',
+                        success: function (data) {
+                            var optionhtml = '';
+                            var datacurrent = [],
+                                datamin = [],
+                                datamax = [],
+                                dataaverage = [];
+                            $.each(data.current, function (i) {
+                                datacurrent.push(data.current[i]['value']);
+                            });
+                            $.each(data.min, function (i) {
+                                datamin.push(data.min[i]);
+                            });
+                            $.each(data.max, function (i) {
+                                datamax.push(data.max[i]);
+                            });
+                            $.each(data.average, function (i) {
+                                dataaverage.push(data.average[i]);
+                            });
+                            var ctx = document.getElementById("myChart").getContext('2d');
+                            if (myLineChart != null) {
+                                myLineChart.destroy();
+                            }
+                            myLineChart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: [1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 161, 177, 193, 209, 225, 241, 257, 273, 289, 305, 321, 337, 353],
+                                    datasets: [{
+                                        label: d.getFullYear(),
+                                        data: datacurrent, //[12, 19, 3, 5, 2, 3],
+                                        backgroundColor: 'rgba(255,99,132,1)',
+                                        borderColor: 'rgba(255,99,132,1)',
+                                        borderWidth: 1,
+                                        fill: false
+                                    },
+                                        {
+                                            label: 'Minimum',
+                                            data: datamin,
+                                            backgroundColor: 'rgba(255, 159, 64, 1)',
+                                            borderColor: 'rgba(255, 159, 64, 1)',
+                                            borderWidth: 1,
+                                            fill: false
+                                        },
+                                        {
+                                            label: 'Maximum',
+                                            data: datamax,
+                                            backgroundColor: 'rgba(0, 240, 64, 1)',
+                                            borderColor: 'rgba(0, 240, 64, 1)',
+                                            borderWidth: 1,
+                                            fill: false
+                                        },
+                                        {
+                                            label: 'Average',
+                                            data: dataaverage,
+                                            backgroundColor: 'rgba(57, 26, 190, 1)',
+                                            borderColor: 'rgba(57, 26, 190, 1)',
+                                            borderWidth: 1,
+                                            fill: false
+                                        }
+                                    ]
+                                }
+                            });
+                        },
+                        error: function () {
+                        }
+                    });
+                }
+            }
+            )
+        }
+    });
+
+
 </script>
