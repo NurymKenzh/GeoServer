@@ -20,12 +20,18 @@
     <label class="control-label">ModisDataSet</label>
     <select asp-items="ViewBag.ModisDataSet" name="ModisDataSet" class="form-control" id="ModisDataSet" onchange="ChangeModisDataSet()"></select>
 
+    <label class="control-label">Year</label>
+    <select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" onchange="ChangeYear()"></select>
+
     <label class="control-label">Date</label>
+    <select name="Date" class="form-control" id="Date" onchange="ChangeDate()"></select>
+
+    @*<label class="control-label">Date</label>
     @{
         DateTime Date = new DateTime();
         Date = DateTime.Today;
     }
-    <input asp-for="@Date" id="Date" name="Date" type="date" class="form-control" onchange="ChangeDate()" />
+    <input asp-for="@Date" id="Date" name="Date" type="date" class="form-control" onchange="ChangeDate()" />*@
 </div>
 
 <div id="map"></div>
@@ -132,6 +138,28 @@
         });
     };
 
+    function ChangeYear() {
+        $.ajax({
+            url: '@Url.Action("GetYearDates")',
+            data: { Year: $('#Year').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data.dates, function (i) {
+                    optionhtml += '<option value="' + data.dates[i]['value'] + '"' +
+                        //(data[i]['text'] == $('#File').val() ? 'selected' : '') +
+                        '>' + data.dates[i]['text'] +
+                        '</option>';
+                });
+                $("#Date").empty();
+                $('#Date').append(optionhtml);
+                ChangeModis();
+            },
+            error: function () {
+            }
+        });
+    };
+
     function ChangeModisDataSet() {
         ChangeModis();
     };
@@ -141,14 +169,17 @@
     };
 
     function ChangeModis() {
-        var d = new Date($('#Date').val());
+        //var d = new Date($('#Date').val());
 
-        var start = new Date(d.getFullYear(), 0, 0);
-        var diff = d - start;
-        var oneDay = 1000 * 60 * 60 * 24;
-        var day = Math.floor(diff / oneDay).toString();
+        //var start = new Date(d.getFullYear(), 0, 0);
+        //var diff = d - start;
+        //var oneDay = 1000 * 60 * 60 * 24;
+        //var day = Math.floor(diff / oneDay).toString();
 
-        var year = d.getFullYear();
+        //var year = d.getFullYear();
+
+        var year = $('#Year').val();
+        var day = $('#Date').val();
 
         if (day.length < 3) day = '0' + day;
         if (day.length < 3) day = '0' + day;
@@ -186,6 +217,10 @@
         var l = map.getLayers().getArray()[2];
         l.setSource(Source_New);
     }
+
+    $(document).ready(function () {
+        ChangeYear();
+    });
 </script>
 
 @*<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>*@
@@ -213,12 +248,12 @@
             }).then(function (response) {
                 var result = parser.readFeatures(response);
                 if (result.length>0) {
-                    var d = new Date($('#Date').val());
+                    //var d = new Date($('#Date').val());
                     $.ajax({
                         url: '@Url.Action("GetKATOZonalStat")',
                         data: {
                             KATO: result[0].get('kato_te'),
-                            Year: d.getFullYear(),
+                            Year: $('#Year').val(),
                             ModisSource: $('#ModisSource').val(),
                             ModisProduct: $('#ModisProduct').val(),
                             ModisDataSet: $('#ModisDataSet').val()
@@ -251,7 +286,7 @@
                                 data: {
                                     labels: [1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 161, 177, 193, 209, 225, 241, 257, 273, 289, 305, 321, 337, 353],
                                     datasets: [{
-                                        label: d.getFullYear(),
+                                        label: $('#Year').val(),
                                         data: datacurrent, //[12, 19, 3, 5, 2, 3],
                                         backgroundColor: 'rgba(255,99,132,1)',
                                         borderColor: 'rgba(255,99,132,1)',
