@@ -840,10 +840,17 @@ namespace GeoServer.Controllers
         {
             foreach(string file in File)
             {
-                string RasterFilePath = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct, file);
-                ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO1"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
-                ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO2"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
-                ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO3"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
+                try
+                {
+                    string RasterFilePath = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct, file);
+                    ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO1"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
+                    ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO2"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
+                    ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO3"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
+                }
+                catch
+                {
+
+                }                
             }
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
             ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
