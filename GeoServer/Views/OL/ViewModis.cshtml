@@ -266,16 +266,16 @@
                                 datamax = [],
                                 dataaverage = [];
                             $.each(data.current, function (i) {
-                                datacurrent.push(data.current[i]['value']);
+                                datacurrent.push(data.current[i]['value'] / 10000);
                             });
                             $.each(data.min, function (i) {
-                                datamin.push(data.min[i]);
+                                datamin.push(data.min[i] / 10000);
                             });
                             $.each(data.max, function (i) {
-                                datamax.push(data.max[i]);
+                                datamax.push(data.max[i] / 10000);
                             });
                             $.each(data.average, function (i) {
-                                dataaverage.push(data.average[i]);
+                                dataaverage.push(data.average[i] / 10000);
                             });
                             var ctx = document.getElementById("myChart").getContext('2d');
                             if (myLineChart != null) {
