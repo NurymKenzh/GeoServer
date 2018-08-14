@@ -57,9 +57,13 @@ namespace GeoServer.Controllers
             foreach (int day in days)
             {
                 List<ZonalStatKATO> today = all.Where(z => z.DayOfYear == day).ToList();
-                if(today.Count > 0)
+                if (today.Count > 0)
                 {
-                    current.Add(today.FirstOrDefault());
+                    ZonalStatKATO currenZonalStatKATO = today.FirstOrDefault(z => z.Year == Year);
+                    if(currenZonalStatKATO!=null)
+                    {
+                        current.Add(currenZonalStatKATO);
+                    }
                     min.Add(today.Min(z => z.Value));
                     max.Add(today.Max(z => z.Value));
                     average.Add(today.Average(z => z.Value));
