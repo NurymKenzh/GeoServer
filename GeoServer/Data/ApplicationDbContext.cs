@@ -44,6 +44,8 @@ namespace GeoServer.Data
         public DbSet<GeoServer.Models.Log> Log { get; set; }
 
         public DbSet<GeoServer.Models.ZonalStatKATO> ZonalStatKATO { get; set; }
+
+        public DbSet<GeoServer.Models.ZonalStatPast> ZonalStatPast { get; set; }
     }
 
     //public class MyContext : DbContext

@@ -676,6 +676,52 @@ namespace GeoServer.Controllers
             }
         }
 
+        public void ZonalStatAsTablePast(string ShapeFilePath, string RasterFilePath, string Field)
+        {
+            try
+            {
+                string dataJson = PythonExecute("ZonalStatAsTable", ShapeFilePath, RasterFilePath, Field);
+                string[] data = new string[1];
+                data = JsonConvert.DeserializeObject<string[]>(dataJson);
+                foreach (string s in data)
+                {
+                    string[] rasterFilePathData = Path.GetFileNameWithoutExtension(RasterFilePath).Split('_');
+                    string PastId = s.Split(':')[0],
+                        year_day = rasterFilePathData[rasterFilePathData.Length - 2].Substring(rasterFilePathData[rasterFilePathData.Length - 2].Length - 7),
+                        DataSet = rasterFilePathData.Last().Split('.').First(),
+                        ModisSource = rasterFilePathData.First(),
+                        ModisProduct = rasterFilePathData[1];
+                    int year = Convert.ToInt32(year_day.Substring(0, 4)),
+                        day = Convert.ToInt32(year_day.Substring(year_day.Length - 3));
+                    decimal value = 0;
+                    try
+                    {
+                        value = Convert.ToDecimal(s.Split(':')[1]);
+                    }
+                    catch
+                    {
+                        value = Convert.ToDecimal(s.Split(':')[1].Replace('.', ','));
+                    }
+                    ZonalStatPast zonalStatPast = new ZonalStatPast()
+                    {
+                        PastId = PastId,
+                        Year = year,
+                        DayOfYear = day,
+                        ModisSource = ModisSource,
+                        ModisProduct = ModisProduct,
+                        DataSet = DataSet,
+                        Value = value
+                    };
+                    _context.ZonalStatPast.Add(zonalStatPast);
+                }
+                _context.SaveChanges();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+        }
+
         //===========================================================================================================
 
         public IActionResult DownloadModis()
@@ -846,6 +892,41 @@ namespace GeoServer.Controllers
                     ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO1"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
                     ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO2"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
                     ZonalStatAsTableKATO(Startup.Configuration["GDAL:KATO3"], RasterFilePath, Startup.Configuration["GDAL:KATOField"]);
+                }
+                catch
+                {
+
+                }                
+            }
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
+            var modisProducts = _context.ModisProduct.Include(m => m.ModisSource).Where(m => m.ModisSource.Name == ModisSource).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name", ModisProduct);
+            ViewBag.File = new MultiSelectList(GetReprojectFiles(ModisSource, ModisProduct), File);
+            return View();
+        }
+
+        public IActionResult ZonalStatPast()
+        {
+            var modisSources = _context.ModisSource.OrderBy(m => m.Name);
+            ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name");
+            var modisProducts = _context.ModisProduct.Where(m => m.ModisSourceId == _context.ModisSource.OrderBy(ms => ms.Name).FirstOrDefault().Id).OrderBy(m => m.Name);
+            ViewBag.ModisProduct = new SelectList(modisProducts, "Name", "Name");
+            ViewBag.File = new MultiSelectList(GetReprojectFiles(modisSources.FirstOrDefault().Name, modisProducts.FirstOrDefault().Name));
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ZonalStatPast(string ModisSource,
+            string ModisProduct,
+            string[] File)
+        {
+            foreach(string file in File)
+            {
+                try
+                {
+                    string RasterFilePath = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], ModisSource, ModisProduct, file);
+                    ZonalStatAsTablePast(Startup.Configuration["GDAL:Past"], RasterFilePath, Startup.Configuration["GDAL:PastField"]);
                 }
                 catch
                 {
