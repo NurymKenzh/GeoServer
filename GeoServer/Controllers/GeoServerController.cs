@@ -536,10 +536,10 @@ namespace GeoServer.Controllers
             {
                 string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(FileName);
 
-                if (GetWorkspaceLayers(WorkspaceName).Contains(fileNameWithoutExtension))
-                {
-                    throw new Exception($"Layer {fileNameWithoutExtension} is already exist in {WorkspaceName} workspace!");
-                }
+                //if (GetWorkspaceLayers(WorkspaceName).Contains(fileNameWithoutExtension))
+                //{
+                //    throw new Exception($"Layer {fileNameWithoutExtension} is already exist in {WorkspaceName} workspace!");
+                //}
 
                 if (Path.GetExtension(FileName).ToLower() != ".tif" || Path.GetExtension(FileName).ToLower() != ".tif")
                 {
