@@ -198,6 +198,30 @@ namespace GeoServer.Data.Migrations
                     b.ToTable("ZonalStatKATO");
                 });
 
+            modelBuilder.Entity("GeoServer.Models.ZonalStatPast", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("DataSet");
+
+                    b.Property<int>("DayOfYear");
+
+                    b.Property<string>("ModisProduct");
+
+                    b.Property<string>("ModisSource");
+
+                    b.Property<string>("PastId");
+
+                    b.Property<decimal>("Value");
+
+                    b.Property<int>("Year");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ZonalStatPast");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
