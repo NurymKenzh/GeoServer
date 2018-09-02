@@ -696,11 +696,19 @@ namespace GeoServer.Controllers
                     decimal value = 0;
                     try
                     {
-                        value = Convert.ToDecimal(s.Split(':')[1]);
+
+                        try
+                        {
+                            value = Convert.ToDecimal(s.Split(':')[1]);
+                        }
+                        catch
+                        {
+                            value = Convert.ToDecimal(s.Split(':')[1].Replace('.', ','));
+                        }
                     }
                     catch
                     {
-                        value = Convert.ToDecimal(s.Split(':')[1].Replace('.', ','));
+
                     }
                     ZonalStatPast zonalStatPast = new ZonalStatPast()
                     {

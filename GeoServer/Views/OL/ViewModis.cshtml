@@ -249,50 +249,51 @@
                 var result = parser.readFeatures(response);
                 if (result.length>0) {
                     //var d = new Date($('#Date').val());
-                    $.ajax({
-                        url: '@Url.Action("GetKATOZonalStat")',
-                        data: {
-                            KATO: result[0].get('kato_te'),
-                            Year: $('#Year').val(),
-                            ModisSource: $('#ModisSource').val(),
-                            ModisProduct: $('#ModisProduct').val(),
-                            ModisDataSet: $('#ModisDataSet').val()
-                        },
-                        type: 'POST',
-                        success: function (data) {
-                            var optionhtml = '';
-                            var datacurrent = [],
-                                datamin = [],
-                                datamax = [],
-                                dataaverage = [];
-                            $.each(data.current, function (i) {
-                                datacurrent.push(data.current[i]['value'] / 10000);
-                            });
-                            $.each(data.min, function (i) {
-                                datamin.push(data.min[i] / 10000);
-                            });
-                            $.each(data.max, function (i) {
-                                datamax.push(data.max[i] / 10000);
-                            });
-                            $.each(data.average, function (i) {
-                                dataaverage.push(data.average[i] / 10000);
-                            });
-                            var ctx = document.getElementById("myChart").getContext('2d');
-                            if (myLineChart != null) {
-                                myLineChart.destroy();
-                            }
-                            myLineChart = new Chart(ctx, {
-                                type: 'line',
-                                data: {
-                                    labels: [1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 161, 177, 193, 209, 225, 241, 257, 273, 289, 305, 321, 337, 353],
-                                    datasets: [{
-                                        label: $('#Year').val(),
-                                        data: datacurrent, //[12, 19, 3, 5, 2, 3],
-                                        backgroundColor: 'rgba(255,99,132,1)',
-                                        borderColor: 'rgba(255,99,132,1)',
-                                        borderWidth: 1,
-                                        fill: false
-                                    },
+                    if ($("#KATOType").val() != 'pastALA') {
+                        $.ajax({
+                            url: '@Url.Action("GetKATOZonalStat")',
+                            data: {
+                                KATO: result[0].get('kato_te'),
+                                Year: $('#Year').val(),
+                                ModisSource: $('#ModisSource').val(),
+                                ModisProduct: $('#ModisProduct').val(),
+                                ModisDataSet: $('#ModisDataSet').val()
+                            },
+                            type: 'POST',
+                            success: function (data) {
+                                var optionhtml = '';
+                                var datacurrent = [],
+                                    datamin = [],
+                                    datamax = [],
+                                    dataaverage = [];
+                                $.each(data.current, function (i) {
+                                    datacurrent.push(data.current[i]['value'] / 10000);
+                                });
+                                $.each(data.min, function (i) {
+                                    datamin.push(data.min[i] / 10000);
+                                });
+                                $.each(data.max, function (i) {
+                                    datamax.push(data.max[i] / 10000);
+                                });
+                                $.each(data.average, function (i) {
+                                    dataaverage.push(data.average[i] / 10000);
+                                });
+                                var ctx = document.getElementById("myChart").getContext('2d');
+                                if (myLineChart != null) {
+                                    myLineChart.destroy();
+                                }
+                                myLineChart = new Chart(ctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: [1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 161, 177, 193, 209, 225, 241, 257, 273, 289, 305, 321, 337, 353],
+                                        datasets: [{
+                                            label: $('#Year').val(),
+                                            data: datacurrent, //[12, 19, 3, 5, 2, 3],
+                                            backgroundColor: 'rgba(255,99,132,1)',
+                                            borderColor: 'rgba(255,99,132,1)',
+                                            borderWidth: 1,
+                                            fill: false
+                                        },
                                         {
                                             label: 'Minimum',
                                             data: datamin,
@@ -317,13 +318,91 @@
                                             borderWidth: 1,
                                             fill: false
                                         }
-                                    ]
+                                        ]
+                                    }
+                                });
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
+                    else {
+                        $.ajax({
+                            url: '@Url.Action("GetPastZonalStat")',
+                            data: {
+                                PastId: result[0].get('idpast'),
+                                Year: $('#Year').val(),
+                                ModisSource: $('#ModisSource').val(),
+                                ModisProduct: $('#ModisProduct').val(),
+                                ModisDataSet: $('#ModisDataSet').val()
+                            },
+                            type: 'POST',
+                            success: function (data) {
+                                var optionhtml = '';
+                                var datacurrent = [],
+                                    datamin = [],
+                                    datamax = [],
+                                    dataaverage = [];
+                                $.each(data.current, function (i) {
+                                    datacurrent.push(data.current[i]['value'] / 10000);
+                                });
+                                $.each(data.min, function (i) {
+                                    datamin.push(data.min[i] / 10000);
+                                });
+                                $.each(data.max, function (i) {
+                                    datamax.push(data.max[i] / 10000);
+                                });
+                                $.each(data.average, function (i) {
+                                    dataaverage.push(data.average[i] / 10000);
+                                });
+                                var ctx = document.getElementById("myChart").getContext('2d');
+                                if (myLineChart != null) {
+                                    myLineChart.destroy();
                                 }
-                            });
-                        },
-                        error: function () {
-                        }
-                    });
+                                myLineChart = new Chart(ctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: [1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 161, 177, 193, 209, 225, 241, 257, 273, 289, 305, 321, 337, 353],
+                                        datasets: [{
+                                            label: $('#Year').val(),
+                                            data: datacurrent, //[12, 19, 3, 5, 2, 3],
+                                            backgroundColor: 'rgba(255,99,132,1)',
+                                            borderColor: 'rgba(255,99,132,1)',
+                                            borderWidth: 1,
+                                            fill: false
+                                        },
+                                        {
+                                            label: 'Minimum',
+                                            data: datamin,
+                                            backgroundColor: 'rgba(255, 159, 64, 1)',
+                                            borderColor: 'rgba(255, 159, 64, 1)',
+                                            borderWidth: 1,
+                                            fill: false
+                                        },
+                                        {
+                                            label: 'Maximum',
+                                            data: datamax,
+                                            backgroundColor: 'rgba(0, 240, 64, 1)',
+                                            borderColor: 'rgba(0, 240, 64, 1)',
+                                            borderWidth: 1,
+                                            fill: false
+                                        },
+                                        {
+                                            label: 'Average',
+                                            data: dataaverage,
+                                            backgroundColor: 'rgba(57, 26, 190, 1)',
+                                            borderColor: 'rgba(57, 26, 190, 1)',
+                                            borderWidth: 1,
+                                            fill: false
+                                        }
+                                        ]
+                                    }
+                                });
+                            },
+                            error: function () {
+                            }
+                        });
+                    }
                 }
             }
             )

@@ -24,7 +24,8 @@ namespace GeoServer.Controllers
             {
                 new SelectListItem() { Text="Области", Value="adm1pol"},
                 new SelectListItem() { Text="Районы", Value="adm2pol"},
-                new SelectListItem() { Text="Сельские округи", Value="adm3pol"}
+                new SelectListItem() { Text="Сельские округи", Value="adm3pol"},
+                new SelectListItem() { Text="Пастбища", Value="pastALA"}
             };
 
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
@@ -63,6 +64,39 @@ namespace GeoServer.Controllers
                     if(currenZonalStatKATO!=null)
                     {
                         current.Add(currenZonalStatKATO);
+                    }
+                    min.Add(today.Min(z => z.Value));
+                    max.Add(today.Max(z => z.Value));
+                    average.Add(today.Average(z => z.Value));
+                }
+            }
+            return Json(new
+            {
+                current,
+                min,
+                max,
+                average
+            });
+        }
+
+        [HttpPost]
+        public ActionResult GetPastZonalStat(string PastId, int Year, string ModisSource, string ModisProduct, string ModisDataSet)
+        {
+            List<int> days = _context.ZonalStatPast.Select(z => z.DayOfYear).Distinct().OrderBy(d => d).ToList();
+            List<ZonalStatPast> current = new List<ZonalStatPast>();
+            List<decimal> min = new List<decimal>(),
+                max = new List<decimal>(),
+                average = new List<decimal>();
+            var all = _context.ZonalStatPast.Where(z => z.PastId == PastId && z.ModisSource == ModisSource && z.ModisProduct == ModisProduct && z.DataSet == ModisDataSet).ToList();
+            foreach (int day in days)
+            {
+                List<ZonalStatPast> today = all.Where(z => z.DayOfYear == day).ToList();
+                if (today.Count > 0)
+                {
+                    ZonalStatPast currenZonalStatPast = today.FirstOrDefault(z => z.Year == Year);
+                    if (currenZonalStatPast != null)
+                    {
+                        current.Add(currenZonalStatPast);
                     }
                     min.Add(today.Min(z => z.Value));
                     max.Add(today.Max(z => z.Value));
