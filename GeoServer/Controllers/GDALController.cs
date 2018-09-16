@@ -792,7 +792,7 @@ namespace GeoServer.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public JsonResult GetModisProductByModisSource(string ModisSource)
         {
             var modisProducts = _context.ModisProduct
@@ -1048,7 +1048,7 @@ namespace GeoServer.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         public JsonResult GetModisDataSets(string ModisProduct)
         {
             JsonResult result = new JsonResult(_context.ModisDataSet.Include(m => m.ModisProduct).Where(m => m.ModisProduct.Name == ModisProduct).OrderBy(m => m.Index).ToArray());

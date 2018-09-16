@@ -7,7 +7,80 @@
 <script src="~/lib/ol/ol.js"></script>
 <h2>ViewModis</h2>
 
-<div class="col-md-4">
+<style>
+    .fullscreen:-moz-full-screen {
+        height: 100%;
+    }
+
+    .fullscreen:-webkit-full-screen {
+        height: 100%;
+    }
+
+    .fullscreen:-ms-fullscreen {
+        height: 100%;
+    }
+
+    .fullscreen:fullscreen {
+        height: 100%;
+    }
+
+    .fullscreen {
+        margin-bottom: 10px;
+        width: 100%;
+        height: 800px;
+    }
+
+    .ol-rotate {
+        top: 3em;
+    }
+
+    .map {
+        width: 80%;
+        height: 100%;
+        float: left;
+    }
+
+    .sidepanel {
+        background: #1F6B75;
+        width: 20%;
+        height: 100%;
+        float: left;
+    }
+
+    .sidepanel-title {
+        width: 100%;
+        font-size: 3em;
+        color: #ffffff;
+        display: block;
+        text-align: center;
+    }
+</style>
+
+<div id="fullscreen" class="fullscreen">
+    <div id="map" class="map"></div>
+    <div class="sidepanel">
+        <span class="sidepanel-title">Выбор</span>
+        <label class="control-label">KATOType</label>
+        @Html.DropDownList("KATOType", (IEnumerable<SelectListItem>)ViewBag.KATOType, htmlAttributes: new { @class = "form-control", @id = "KATOType", @onchange = "ChangeKATOType()" })
+
+        <label class="control-label">ModisSource</label>
+        @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control", @id = "ModisSource", @onchange = "ChangeModisSource()" })
+
+        <label class="control-label">ModisProduct</label>
+        @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control", @id = "ModisProduct", @onchange = "ChangeModisProduct()" })
+
+        <label class="control-label">ModisDataSet</label>
+        <select asp-items="ViewBag.ModisDataSet" name="ModisDataSet" class="form-control" id="ModisDataSet" onchange="ChangeModisDataSet()"></select>
+
+        <label class="control-label">Year</label>
+        <select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" onchange="ChangeYear()"></select>
+
+        <label class="control-label">Date</label>
+        <select name="Date" class="form-control" id="Date" onchange="ChangeDate()"></select>
+    </div>
+</div>
+
+@*<div class="col-md-4" style="width: 200px;">
     <label class="control-label">KATOType</label>
     @Html.DropDownList("KATOType", (IEnumerable<SelectListItem>)ViewBag.KATOType, htmlAttributes: new { @class = "form-control", @id = "KATOType", @onchange = "ChangeKATOType()" })
 
@@ -25,16 +98,12 @@
 
     <label class="control-label">Date</label>
     <select name="Date" class="form-control" id="Date" onchange="ChangeDate()"></select>
+</div>*@
+@*<div style="width: calc(100% - 250px); float: right;">
+    <div id="map"></div>
+</div>*@
 
-    @*<label class="control-label">Date</label>
-    @{
-        DateTime Date = new DateTime();
-        Date = DateTime.Today;
-    }
-    <input asp-for="@Date" id="Date" name="Date" type="date" class="form-control" onchange="ChangeDate()" />*@
-</div>
 
-<div id="map"></div>
 
 <script type="text/javascript">
     var layers = [];
@@ -225,7 +294,10 @@
 
 @*<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>*@
 <script src="~/lib/chart.js/Chart.js"></script>
-<canvas id="myChart" width="400" height="200"></canvas>
+<div id="chartdiv" style="height: 200px;">
+    <canvas id="myChart" width="400" height="200"></canvas>
+</div>
+
 <script>
     var myLineChart = null;
     map.on('singleclick', function (evt) {
@@ -250,7 +322,19 @@
                 if (result.length>0) {
                     //var d = new Date($('#Date').val());
                     if ($("#KATOType").val() != 'pastALA') {
-                        $.ajax({
+
+                        var url = '@Url.Action("ViewModisChart")' +
+                            '?KATOType=' + $("#KATOType").val() +
+                            '&PastId=' +
+                            '&KATO=' + result[0].get('kato_te') +
+                            "&Year=" + $('#Year').val() +
+                            "&ModisSource=" + $('#ModisSource').val() +
+                            "&ModisProduct=" + $('#ModisProduct').val() +
+                            "&ModisDataSet=" + $('#ModisDataSet').val();
+
+                        var myWindow = window.open(url, "MsgWindow", "width=500,height=400");
+
+                        @*$.ajax({
                             url: '@Url.Action("GetKATOZonalStat")',
                             data: {
                                 KATO: result[0].get('kato_te'),
@@ -282,6 +366,7 @@
                                 if (myLineChart != null) {
                                     myLineChart.destroy();
                                 }
+                                $('#chartdiv').height(200);
                                 myLineChart = new Chart(ctx, {
                                     type: 'line',
                                     data: {
@@ -324,13 +409,23 @@
                             },
                             error: function () {
                             }
-                        });
+                        });*@
                     }
                     else {
-                        $.ajax({
+                        var url = '@Url.Action("ViewModisChart")' +
+                            '?KATOType=' + $("#KATOType").val() +
+                            '&PastId=' + result[0].get('id') +
+                            '&KATO=' +
+                            "&Year=" + $('#Year').val() +
+                            "&ModisSource=" + $('#ModisSource').val() +
+                            "&ModisProduct=" + $('#ModisProduct').val() +
+                            "&ModisDataSet=" + $('#ModisDataSet').val();
+
+                        myWindow = window.open(url, "MsgWindow", "width=500,height=400");
+                        @*$.ajax({
                             url: '@Url.Action("GetPastZonalStat")',
                             data: {
-                                PastId: result[0].get('idpast'),
+                                PastId: result[0].get('id'),
                                 Year: $('#Year').val(),
                                 ModisSource: $('#ModisSource').val(),
                                 ModisProduct: $('#ModisProduct').val(),
@@ -359,6 +454,7 @@
                                 if (myLineChart != null) {
                                     myLineChart.destroy();
                                 }
+                                $('#chartdiv').height(200);
                                 myLineChart = new Chart(ctx, {
                                     type: 'line',
                                     data: {
@@ -401,7 +497,7 @@
                             },
                             error: function () {
                             }
-                        });
+                        });*@
                     }
                 }
             }

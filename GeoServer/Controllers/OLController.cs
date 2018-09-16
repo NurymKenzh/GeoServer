@@ -39,6 +39,25 @@ namespace GeoServer.Controllers
             return View();
         }
 
+        public IActionResult ViewModisChart(
+            string KATOType,
+            string KATO,
+            string PastId,
+            int Year,
+            string ModisSource,
+            string ModisProduct,
+            string ModisDataSet)
+        {
+            ViewBag.KATOType = KATOType;
+            ViewBag.KATO = KATO;
+            ViewBag.PastId = PastId;
+            ViewBag.Year = Year;
+            ViewBag.ModisSource = ModisSource;
+            ViewBag.ModisProduct = ModisProduct;
+            ViewBag.ModisDataSet = ModisDataSet;
+            return View();
+        }
+
         //[HttpPost]
         //public JsonResult GetKATOZonalStat(string KATO, int Year)
         //{

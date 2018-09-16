@@ -1,0 +1,187 @@
+﻿
+@{
+    ViewData["Title"] = "ViewModisChart";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ViewModisChart</title>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <script src="~/lib/chart.js/Chart.js"></script>
+    <div id="chartdiv" style="height: 200px;">
+        <canvas id="myChart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        var myLineChart = null;
+
+        if ("@ViewBag.KATOType" != 'pastALA') {
+            $.ajax({
+                url: '@Url.Action("GetKATOZonalStat")',
+                data: {
+                    KATO: "@ViewBag.KATO",
+                    Year: @ViewBag.Year,
+                    ModisSource: "@ViewBag.ModisSource",
+                    ModisProduct: "@ViewBag.ModisProduct",
+                    ModisDataSet: "@ViewBag.ModisDataSet"
+                },
+                type: 'POST',
+                success: function (data) {
+                    var optionhtml = '';
+                    var datacurrent = [],
+                        datamin = [],
+                        datamax = [],
+                        dataaverage = [];
+                    $.each(data.current, function (i) {
+                        datacurrent.push(data.current[i]['value'] / 10000);
+                    });
+                    $.each(data.min, function (i) {
+                        datamin.push(data.min[i] / 10000);
+                    });
+                    $.each(data.max, function (i) {
+                        datamax.push(data.max[i] / 10000);
+                    });
+                    $.each(data.average, function (i) {
+                        dataaverage.push(data.average[i] / 10000);
+                    });
+                    var ctx = document.getElementById("myChart").getContext('2d');
+                    if (myLineChart != null) {
+                        myLineChart.destroy();
+                    }
+                    $('#chartdiv').height(200);
+                    myLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: [1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 161, 177, 193, 209, 225, 241, 257, 273, 289, 305, 321, 337, 353],
+                            datasets: [{
+                                label: @ViewBag.Year,
+                                data: datacurrent, //[12, 19, 3, 5, 2, 3],
+                                backgroundColor: 'rgba(255,99,132,1)',
+                                borderColor: 'rgba(255,99,132,1)',
+                                borderWidth: 1,
+                                fill: false
+                            },
+                            {
+                                label: 'Minimum',
+                                data: datamin,
+                                backgroundColor: 'rgba(255, 159, 64, 1)',
+                                borderColor: 'rgba(255, 159, 64, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            },
+                            {
+                                label: 'Maximum',
+                                data: datamax,
+                                backgroundColor: 'rgba(0, 240, 64, 1)',
+                                borderColor: 'rgba(0, 240, 64, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            },
+                            {
+                                label: 'Average',
+                                data: dataaverage,
+                                backgroundColor: 'rgba(57, 26, 190, 1)',
+                                borderColor: 'rgba(57, 26, 190, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            }
+                            ]
+                        }
+                    });
+                },
+                error: function () {
+                }
+            });
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("GetPastZonalStat")',
+                data: {
+                    PastId: "@ViewBag.PastId",
+                    Year: @ViewBag.Year,
+                    ModisSource: "@ViewBag.ModisSource",
+                    ModisProduct: "@ViewBag.ModisProduct",
+                    ModisDataSet: "@ViewBag.ModisDataSet"
+                },
+                type: 'POST',
+                success: function (data) {
+                    var optionhtml = '';
+                    var datacurrent = [],
+                        datamin = [],
+                        datamax = [],
+                        dataaverage = [];
+                    $.each(data.current, function (i) {
+                        datacurrent.push(data.current[i]['value'] / 10000);
+                    });
+                    $.each(data.min, function (i) {
+                        datamin.push(data.min[i] / 10000);
+                    });
+                    $.each(data.max, function (i) {
+                        datamax.push(data.max[i] / 10000);
+                    });
+                    $.each(data.average, function (i) {
+                        dataaverage.push(data.average[i] / 10000);
+                    });
+                    var ctx = document.getElementById("myChart").getContext('2d');
+                    if (myLineChart != null) {
+                        myLineChart.destroy();
+                    }
+                    $('#chartdiv').height(200);
+                    myLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: [1, 17, 33, 49, 65, 81, 97, 113, 129, 145, 161, 177, 193, 209, 225, 241, 257, 273, 289, 305, 321, 337, 353],
+                            datasets: [{
+                                label: @ViewBag.Year,
+                                data: datacurrent, //[12, 19, 3, 5, 2, 3],
+                                backgroundColor: 'rgba(255,99,132,1)',
+                                borderColor: 'rgba(255,99,132,1)',
+                                borderWidth: 1,
+                                fill: false
+                            },
+                            {
+                                label: 'Minimum',
+                                data: datamin,
+                                backgroundColor: 'rgba(255, 159, 64, 1)',
+                                borderColor: 'rgba(255, 159, 64, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            },
+                            {
+                                label: 'Maximum',
+                                data: datamax,
+                                backgroundColor: 'rgba(0, 240, 64, 1)',
+                                borderColor: 'rgba(0, 240, 64, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            },
+                            {
+                                label: 'Average',
+                                data: dataaverage,
+                                backgroundColor: 'rgba(57, 26, 190, 1)',
+                                borderColor: 'rgba(57, 26, 190, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            }
+                            ]
+                        }
+                    });
+                },
+                error: function () {
+                }
+            });
+        }
+    </script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>
