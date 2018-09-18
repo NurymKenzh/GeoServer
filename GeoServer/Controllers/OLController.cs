@@ -58,13 +58,6 @@ namespace GeoServer.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public JsonResult GetKATOZonalStat(string KATO, int Year)
-        //{
-        //    JsonResult result = new JsonResult(_context.ZonalStatKATO.Where(z => z.KATO == KATO && z.Year == Year).OrderBy(z => z.DayOfYear));
-        //    return result;
-        //}
-
         [HttpPost]
         public ActionResult GetKATOZonalStat(string KATO, int Year, string ModisSource, string ModisProduct, string ModisDataSet)
         {
@@ -190,6 +183,33 @@ namespace GeoServer.Controllers
             return Json(new
             {
                 dates
+            });
+        }
+
+        [HttpPost]
+        public ActionResult GetPasInfo(int class_id,
+            int otdely_id,
+            int subtype_id,
+            int group_id,
+            int recom_id)
+        {
+            string class_name = _context.PasClass.FirstOrDefault(p => p.Code == class_id).Name,
+                otdely_name = _context.PasOtdel.FirstOrDefault(p => p.Code == otdely_id).Name,
+                subtype_name = _context.PasSubtype.FirstOrDefault(p => p.Code == subtype_id).Name,
+                group_name = _context.PasGroup.FirstOrDefault(p => p.Code == group_id).Name,
+                group_nameLat = _context.PasGroup.FirstOrDefault(p => p.Code == group_id).NameLat,
+                recom_name = _context.PasRecom.FirstOrDefault(p => p.Code == recom_id).Name;
+            if(!string.IsNullOrEmpty(group_nameLat))
+            {
+                group_name += $" ({group_nameLat})";
+            }
+            return Json(new
+            {
+                class_name,
+                otdely_name,
+                subtype_name,
+                group_name,
+                recom_name
             });
         }
     }

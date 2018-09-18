@@ -172,6 +172,78 @@ namespace GeoServer.Data.Migrations
                     b.ToTable("ModisSpan");
                 });
 
+            modelBuilder.Entity("GeoServer.Models.PasClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Code");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasClass");
+                });
+
+            modelBuilder.Entity("GeoServer.Models.PasGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Code");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("NameLat");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasGroup");
+                });
+
+            modelBuilder.Entity("GeoServer.Models.PasOtdel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Code");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasOtdel");
+                });
+
+            modelBuilder.Entity("GeoServer.Models.PasRecom", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Code");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasRecom");
+                });
+
+            modelBuilder.Entity("GeoServer.Models.PasSubtype", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Code");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasSubtype");
+                });
+
             modelBuilder.Entity("GeoServer.Models.ZonalStatKATO", b =>
                 {
                     b.Property<int>("Id")

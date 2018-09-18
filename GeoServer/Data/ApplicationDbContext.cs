@@ -46,6 +46,16 @@ namespace GeoServer.Data
         public DbSet<GeoServer.Models.ZonalStatKATO> ZonalStatKATO { get; set; }
 
         public DbSet<GeoServer.Models.ZonalStatPast> ZonalStatPast { get; set; }
+
+        public DbSet<GeoServer.Models.PasClass> PasClass { get; set; }
+
+        public DbSet<GeoServer.Models.PasOtdel> PasOtdel { get; set; }
+
+        public DbSet<GeoServer.Models.PasSubtype> PasSubtype { get; set; }
+
+        public DbSet<GeoServer.Models.PasGroup> PasGroup { get; set; }
+
+        public DbSet<GeoServer.Models.PasRecom> PasRecom { get; set; }
     }
 
     //public class MyContext : DbContext
