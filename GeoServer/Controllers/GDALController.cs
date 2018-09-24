@@ -730,6 +730,65 @@ namespace GeoServer.Controllers
             }
         }
 
+        public void Anomaly(int Year)
+        {
+            List<int> dates = new List<int>();
+            dates.Add(1);
+            dates.Add(17);
+            dates.Add(33);
+            dates.Add(49);
+            dates.Add(65);
+            dates.Add(81);
+            dates.Add(97);
+            dates.Add(113);
+            dates.Add(129);
+            dates.Add(145);
+            dates.Add(161);
+            dates.Add(177);
+            dates.Add(193);
+            dates.Add(209);
+            dates.Add(225);
+            dates.Add(241);
+            dates.Add(257);
+            dates.Add(273);
+            dates.Add(289);
+            dates.Add(305);
+            dates.Add(321);
+            dates.Add(337);
+            dates.Add(353);
+            foreach(int day in dates)
+            {
+                string command = $"gdal_calc.py -A MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -B MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -C MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -D MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -E MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -F MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -G MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -H MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -I MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -J MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" -K MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI.tif" +
+                    $" --outfile=MOLT_MOD13Q1_A2008{day.ToString()}_250m16daysNDVI_AN.tif" +
+                    " --calc=\"(A-((B+C+D+E+F+G+H+I+J+K)/10))*0.01\"";
+                StreamWriter w = new StreamWriter(Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], $"GeoServer\\MOLT\\MOD13Q1\\_AN{day.ToString()}"));
+                w.WriteLine(command);
+                w.Close();
+                try
+                {
+                    Process process = new Process();
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.RedirectStandardError = true;
+                    process.StartInfo.FileName = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], $"GeoServer\\MOLT\\MOD13Q1\\_AN{day.ToString()}");
+                    process.Start();
+                }
+                catch
+                {
+
+                }
+            }
+        }
         //===========================================================================================================
 
         public IActionResult DownloadModis()
@@ -1055,6 +1114,16 @@ namespace GeoServer.Controllers
             return result;
         }
 
+        public IActionResult ModisAnomaly()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public IActionResult ModisAnomaly(int Year)
+        {
+            Anomaly(Year);
+            return View();
+        }
     }
 }
