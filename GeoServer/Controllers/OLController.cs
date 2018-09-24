@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using GeoServer.Data;
 using GeoServer.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -20,6 +22,13 @@ namespace GeoServer.Controllers
 
         public IActionResult ViewModis()
         {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture("ru")),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+
             ViewBag.KATOType = new List<SelectListItem>()
             {
                 new SelectListItem() { Text="Области", Value="adm1pol"},

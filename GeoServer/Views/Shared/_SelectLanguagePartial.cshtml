@@ -5,9 +5,9 @@
 @{
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = new List<SelectListItem> {
-new SelectListItem(){ Value = "ru", Text = "Русский", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "ru" },
-new SelectListItem(){ Value = "en", Text = "English", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "en" },
-new SelectListItem(){ Value = "kk", Text = "Қазақ", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "kk" }};
+        new SelectListItem(){ Value = "ru", Text = "Русский", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "ru" },
+        new SelectListItem(){ Value = "en", Text = "English", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "en" },
+        new SelectListItem(){ Value = "kk", Text = "Қазақ", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "kk" }};
     var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
 }
 

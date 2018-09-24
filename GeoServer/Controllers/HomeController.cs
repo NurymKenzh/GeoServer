@@ -27,7 +27,14 @@ namespace GeoServer.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture("ru")),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+
+            //return View();
+            return RedirectToAction("ViewModis", "OL", null);
         }
 
         public IActionResult About()
