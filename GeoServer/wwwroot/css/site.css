@@ -1,13 +1,13 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+    padding-top: 35px;
+    padding-bottom: 10px;
 }
 
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 /* Carousel */
@@ -32,4 +32,68 @@
     .carousel-caption {
         display: none;
     }
+}
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+
+table {
+    font-size: 14px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th, td:first-child {
+    background: inherit;
+    color: #333333;
+    font-weight: 600;
+    padding: 5px 1px;
+}
+
+th, td {
+    border-style: solid;
+    border-width: 0 0 1px 0;
+    border-color: white;
+}
+
+td {
+    background: inherit;
+}
+
+    th:first-child, td:first-child {
+        text-align: left;
+        min-width: initial;
+    }
+
+.admlist {
+    overflow: hidden;
+    font-size: 16px;
+}
+
+    .admlist dt, .admlist dd {
+        height: 2.5em;
+        line-height: 2.5em;
+        padding: 0 0.625em 0 0.875em;
+        color: #333333;
+        box-sizing: border-box;
+    }
+
+dt {
+    width: 70%;
+    float: left;
+    clear: right;
+    font-weight: 400;
+    border: 1px solid #BECFC7;
+    border-right: none;
+}
+
+dd {
+    width: 30%;
+    float: right;
+    margin-left: 0;
+    margin-bottom: .3125em;
 }
