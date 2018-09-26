@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "ViewModisChart";
+    ViewData["Title"] = "График";
     Layout = null;
 }
 
@@ -9,13 +9,38 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>ViewModisChart</title>
+    <title>График</title>
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body>
+<body style="padding: 0px;">
     <script src="~/lib/chart.js/Chart.js"></script>
+    @if (ViewBag.KATOType == "adm1pol")
+    {
+        <h2 align="center">
+            Область
+        </h2>
+    }
+    @if (ViewBag.KATOType == "adm2pol")
+    {
+        <h2 align="center">
+            Район
+        </h2>
+    }
+    @if (ViewBag.KATOType == "adm3pol")
+    {
+        <h2 align="center">
+            Сельский округ
+        </h2>
+    }
+    @if (ViewBag.KATOType == "pastALA")
+    {
+        <h2 align="center">
+            Пастбище
+        </h2>
+    }
+
     <div id="chartdiv" style="height: 200px;">
         <canvas id="myChart" width="400" height="200"></canvas>
     </div>
@@ -70,7 +95,7 @@
                                 fill: false
                             },
                             {
-                                label: 'Minimum',
+                                label: 'Минимум',
                                 data: datamin,
                                 backgroundColor: 'rgba(255, 159, 64, 1)',
                                 borderColor: 'rgba(255, 159, 64, 1)',
@@ -78,7 +103,7 @@
                                 fill: false
                             },
                             {
-                                label: 'Maximum',
+                                label: 'Максимум',
                                 data: datamax,
                                 backgroundColor: 'rgba(0, 240, 64, 1)',
                                 borderColor: 'rgba(0, 240, 64, 1)',
@@ -86,7 +111,7 @@
                                 fill: false
                             },
                             {
-                                label: 'Average',
+                                label: 'Среднее',
                                 data: dataaverage,
                                 backgroundColor: 'rgba(57, 26, 190, 1)',
                                 borderColor: 'rgba(57, 26, 190, 1)',
@@ -148,7 +173,7 @@
                                 fill: false
                             },
                             {
-                                label: 'Minimum',
+                                label: 'Минимум',
                                 data: datamin,
                                 backgroundColor: 'rgba(255, 159, 64, 1)',
                                 borderColor: 'rgba(255, 159, 64, 1)',
@@ -156,7 +181,7 @@
                                 fill: false
                             },
                             {
-                                label: 'Maximum',
+                                label: 'Максимум',
                                 data: datamax,
                                 backgroundColor: 'rgba(0, 240, 64, 1)',
                                 borderColor: 'rgba(0, 240, 64, 1)',
@@ -164,7 +189,7 @@
                                 fill: false
                             },
                             {
-                                label: 'Average',
+                                label: 'Среднее',
                                 data: dataaverage,
                                 backgroundColor: 'rgba(57, 26, 190, 1)',
                                 borderColor: 'rgba(57, 26, 190, 1)',

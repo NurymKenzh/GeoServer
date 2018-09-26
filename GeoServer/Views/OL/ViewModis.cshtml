@@ -63,7 +63,7 @@
 
 <div id="fullscreen" class="fullscreen">
     <div id="map" class="map"></div>
-    <div class="sidepanel">
+    <div class="sidepanel" style="padding:15px;">
         @*<span class="sidepanel-title">Выбор</span>*@
         @*<label class="control-label">KATOType</label>
         @Html.DropDownList("KATOType", (IEnumerable<SelectListItem>)ViewBag.KATOType, htmlAttributes: new { @class = "form-control", @id = "KATOType", @onchange = "ChangeKATOType()" })
@@ -506,6 +506,17 @@
                 'INFO_FORMAT': 'text/javascript'
                 //'FEATURE_COUNT': '10000'
             });
+        if ($('.KATO:checked').val() === 'KATO') {
+
+        }
+        else if ($('.Pastures:checked').val() === 'Pastures') {
+            url = layers[3].getSource().getGetFeatureInfoUrl(
+                evt.coordinate, viewResolution, 'EPSG:3857',
+                {
+                    'INFO_FORMAT': 'text/javascript'
+                    //'FEATURE_COUNT': '10000'
+                });
+        }
         if (url) {
             var parser = new ol.format.GeoJSON();
             $.ajax({
@@ -513,37 +524,53 @@
                 dataType: 'jsonp',
                 jsonpCallback: 'parseResponse',
                 error: function (xhr, status, error) {
-                    //alert(err.Message);
                 }
             }).then(function (response) {
                 var result = parser.readFeatures(response);
                 if (result.length > 0) {
                     // chart
-                    if ($("#KATOType").val() !== 'pastALA') {
+                    //if ($("#KATOType").val() !== 'pastALA') {
+                    var KATOLayer = 'adm2pol';
+                    if ($('.KATOLevel:checked').val() === 'adm1pol') {
+                        KATOLayer = 'adm1pol';
+                    }
+                    if ($('.KATOLevel:checked').val() === 'adm3pol') {
+                        KATOLayer = 'adm3pol';
+                    }
+                    if ($('.KATO:checked').val() === 'KATO') {
                         var url = '@Url.Action("ViewModisChart")' +
-                            '?KATOType=' + $("#KATOType").val() +
+                            '?KATOType=' + KATOLayer +
                             '&PastId=' +
                             '&KATO=' + result[0].get('kato_te') +
                             "&Year=" + $('#Year').val() +
-                            "&ModisSource=" + $('#ModisSource').val() +
-                            "&ModisProduct=" + $('#ModisProduct').val() +
-                            "&ModisDataSet=" + $('#ModisDataSet').val();
+                            "&ModisSource=" + "MOLT" +
+                            "&ModisProduct=" + "MOD13Q1" +
+                            "&ModisDataSet=" + $("#Index").val();
                         window.open(url, "MsgWindow", "width=500,height=400");
                     }
-                    else {
-                        var url = '@Url.Action("ViewModisChart")' +
-                            '?KATOType=' + $("#KATOType").val() +
-                            '&PastId=' + result[0].get('id') +
-                            '&KATO=' +
-                            "&Year=" + $('#Year').val() +
-                            "&ModisSource=" + $('#ModisSource').val() +
-                            "&ModisProduct=" + $('#ModisProduct').val() +
-                            "&ModisDataSet=" + $('#ModisDataSet').val();
+                    else if ($('.Pastures:checked').val() === 'Pastures') {
+                        if ($('.PasturesType:checked').val() === 'pastALAColor') {
 
-                        window.open(url, "MsgWindow", "width=500,height=400");
+                        }
+                        else {
+                            var url = '@Url.Action("ViewModisChart")' +
+                                '?KATOType=' + "pastALA" +
+                                '&PastId=' + result[0].get('id') +
+                                '&KATO=' +
+                                "&Year=" + $('#Year').val() +
+                                "&ModisSource=" + "MOLT" +
+                                "&ModisProduct=" + "MOD13Q1" +
+                                "&ModisDataSet=" + $("#Index").val();
+
+                            window.open(url, "MsgWindow", "width=500,height=400");
+                        }
                     }
                     // pastures info
-                    if ($("#KATOType").val() === 'pastALA') {
+                    //if ($("#KATOType").val() === 'pastALA') {
+                    if ($('.KATO:checked').val() === 'KATO') {
+                        
+                    }
+                    else if (($('.Pastures:checked').val() === 'Pastures') && ($('.PasturesType:checked').val() === 'pastALAColor')) {
                         $.ajax({
                             url: '@Url.Action("GetPasInfo")',
                             data: {
