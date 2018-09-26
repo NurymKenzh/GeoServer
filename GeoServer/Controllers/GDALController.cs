@@ -749,13 +749,13 @@ namespace GeoServer.Controllers
             dates.Add(209);
             dates.Add(225);
             dates.Add(241);
-            dates.Add(257);
-            dates.Add(273);
-            dates.Add(289);
-            dates.Add(305);
-            dates.Add(321);
-            dates.Add(337);
-            dates.Add(353);
+            //dates.Add(257);
+            //dates.Add(273);
+            //dates.Add(289);
+            //dates.Add(305);
+            //dates.Add(321);
+            //dates.Add(337);
+            //dates.Add(353);
             foreach(int day in dates)
             {
                 string dayS = day.ToString();
@@ -770,35 +770,49 @@ namespace GeoServer.Controllers
                 if (!System.IO.File.Exists(Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], $"MOLT\\MOD13Q1\\MOLT_MOD13Q1_A2018{dayS}_250m16daysNDVI_AN.tif")))
                 {
                     string command = $"gdal_calc.py -A MOLT_MOD13Q1_A2018{dayS}_250m16daysNDVI.tif" +
-                    $" -B MOLT_MOD13Q1_A2008{dayS}_250m16daysNDVI.tif" +
-                    $" -C MOLT_MOD13Q1_A2009{dayS}_250m16daysNDVI.tif" +
-                    $" -D MOLT_MOD13Q1_A2010{dayS}_250m16daysNDVI.tif" +
-                    $" -E MOLT_MOD13Q1_A2011{dayS}_250m16daysNDVI.tif" +
-                    $" -F MOLT_MOD13Q1_A2012{dayS}_250m16daysNDVI.tif" +
-                    $" -G MOLT_MOD13Q1_A2013{dayS}_250m16daysNDVI.tif" +
-                    $" -H MOLT_MOD13Q1_A2014{dayS}_250m16daysNDVI.tif" +
-                    $" -I MOLT_MOD13Q1_A2015{dayS}_250m16daysNDVI.tif" +
-                    $" -J MOLT_MOD13Q1_A2016{dayS}_250m16daysNDVI.tif" +
-                    $" -K MOLT_MOD13Q1_A2017{dayS}_250m16daysNDVI.tif" +
-                    $" --outfile=MOLT_MOD13Q1_A2018{dayS}_250m16daysNDVI_AN.tif" +
-                    " --calc=\"(A-((B+C+D+E+F+G+H+I+J+K)/10))*0.01\"";
+                        $" -B MOLT_MOD13Q1_A2008{dayS}_250m16daysNDVI.tif" +
+                        $" -C MOLT_MOD13Q1_A2009{dayS}_250m16daysNDVI.tif" +
+                        $" -D MOLT_MOD13Q1_A2010{dayS}_250m16daysNDVI.tif" +
+                        $" -E MOLT_MOD13Q1_A2011{dayS}_250m16daysNDVI.tif" +
+                        $" -F MOLT_MOD13Q1_A2012{dayS}_250m16daysNDVI.tif" +
+                        $" -G MOLT_MOD13Q1_A2013{dayS}_250m16daysNDVI.tif" +
+                        $" -H MOLT_MOD13Q1_A2014{dayS}_250m16daysNDVI.tif" +
+                        $" -I MOLT_MOD13Q1_A2015{dayS}_250m16daysNDVI.tif" +
+                        $" -J MOLT_MOD13Q1_A2016{dayS}_250m16daysNDVI.tif" +
+                        $" -K MOLT_MOD13Q1_A2017{dayS}_250m16daysNDVI.tif" +
+                        $" --outfile=MOLT_MOD13Q1_A2018{dayS}_250m16daysNDVI_AN.tif" +
+                        " --calc=\"(A-((B+C+D+E+F+G+H+I+J+K)/10))*0.01\"";
                     StreamWriter w = new StreamWriter(Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], $"MOLT\\MOD13Q1\\_AN{dayS}.cmd"));
                     w.WriteLine(command);
                     w.Close();
                     try
                     {
+                        //Process process = new Process();
+                        //process.StartInfo.UseShellExecute = false;
+                        //process.StartInfo.RedirectStandardOutput = true;
+                        //process.StartInfo.RedirectStandardError = true;
+                        //process.StartInfo.FileName = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], $"MOLT\\MOD13Q1\\_AN{dayS}.cmd");
+                        ////process.StartInfo.FileName = Startup.Configuration["GDAL:CmdFullPath"];
+                        //process.Start();
+
                         Process process = new Process();
-                        process.StartInfo.UseShellExecute = false;
-                        process.StartInfo.RedirectStandardOutput = true;
-                        process.StartInfo.RedirectStandardError = true;
-                        process.StartInfo.FileName = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], $"MOLT\\MOD13Q1\\_AN{dayS}.cmd");
-                        process.Start();
+                        try
+                        {
+                            process.StartInfo.WorkingDirectory = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], $"MOLT\\MOD13Q1");
+                            process.StartInfo.FileName = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], $"MOLT\\MOD13Q1\\_AN{dayS}.cmd");
+                            process.Start();
+                            process.WaitForExit();
+                            System.IO.File.Delete(Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], $"MOLT\\MOD13Q1\\_AN{dayS}.cmd"));
+                        }
+                        catch (Exception exception)
+                        {
+                            throw new Exception(exception.ToString(), exception.InnerException);
+                        }
                     }
-                    catch
+                    catch(Exception ex)
                     {
 
                     }
-                    _GeoServer.PublishGeoTIFF(Startup.Configuration["GeoServer:Workspace"], $"MOLT\\MOD13Q1\\MOLT_MOD13Q1_A2018{dayS}_250m16daysNDVI_AN.tif", "250m16daysNDVIAnomaly");
                 }
             }
         }
