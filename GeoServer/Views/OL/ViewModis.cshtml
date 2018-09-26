@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "ViewModis";
+    ViewData["Title"] = "Карта";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -64,8 +64,8 @@
 <div id="fullscreen" class="fullscreen">
     <div id="map" class="map"></div>
     <div class="sidepanel">
-        <span class="sidepanel-title">Выбор</span>
-        <label class="control-label">KATOType</label>
+        @*<span class="sidepanel-title">Выбор</span>*@
+        @*<label class="control-label">KATOType</label>
         @Html.DropDownList("KATOType", (IEnumerable<SelectListItem>)ViewBag.KATOType, htmlAttributes: new { @class = "form-control", @id = "KATOType", @onchange = "ChangeKATOType()" })
 
         <label class="control-label">ModisSource</label>
@@ -81,7 +81,49 @@
         <select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" onchange="ChangeYear()"></select>
 
         <label class="control-label">Date</label>
+        <select name="Date" class="form-control" id="Date" onchange="ChangeDate()"></select>*@
+        @{
+            List<SelectListItem> DataType = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text="Снег", Value="snow"},
+                new SelectListItem() { Text="Спутниковые данные", Value="satellite", Selected = true}
+            };
+
+            List<SelectListItem> State = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text="Фактическое", Value="Fact"},
+                new SelectListItem() { Text="Аномальное", Value="Anomal"}
+            };
+
+            List<SelectListItem> Index = new List<SelectListItem>()
+            {
+                new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
+                new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
+            };
+        }
+        <label class="control-label">Тип данных</label>
+        @Html.DropDownList("DataType", (IEnumerable<SelectListItem>)DataType, htmlAttributes: new { @class = "form-control", @id = "DataType", @onchange = "Change()" })
+
+        <label class="control-label">Состояние</label>
+        @Html.DropDownList("State", (IEnumerable<SelectListItem>)State, htmlAttributes: new { @class = "form-control", @id = "State", @onchange = "Change()" })
+
+        <label class="control-label">Индекс</label>
+        @Html.DropDownList("Index", (IEnumerable<SelectListItem>)Index, htmlAttributes: new { @class = "form-control", @id = "Index", @onchange = "Change()" })
+
+        <label class="control-label">Год</label>
+        <select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" onchange="ChangeYear()"></select>
+
+        <label class="control-label">День</label>
         <select name="Date" class="form-control" id="Date" onchange="ChangeDate()"></select>
+
+        <label class="control-label">Базовые слои</label><br>
+            <input type="checkbox" class="KATO" name="KATO" value="KATO" onclick="Change()"> KATO<br>
+                <input type="radio" class="KATOLevel" name="KATO" value="adm1pol" onclick="Change()"> Области<br>
+                <input type="radio" class="KATOLevel" name="KATO" value="adm2pol" onclick="Change()" checked="checked"> Районы<br>
+                <input type="radio" class="KATOLevel" name="KATO" value="adm3pol" onclick="Change()"> Сельские округи<br>
+            <input type="checkbox" class="Pastures" name="Pastures" value="Pastures" onclick="Change()" checked="checked"> Пастбища<br>
+                <input type="radio" class="PasturesType" name="Pastures" value="pastALAColor" onclick="Change()"> С окрасом<br>
+                <input type="radio" class="PasturesType" name="Pastures" value="pastALA" onclick="Change()" checked="checked"> Без окраса<br>
     </div>
 </div>
 
@@ -148,7 +190,7 @@
     layers[0].set('name', 'OSM');
 
     var geoserverPort = '8080',
-        geoserverAddress = window.location.hostname;
+        geoserverAddress = '@ViewBag.GeoserverAddress';//window.location.hostname;
 
     var Source_Modis = new ol.source.TileWMS({
         url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
@@ -169,7 +211,7 @@
     var Source_KATO = new ol.source.TileWMS({
         url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
         params: {
-            'LAYERS': 'GeoServer:adm1pol',
+            'LAYERS': 'GeoServer:no',
             'VERSION': '1.1.0',
             'FORMAT': 'image/png',
             'TILED': true
@@ -182,6 +224,22 @@
     Layer_KATO.setOpacity(0.80);
     layers.push(Layer_KATO);
 
+    var Source_Pastures = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:pastALA',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_Pastures = new ol.layer.Tile({
+        source: Source_Pastures
+    });
+    Layer_Pastures.setOpacity(0.80);
+    layers.push(Layer_Pastures);
+
     var source = new ol.source.Vector();
     var layer = new ol.layer.Vector({
         source: source
@@ -191,10 +249,119 @@
         target: 'map',
         layers: layers,
         view: new ol.View({
-            center: ol.proj.fromLonLat([69, 48]),
-            zoom: 4
+            center: ol.proj.fromLonLat([78.5, 45]),
+            zoom: 7,
+            //maxZoom: ...,
+            minZoom: 7,
+            extent: [7991617, 5172524, 9408704, 6016344]
+            //extent: ol.proj.transform([74, 42, 83, 48], 'EPSG:4326', 'EPSG:3857')
+
         })
     });
+
+    function Change() {
+        var year = $('#Year').val();
+        var day = $('#Date').val();
+        if (day.length < 3) day = '0' + day;
+        if (day.length < 3) day = '0' + day;
+        var layer_Modis = '';
+
+        map.getLayers().getArray()[1].setVisible(1);
+
+        if ($('#DataType').val() === 'snow') {
+            map.getLayers().getArray()[1].setVisible(0);
+        }
+        else if ($('#DataType').val() === 'satellite') {
+            if ($('#State').val() === 'Fact') {
+                layer_Modis = "MOLT";
+                layer_Modis += '_' + "MOD13Q1";
+                layer_Modis += '_A' + [year, day].join('');
+                layer_Modis += '_' + $("#Index").val();
+                var Source_New = new ol.source.TileWMS({
+                    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                    params: {
+                        'LAYERS': 'GeoServer:' + layer_Modis,
+                        'VERSION': '1.1.0',
+                        'FORMAT': 'image/png',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                });
+                var l = map.getLayers().getArray()[1];
+                l.setSource(Source_New);
+            }
+            else if ($('#State').val() === 'Anomal') {
+                layer_Modis = "MOLT";
+                layer_Modis += '_' + "MOD13Q1";
+                layer_Modis += '_A' + [year, day].join('');
+                layer_Modis += '_' + $("#Index").val();
+                layer_Modis += '_' + "AN";
+                var Source_New = new ol.source.TileWMS({
+                    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                    params: {
+                        'LAYERS': 'GeoServer:' + layer_Modis,
+                        'VERSION': '1.1.0',
+                        'FORMAT': 'image/png',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                });
+                var l = map.getLayers().getArray()[1];
+                l.setSource(Source_New);
+            }
+        }
+
+        if ($('.KATO:checked').val() === 'KATO') {
+            var KATOLayer = 'adm2pol';
+            if ($('.KATOLevel:checked').val() === 'adm1pol') {
+                KATOLayer = 'adm1pol';
+            }
+            if ($('.KATOLevel:checked').val() === 'adm3pol') {
+                KATOLayer = 'adm3pol';
+            }
+            var Source_New = new ol.source.TileWMS({
+                url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                params: {
+                    'LAYERS': 'GeoServer:' + KATOLayer,
+                    'VERSION': '1.1.0',
+                    'FORMAT': 'image/png',
+                    'TILED': true
+                },
+                serverType: 'geoserver'
+            });
+            var l = map.getLayers().getArray()[2];
+            l.setSource(Source_New);
+            map.getLayers().getArray()[2].setVisible(1);
+        }
+        else {
+            map.getLayers().getArray()[2].setVisible(0);
+        }
+
+        if ($('.Pastures:checked').val() === 'Pastures') {
+            var PasturesLayer = 'pastALA';
+            if ($('.PasturesType:checked').val() === 'pastALAColor') {
+                PasturesLayer = 'pastALAColor';
+            }
+            var Source_New = new ol.source.TileWMS({
+                url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                params: {
+                    'LAYERS': 'GeoServer:' + PasturesLayer,
+                    'VERSION': '1.1.0',
+                    'FORMAT': 'image/png',
+                    'TILED': true
+                },
+                serverType: 'geoserver'
+            });
+            var l = map.getLayers().getArray()[3];
+            l.setSource(Source_New);
+            map.getLayers().getArray()[3].setVisible(1);
+        }
+        else {
+            map.getLayers().getArray()[3].setVisible(0);
+        }
+    }
+
+    Change();
 </script>
 
 <script>
@@ -257,7 +424,7 @@
                 });
                 $("#Date").empty();
                 $('#Date').append(optionhtml);
-                ChangeModis();
+                Change();
             },
             error: function () {
             }
@@ -269,7 +436,7 @@
     };
 
     function ChangeDate() {
-        ChangeModis();
+        Change();
     };
 
     function ChangeModis() {

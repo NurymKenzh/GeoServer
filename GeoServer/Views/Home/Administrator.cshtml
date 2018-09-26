@@ -6,62 +6,44 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="contcentr" style="background:inherit;border:1px solid #fff;padding:5px 10px; margin-right:100px; margin-left:100px;">
-    <h2>@SharedLocalizer["Administrator"]</h2>
     <h3>Модуль «Администрирование»</h3>
     <dl class="admlist">
         <dt>Управление ролями пользователей и назначение роли пользователя в приложении</dt>
-        <dd><a class="btn btn-default" asp-controller="Home" asp-action="Test">@SharedLocalizer["Test"]</a></dd>
+        <dd><a class="btn btn-default" asp-controller="Users" asp-action="Index">Перейти</a></dd>
     </dl>
-    <a class="btn btn-default" asp-controller="Home" asp-action="Test">@SharedLocalizer["Test"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="Users" asp-action="Index">@SharedLocalizer["Users"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="Hangfire" asp-action="Index">@SharedLocalizer["Hangfire"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="ZonalStatKATOes" asp-action="Index">@SharedLocalizer["ZonalStatKATOes"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="CoordinateSystems" asp-action="Index">@SharedLocalizer["CoordinateSystems"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="ModisSources" asp-action="Index">@SharedLocalizer["ModisSources"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="ModisProducts" asp-action="Index">@SharedLocalizer["ModisProducts"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="ModisDataSets" asp-action="Index">@SharedLocalizer["ModisDataSets"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="ModisSpans" asp-action="Index">@SharedLocalizer["ModisSpans"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="GDAL" asp-action="DownloadModis">@SharedLocalizer["DownloadModis"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="GDAL" asp-action="DownloadModisDelta">@SharedLocalizer["DownloadModisDelta"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="GDAL" asp-action="ModisMosaic">@SharedLocalizer["ModisMosaic"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="GDAL" asp-action="Reproject">@SharedLocalizer["Reproject"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="GDAL" asp-action="ZonalStatKATO">@SharedLocalizer["ZonalStatKATO"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="GDAL" asp-action="ZonalStatPast">@SharedLocalizer["ZonalStatPast"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="GDAL" asp-action="PublishGeoTiff">@SharedLocalizer["PublishGeoTiff"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="Logs" asp-action="Index">@SharedLocalizer["Log"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="GDAL" asp-action="ModisAnomaly">@SharedLocalizer["ModisAnomaly"]</a>
+
+    <dl class="admlist">
+        <dt>Журнал</dt>
+        <dd><a class="btn btn-default" asp-controller="Logs" asp-action="Index">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Скачать снимки MODIS</dt>
+        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="DownloadModis">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Скачать снимки MODIS (дельта)</dt>
+        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="DownloadModisDelta">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Построение мозайки MODIS</dt>
+        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="ModisMosaic">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Перепроецирование MODIS</dt>
+        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="Reproject">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Расчет аномалий NDVI</dt>
+        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="ModisAnomaly">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Публикация снимка</dt>
+        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="PublishGeoTiff">Перейти</a></dd>
+    </dl>
 </div>

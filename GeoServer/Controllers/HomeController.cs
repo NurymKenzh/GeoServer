@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using GeoServer.Models;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GeoServer.Controllers
 {
@@ -51,7 +52,20 @@ namespace GeoServer.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Administrator()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Directories()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public IActionResult Analize()
         {
             return View();
         }

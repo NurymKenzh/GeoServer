@@ -9,6 +9,8 @@
     if (user.IsInRole("Administrator"))
     {
         <li>@Html.ActionLink(SharedLocalizer["Administration"], "Administrator", "Home")</li>
+        <li><a asp-area="" asp-controller="Home" asp-action="Directories">Справочники</a></li>
+        <li><a asp-area="" asp-controller="Home" asp-action="Analize">Аналитика</a></li>
     }
     if (user.IsInRole("Moderator"))
     {

@@ -1,0 +1,37 @@
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = "Модуль «Справочники»";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="contcentr" style="background:inherit;border:1px solid #fff;padding:5px 10px; margin-right:100px; margin-left:100px;">
+    @*<h2>@SharedLocalizer["Administrator"]</h2>*@
+    <h3>Модуль «Справочники»</h3>
+
+    <dl class="admlist">
+        <dt>Системы координат</dt>
+        <dd><a class="btn btn-default" asp-controller="CoordinateSystems" asp-action="Index">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Источники MODIS</dt>
+        <dd><a class="btn btn-default" asp-controller="ModisSources" asp-action="Index">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Продукты MODIS</dt>
+        <dd><a class="btn btn-default" asp-controller="ModisProducts" asp-action="Index">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Наборы данных MODIS</dt>
+        <dd><a class="btn btn-default" asp-controller="ModisDataSets" asp-action="Index">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Пролеты MODIS</dt>
+        <dd><a class="btn btn-default" asp-controller="ModisSpans" asp-action="Index">Перейти</a></dd>
+    </dl>
+
+</div>

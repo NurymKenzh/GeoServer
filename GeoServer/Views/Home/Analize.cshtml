@@ -1,0 +1,31 @@
+﻿@using GeoServer.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = "Модуль «Аналитика»";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="contcentr" style="background:inherit;border:1px solid #fff;padding:5px 10px; margin-right:100px; margin-left:100px;">
+    <h2>@*@SharedLocalizer["Administrator"]*@</h2>
+    <h3>Модуль «Аналитика»</h3>
+
+    <dl class="admlist">
+        <dt>Расчет зональной статистики по КАТО</dt>
+        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="ZonalStatKATO">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Результаты зональной статистики по КАТО</dt>
+        <dd><a class="btn btn-default" asp-controller="ZonalStatKATOes" asp-action="Index">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Расчет зональной статистики по пастбищам</dt>
+        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="ZonalStatPast">Перейти</a></dd>
+    </dl>
+
+    <dl class="admlist">
+        <dt>Результаты зональной статистики по пастбищам</dt>
+        <dd><a class="btn btn-default" asp-controller="ZonalStatPastures" asp-action="Index">Перейти</a></dd>
+    </dl>
+</div>

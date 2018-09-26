@@ -31,10 +31,10 @@ namespace GeoServer.Controllers
 
             ViewBag.KATOType = new List<SelectListItem>()
             {
+                new SelectListItem() { Text="Пастбища", Value="pastALA"},
                 new SelectListItem() { Text="Области", Value="adm1pol"},
                 new SelectListItem() { Text="Районы", Value="adm2pol"},
-                new SelectListItem() { Text="Сельские округи", Value="adm3pol"},
-                new SelectListItem() { Text="Пастбища", Value="pastALA"}
+                new SelectListItem() { Text="Сельские округи", Value="adm3pol"}                
             };
 
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
@@ -45,6 +45,8 @@ namespace GeoServer.Controllers
             int minYear = _context.ZonalStatKATO.Min(z => z.Year),
                 maxYear = _context.ZonalStatKATO.Max(z => z.Year);
             ViewBag.Year = new SelectList(Enumerable.Range(minYear, (maxYear - minYear) + 1));
+
+            ViewBag.GeoserverAddress = Startup.Configuration["GeoServer:Address"];
             return View();
         }
 
