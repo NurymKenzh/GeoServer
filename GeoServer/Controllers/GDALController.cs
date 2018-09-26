@@ -1052,8 +1052,13 @@ namespace GeoServer.Controllers
         {
             foreach (string file in File)
             {
-                string DataSet = file.Split('_').Last().Split('.').First();
-                _GeoServer.PublishGeoTIFF(Startup.Configuration["GeoServer:Workspace"], Path.Combine(ModisSource, ModisProduct, file), DataSet);
+                string DataSet = file.Split('_').Last().Split('.').First(),
+                    style = DataSet;
+                if(file.Contains("_AN"))
+                {
+                    style = "250m16daysNDVIAnomaly";
+                }
+                _GeoServer.PublishGeoTIFF(Startup.Configuration["GeoServer:Workspace"], Path.Combine(ModisSource, ModisProduct, file), style);
             }
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
             ViewBag.ModisSource = new SelectList(modisSources, "Name", "Name", ModisSource);
