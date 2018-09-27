@@ -1,12 +1,12 @@
 ﻿
 @{
-    ViewData["Title"] = "DownloadModis";
+    ViewData["Title"] = "Скачать снимки MODIS";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
 <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
-<h2>DownloadModis</h2>
+<h2>Скачать снимки MODIS</h2>
 @if (!string.IsNullOrEmpty(ViewBag.Message))
 {
     <h4>@ViewBag.Message</h4>
@@ -16,33 +16,33 @@
     <div class="col-md-4">
         <form asp-action="DownloadModis">
             <div class="form-group">
-                <label class="control-label">ModisSpan</label>
+                <label class="control-label">Пролеты MODIS</label>
                 <select asp-items="ViewBag.ModisSpan" name="ModisSpan" multiple="multiple" class="form-control" id="ModisSpan"></select>
             </div>
             <div class="form-group">
-                <label class="control-label">ModisSpan</label>
+                <label class="control-label">Источник MODIS</label>
                 @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control", @id = "ModisSource", @onchange = "ChangeModisSource()" })
             </div>
             <div class="form-group">
-                <label class="control-label">ModisProduct</label>
+                <label class="control-label">Продукт MODIS</label>
                 @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control", @id = "ModisProduct" })
             </div>
             <div class="form-group">
-                <label class="control-label">DateStart</label>
+                <label class="control-label">Дата начала</label>
                 @{ 
                     DateTime DateStart = (DateTime)ViewBag.DateStart;
                 }
                 <input asp-for="@DateStart" id="DateStart" name="DateStart" type="date" class="form-control" />
             </div>
             <div class="form-group">
-                <label class="control-label">DateFinish</label>
+                <label class="control-label">Дата окончания</label>
                 @{
                     DateTime DateFinish = (DateTime)ViewBag.DateFinish;
                 }
                 <input asp-for="@DateFinish" id="DateFinish" name="DateFinish" type="date" class="form-control" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Начать" class="btn btn-default" />
             </div>
 
         </form>
@@ -75,10 +75,10 @@
 
     $('#ModisSpan').multiselect({
         includeSelectAllOption: true,
-        //nonSelectedText: $('#NothingSelected').val(),
-        //selectAllText: $('#SelectAll').val(),
-        //allSelectedText: $('#All').val(),
-        //nSelectedText: $('#selected').val(),
+        nonSelectedText: "Ничего не выбрано",
+        selectAllText: "Выбрать все",
+        allSelectedText: "Выбраны все",
+        nSelectedText: "выбрано",
         maxHeight: 270
     });
 </script>
