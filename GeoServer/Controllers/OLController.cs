@@ -44,7 +44,7 @@ namespace GeoServer.Controllers
             ViewBag.ModisDataSet = new SelectList(_context.ModisDataSet.Where(m => m.ModisProductId == modisProducts.FirstOrDefault().Id).OrderBy(m => m.Index), "Name", "IndexName");
             int minYear = _context.ZonalStatKATO.Min(z => z.Year),
                 maxYear = _context.ZonalStatKATO.Max(z => z.Year);
-            ViewBag.Year = new SelectList(Enumerable.Range(minYear, (maxYear - minYear) + 1));
+            ViewBag.Year = new SelectList(Enumerable.Range(minYear, (maxYear - minYear) + 1), maxYear);
 
             ViewBag.GeoserverAddress = Startup.Configuration["GeoServer:Address"];
             return View();
@@ -141,55 +141,93 @@ namespace GeoServer.Controllers
             List<SelectListItem> dates = new List<SelectListItem>();
             if(DateTime.IsLeapYear(Year))
             {
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.01.01 - 1", Value = "1" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.01.17 - 17", Value = "17" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.02.02 - 33", Value = "33" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.02.18 - 49", Value = "49" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.03.05 - 65", Value = "65" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.03.21 - 81", Value = "81" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.04.06 - 97", Value = "97" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.04.22 - 113", Value = "113" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.05.08 - 129", Value = "129" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.05.24 - 145", Value = "145" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.06.09 - 161", Value = "161" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.06.25 - 177", Value = "177" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.07.11 - 193", Value = "193" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.07.27 - 209", Value = "209" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.08.12 - 225", Value = "225" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.08.28 - 241", Value = "241" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.09.13 - 257", Value = "257" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.09.29 - 273", Value = "273" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.10.15 - 289", Value = "289" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.10.31 - 305", Value = "305" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.11.16 - 321", Value = "321" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.12.02 - 337", Value = "337" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.12.18 - 353", Value = "353" });
+                int dayOfYear = _context.ZonalStatKATO.Where(m => m.Year == Year).Max(m => m.DayOfYear);
+                string[] numberOf = { ".01.01 - 1", ".01.17 - 17", ".02.02 - 33", ".02.18 - 49", ".03.05 - 65",
+                    ".03.21 - 81", ".04.06 - 97", ".04.22 - 113", ".05.08 - 129", ".05.24 - 145", ".06.09 - 161",
+                    ".06.25 - 177", ".07.11 - 193", ".07.27 - 209", ".08.12 - 225", ".08.28 - 241", ".09.13 - 257",
+                    ".09.29 - 273", ".10.15 - 289", ".10.31 - 305", ".11.16 - 321", ".12.02 - 337", ".12.18 - 353" };
+                string[] value = { "1", "17", "33", "49", "65", "81", "97", "113", "129", "145", "161",
+                    "177", "193", "209", "225", "241", "257", "273", "289", "305", "321", "337", "353" };
+                for (int i = 0; i < value.Length; i++)
+                {
+                    if (dayOfYear == Convert.ToInt32(value[i]))
+                    {
+                        dates.Add(new SelectListItem() { Text = $"{Year.ToString()}" + numberOf[i], Value = value[i], Selected = true });
+                    }
+                    else
+                    {
+                        dates.Add(new SelectListItem() { Text = $"{Year.ToString()}" + numberOf[i], Value = value[i], Selected = false });
+                    }
+                }
+
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.01.01 - 1", Value = "1" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.01.17 - 17", Value = "17" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.02.02 - 33", Value = "33" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.02.18 - 49", Value = "49" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.03.05 - 65", Value = "65" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.03.21 - 81", Value = "81" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.04.06 - 97", Value = "97" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.04.22 - 113", Value = "113" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.05.08 - 129", Value = "129" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.05.24 - 145", Value = "145" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.06.09 - 161", Value = "161" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.06.25 - 177", Value = "177" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.07.11 - 193", Value = "193" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.07.27 - 209", Value = "209" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.08.12 - 225", Value = "225" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.08.28 - 241", Value = "241" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.09.13 - 257", Value = "257" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.09.29 - 273", Value = "273" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.10.15 - 289", Value = "289" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.10.31 - 305", Value = "305" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.11.16 - 321", Value = "321" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.12.02 - 337", Value = "337" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.12.18 - 353", Value = "353" });
             }
             else
             {
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.01.01 - 1", Value = "1" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.01.17 - 17", Value = "17" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.02.02 - 33", Value = "33" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.02.18 - 49", Value = "49" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.03.06 - 65", Value = "65" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.03.22 - 81", Value = "81" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.04.07 - 97", Value = "97" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.04.23 - 113", Value = "113" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.05.09 - 129", Value = "129" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.05.25 - 145", Value = "145" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.06.10 - 161", Value = "161" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.06.26 - 177", Value = "177" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.07.12 - 193", Value = "193" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.07.28 - 209", Value = "209" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.08.13 - 225", Value = "225" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.08.29 - 241", Value = "241" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.09.14 - 257", Value = "257" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.09.30 - 273", Value = "273" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.10.16 - 289", Value = "289" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.11.01 - 305", Value = "305" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.11.17 - 321", Value = "321" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.12.03 - 337", Value = "337" });
-                dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.12.19 - 353", Value = "353" });
+                int dayOfYear = _context.ZonalStatKATO.Where(m => m.Year == Year).Max(m => m.DayOfYear);
+                string[] numberOf = { ".01.01 - 1", ".01.17 - 17", ".02.02 - 33", ".02.18 - 49", ".03.06 - 65",
+                    ".03.22 - 81", ".04.07 - 97", ".04.23 - 113", ".05.09 - 129", ".05.25 - 145", ".06.10 - 161",
+                    ".06.26 - 177", ".07.12 - 193", ".07.28 - 209", ".08.13 - 225", ".08.29 - 241", ".09.14 - 257",
+                    ".09.30 - 273", ".10.16 - 289", ".11.01 - 305", ".11.17 - 321", ".12.03 - 337", ".12.19 - 353" };
+                string[] value = { "1", "17", "33", "49", "65", "81", "97", "113", "129", "145", "161",
+                    "177", "193", "209", "225", "241", "257", "273", "289", "305", "321", "337", "353" };
+                for (int i = 0; i < value.Length; i++)
+                {
+                    if(dayOfYear == Convert.ToInt32(value[i]))
+                    {
+                        dates.Add(new SelectListItem() { Text = $"{Year.ToString()}" + numberOf[i], Value = value[i], Selected = true });
+                    }
+                    else
+                    {
+                        dates.Add(new SelectListItem() { Text = $"{Year.ToString()}" + numberOf[i], Value = value[i], Selected = false });
+                    }
+                }
+
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.01.01 - 1", Value = "1" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.01.17 - 17", Value = "17" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.02.02 - 33", Value = "33" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.02.18 - 49", Value = "49" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.03.06 - 65", Value = "65" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.03.22 - 81", Value = "81" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.04.07 - 97", Value = "97" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.04.23 - 113", Value = "113" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.05.09 - 129", Value = "129" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.05.25 - 145", Value = "145" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.06.10 - 161", Value = "161" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.06.26 - 177", Value = "177" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.07.12 - 193", Value = "193" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.07.28 - 209", Value = "209" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.08.13 - 225", Value = "225" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.08.29 - 241", Value = "241" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.09.14 - 257", Value = "257" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.09.30 - 273", Value = "273" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.10.16 - 289", Value = "289" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.11.01 - 305", Value = "305" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.11.17 - 321", Value = "321" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.12.03 - 337", Value = "337" });
+                //dates.Add(new SelectListItem() { Text = $"{Year.ToString()}.12.19 - 353", Value = "353" });
             }
             return Json(new
             {
