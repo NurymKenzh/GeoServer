@@ -10,6 +10,8 @@
 
 <link href="~/lib/ol/ol.css" rel="stylesheet" />
 <script src="~/lib/ol/ol.js"></script>
+
+@*<script src="~/js/loadingoverlay.js"></script>*@
 <h2>@*ViewModis*@</h2>
 
 <style>
@@ -32,7 +34,7 @@
     .fullscreen {
         margin-bottom: 10px;
         width: 100%;
-        height: 800px;
+        height: 900px;
     }
 
     .ol-rotate {
@@ -145,6 +147,7 @@
         <input type="radio" class="ALTDLevel" name="ALTD" value="data3" onclick="Change()"> Антропогенные земли<br>
         <input id="opacity4" type="range" min="0" max="100" value="80" onchange="Opacity(4)" />
         <br />
+        <input type="button" id="info" value="Информация" onclick="ViewChart()" disabled="disabled" />
         @*<input type="checkbox" class="Pastures" name="Pastures" value="Pastures" onclick="Change()" checked="checked"> Пастбища<br>*@
         @*<input type="radio" class="PasturesType" name="Pastures" value="pastALAColor" onclick="Change()"> С окрасом
         <input type="button" value="Легенда" class="btn btn-default" onclick="PasLagend()" />
@@ -214,6 +217,8 @@
 
 
 <script type="text/javascript">
+    //$("#fullscreen").LoadingOverlay("show");
+
     var layers = [];
     layers.push(new ol.layer.Tile({
         source: new ol.source.OSM()
@@ -254,6 +259,125 @@
     });
     Layer_KATO.setOpacity(0.80);
     layers.push(Layer_KATO);
+
+    // источник данных и слой pasturepol
+    var Source_pasturepol = new ol.source.ImageWMS({
+        url: 'http://' + geoserverAddress + ':8080/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:pastALA',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            //'TILED': false
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_pasturepol =
+        new ol.layer.Image({
+            source: Source_pasturepol
+        });
+
+    // векторный слой выбранных пастбищ
+    var Source_select_pasturepol = new ol.source.Vector({});
+    var Layer_select_pasturepol = new ol.layer.Vector({
+        source: Source_select_pasturepol,
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: [0, 0, 255, 1]
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                width: 2
+            })
+        })
+    });
+    // N
+    layers.push(Layer_select_pasturepol);
+
+    // векторный слой пастбищ (не отображается на карте)
+    var Layer_pasturepol_v = new ol.layer.Vector();
+    // векторный слой областей (не отображается на карте)
+    var Layer_adm1pol_v = new ol.layer.Vector();
+    // векторный слой районов (не отображается на карте)
+    var Layer_adm2pol_v = new ol.layer.Vector();
+    // векторный слой сельских округов (не отображается на карте)
+    var Layer_adm3pol_v = new ol.layer.Vector();
+    // векторный слой пастбищ
+    var url_pasturepol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:pastALA&outputFormat=text/javascript&format_options=callback:getJson";
+    $.ajax({
+        jsonp: false,
+        jsonpCallback: 'getJson',
+        type: 'GET',
+        url: url_pasturepol_v,
+        async: false,
+        dataType: 'jsonp',
+        success: function (data_pasturepol_v) {
+            Layer_pasturepol_v = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    features: (new ol.format.GeoJSON()).readFeatures(data_pasturepol_v, {
+                        featureProjection: 'EPSG:3857'
+                    })
+                })
+            });
+            // векторный слой областей
+            var url_adm1pol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:adm1pol&outputFormat=text/javascript&format_options=callback:getJson";
+            $.ajax({
+                jsonp: false,
+                jsonpCallback: 'getJson',
+                type: 'GET',
+                url: url_adm1pol_v,
+                async: false,
+                dataType: 'jsonp',
+                success: function (data_adm1pol_v) {
+                    Layer_adm1pol_v = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: (new ol.format.GeoJSON()).readFeatures(data_adm1pol_v, {
+                                featureProjection: 'EPSG:3857'
+                            })
+                        })
+                    });
+                    // векторный слой районов
+                    var url_adm2pol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:adm2pol&outputFormat=text/javascript&format_options=callback:getJson";
+                    $.ajax({
+                        jsonp: false,
+                        jsonpCallback: 'getJson',
+                        type: 'GET',
+                        url: url_adm2pol_v,
+                        async: false,
+                        dataType: 'jsonp',
+                        success: function (data_adm2pol_v) {
+                            Layer_adm2pol_v = new ol.layer.Vector({
+                                source: new ol.source.Vector({
+                                    features: (new ol.format.GeoJSON()).readFeatures(data_adm2pol_v, {
+                                        featureProjection: 'EPSG:3857'
+                                    })
+                                })
+                            });
+                            // векторный слой сельских округов
+                            var url_adm3pol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:adm3pol&outputFormat=text/javascript&format_options=callback:getJson";
+                            $.ajax({
+                                jsonp: false,
+                                jsonpCallback: 'getJson',
+                                type: 'GET',
+                                url: url_adm3pol_v,
+                                async: false,
+                                dataType: 'jsonp',
+                                success: function (data_adm3pol_v) {
+                                    Layer_adm3pol_v = new ol.layer.Vector({
+                                        source: new ol.source.Vector({
+                                            features: (new ol.format.GeoJSON()).readFeatures(data_adm3pol_v, {
+                                                featureProjection: 'EPSG:3857'
+                                            })
+                                        })
+                                    });
+                                    //$("#fullscreen").LoadingOverlay("hide");
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
 
     //var Source_Pastures = new ol.source.TileWMS({
     //    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
@@ -572,8 +696,14 @@
 <script src="~/lib/chart.js/Chart.js"></script>
 
 <script>
+    //Source_select_pasturepol.clear();
+
     var myLineChart = null;
     map.on('singleclick', function (evt) {
+
+        document.getElementById("info").disabled = false;
+        $('#info').addClass('btn btn-default');
+        Source_select_pasturepol.clear();
         var viewResolution = (map.getView().getResolution());
         var url = layers[2].getSource().getGetFeatureInfoUrl(
             evt.coordinate, viewResolution, 'EPSG:3857',
@@ -582,107 +712,120 @@
                 //'FEATURE_COUNT': '10000'
             });
         if ($('.KATO:checked').val() === 'KATO') {
+            if (url) {
+                var parser = new ol.format.GeoJSON();
+                $.ajax({
+                    jsonp: false,
+                    jsonpCallback: 'getJson',
+                    type: 'GET',
+                    url: url + "&format_options=callback:getJson",
+                    async: false,
+                    dataType: 'jsonp',
+                    //jsonpCallback: 'parseResponse',
+                    error: function (xhr, status, error) {
 
-        }
-        else if ($('.Pastures:checked').val() === 'Pastures') {
-            url = layers[3].getSource().getGetFeatureInfoUrl(
-                evt.coordinate, viewResolution, 'EPSG:3857',
-                {
-                    'INFO_FORMAT': 'text/javascript'
-                    //'FEATURE_COUNT': '10000'
-                });
-        }
-        if (url) {
-            var parser = new ol.format.GeoJSON();
-            $.ajax({
-                url: url,
-                dataType: 'jsonp',
-                jsonpCallback: 'parseResponse',
-                error: function (xhr, status, error) {
-                }
-            }).then(function (response) {
-                var result = parser.readFeatures(response);
-                if (result.length > 0) {
-                    // chart
-                    //if ($("#KATOType").val() !== 'pastALA') {
-                    var KATOLayer = 'adm2pol';
-                    if ($('.KATOLevel:checked').val() === 'adm1pol') {
-                        KATOLayer = 'adm1pol';
                     }
-                    if ($('.KATOLevel:checked').val() === 'adm3pol') {
-                        KATOLayer = 'adm3pol';
-                    }
-                    if ($('.KATO:checked').val() === 'KATO') {
-                        var url = '@Url.Action("ViewModisChart")' +
-                            '?KATOType=' + KATOLayer +
-                            '&PastId=' +
-                            '&KATO=' + result[0].get('kato_te') +
-                            "&Year=" + $('#Year').val() +
-                            "&ModisSource=" + "MOLT" +
-                            "&ModisProduct=" + "MOD13Q1" +
-                            "&ModisDataSet=" + $("#Index").val();
-                        window.open(url, "MsgWindow", "width=500,height=400");
-                    }
-                    else if ($('.Pastures:checked').val() === 'Pastures') {
-                        if ($('.PasturesType:checked').val() === 'pastALAColor') {
+                }).then(function (response) {
+                    var result = parser.readFeatures(response);
+                    if (result.length > 0) {
+                        // chart
+                        //if ($("#KATOType").val() !== 'pastALA') {
+                        var KATOLayer = 'adm2pol';
 
+                        if ($('.KATOLevel:checked').val() === 'adm1pol') {
+                            KATOLayer = 'adm1pol';
+
+                            var polyFeature = new ol.Feature({
+                                geometry: new ol.geom.MultiPolygon(response.features[0].geometry.coordinates)
+                            });
+                            Source_select_pasturepol.addFeature(polyFeature);
                         }
-                        else {
+                        if ($('.KATOLevel:checked').val() === 'adm2pol') {
+                            KATOLayer = 'adm2pol';
+
+                            var polyFeature = new ol.Feature({
+                                geometry: new ol.geom.MultiPolygon(response.features[0].geometry.coordinates)
+                            });
+                            Source_select_pasturepol.addFeature(polyFeature);
+                        }
+                        if ($('.KATOLevel:checked').val() === 'adm3pol') {
+                            KATOLayer = 'adm3pol';
+
+                            var polyFeature = new ol.Feature({
+                                geometry: new ol.geom.MultiPolygon(response.features[0].geometry.coordinates)
+                            });
+                            Source_select_pasturepol.addFeature(polyFeature);
+                        }
+                        if ($('.KATOLevel:checked').val() === 'Pastures') {
+                            KATOLayer = 'pastALA';
+
+                            // работа с пастбищем в виде вектора (выделение пастбища)
+                            var polyFeature = new ol.Feature({
+                                geometry: new ol.geom.MultiPolygon(response.features[0].geometry.coordinates)
+                            });
+                            Source_select_pasturepol.addFeature(polyFeature);
+                        }
+                        @*if ($('.KATO:checked').val() === 'KATO') {
+
                             var url = '@Url.Action("ViewModisChart")' +
-                                '?KATOType=' + "pastALA" +
+                                '?KATOType=' + KATOLayer +
                                 '&PastId=' + result[0].get('id') +
-                                '&KATO=' +
+                                '&KATO=' + result[0].get('kato_te') +
                                 "&Year=" + $('#Year').val() +
                                 "&ModisSource=" + "MOLT" +
                                 "&ModisProduct=" + "MOD13Q1" +
                                 "&ModisDataSet=" + $("#Index").val();
-
                             window.open(url, "MsgWindow", "width=500,height=400");
+                        }*@
+                        document.cookie = KATOLayer + "." + result[0].get('id') + "." + result[0].get('kato_te');
+                        // pastures info
+                        //if ($("#KATOType").val() === 'pastALA') {
+                        if ($('.KATO:checked').val() === 'KATO') {
+
+                        }
+                        else if (($('.Pastures:checked').val() === 'Pastures') && ($('.PasturesType:checked').val() === 'pastALAColor')) {
+                            $.ajax({
+                                url: '@Url.Action("GetPasInfo")',
+                                data: {
+                                    class_id: result[0].get('class_id'),
+                                    otdely_id: result[0].get('otdely_id'),
+                                    subtype_id: result[0].get('subtype_id'),
+                                    group_id: result[0].get('group_id'),
+                                    recom_id: result[0].get('recom_id')
+                                },
+                                type: 'POST',
+                                success: function (data) {
+                                    $('#pas_class_id').html(data.class_name);
+                                    $('#pas_otdely_id').html(data.otdely_name);
+                                    $('#pas_subtype_id').html(data.subtype_name);
+                                    $('#pas_group_id').html(data.group_name);
+                                    $('#pas_recom_id').html(data.recom_name);
+
+                                    $('#pas_ur_v').html(result[0].get('ur_v'));
+                                    $('#pas_ur_l').html(result[0].get('ur_l'));
+                                    $('#pas_ur_o').html(result[0].get('ur_o'));
+                                    $('#pas_ur_z').html(result[0].get('ur_z'));
+                                    $('#pas_korm_v').html(result[0].get('korm_v'));
+                                    $('#pas_korm_l').html(result[0].get('korm_l'));
+                                    $('#pas_korm_o').html(result[0].get('korm_o'));
+                                    $('#pas_korm_z').html(result[0].get('korm_z'));
+
+                                    $("#dialog").dialog({
+                                        width: 700,
+                                        height: 500
+                                    });
+                                },
+                                error: function () {
+                                }
+                            });
                         }
                     }
-                    // pastures info
-                    //if ($("#KATOType").val() === 'pastALA') {
-                    if ($('.KATO:checked').val() === 'KATO') {
-                        
-                    }
-                    else if (($('.Pastures:checked').val() === 'Pastures') && ($('.PasturesType:checked').val() === 'pastALAColor')) {
-                        $.ajax({
-                            url: '@Url.Action("GetPasInfo")',
-                            data: {
-                                class_id: result[0].get('class_id'),
-                                otdely_id: result[0].get('otdely_id'),
-                                subtype_id: result[0].get('subtype_id'),
-                                group_id: result[0].get('group_id'),
-                                recom_id: result[0].get('recom_id')
-                            },
-                            type: 'POST',
-                            success: function (data) {
-                                $('#pas_class_id').html(data.class_name);
-                                $('#pas_otdely_id').html(data.otdely_name);
-                                $('#pas_subtype_id').html(data.subtype_name);
-                                $('#pas_group_id').html(data.group_name);
-                                $('#pas_recom_id').html(data.recom_name);
-
-                                $('#pas_ur_v').html(result[0].get('ur_v'));
-                                $('#pas_ur_l').html(result[0].get('ur_l'));
-                                $('#pas_ur_o').html(result[0].get('ur_o'));
-                                $('#pas_ur_z').html(result[0].get('ur_z'));
-                                $('#pas_korm_v').html(result[0].get('korm_v'));
-                                $('#pas_korm_l').html(result[0].get('korm_l'));
-                                $('#pas_korm_o').html(result[0].get('korm_o'));
-                                $('#pas_korm_z').html(result[0].get('korm_z'));
-
-                                $("#dialog").dialog({
-                                    width: 700,
-                                    height: 500
-                                });
-                            },
-                            error: function () {
-                            }
-                        });
-                    }
-                }
-            });
+                });
+            }
+        }
+        else {
+            document.getElementById("info").disabled = true;
+            $('#info').removeClass('btn btn-default');
         }
     });
 
@@ -699,8 +842,24 @@
 </script>
 
 <script>
+    function ViewChart() {
+        var params = document.cookie.split('.');
+        params[2] = params[2].substr(0, params[2].indexOf(";"));
+        var url = '@Url.Action("ViewModisChart")' +
+            '?KATOType=' + params[0] +
+            '&PastId=' + params[1] +
+            '&KATO=' + params[2] +
+            "&Year=" + $('#Year').val() +
+            "&ModisSource=" + "MOLT" +
+            "&ModisProduct=" + "MOD13Q1" +
+            "&ModisDataSet=" + $("#Index").val();
+        window.open(url, "MsgWindow", "width=600,height=400");
+    }
+</script>
+
+<script>
     function Opacity(l) {
         var o = '#opacity' + l.toString();
-        layers[l].setOpacity($(o).val()/100);
+        layers[l].setOpacity($(o).val() / 100);
     }
 </script>

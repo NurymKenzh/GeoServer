@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoServer.Data;
 using GeoServer.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using OfficeOpenXml;
 
 namespace GeoServer.Controllers
 {
     public class OLController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
-        public OLController(ApplicationDbContext context)
+        public OLController(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public IActionResult ViewModis()
@@ -62,40 +67,240 @@ namespace GeoServer.Controllers
             ViewBag.KATOType = KATOType;
             ViewBag.KATO = KATO;
             ViewBag.PastId = PastId;
-            ViewBag.Year = Year;
+            ViewBag.SelectYear = Year;
             ViewBag.ModisSource = ModisSource;
             ViewBag.ModisProduct = ModisProduct;
             ViewBag.ModisDataSet = ModisDataSet;
+
+            int minYear = _context.ZonalStatKATO.Min(z => z.Year),
+                maxYear = _context.ZonalStatKATO.Max(z => z.Year);
+            ViewBag.Year = new SelectList(Enumerable.Range(minYear, (maxYear - minYear) + 1), maxYear);
+
+            List<SelectListItem> month = new List<SelectListItem>();
+            if (DateTime.IsLeapYear(Year))
+            {
+                string[] monthArray = { "Январь", "Февраль", "Март",
+                    "Апрель", "Май", "Июнь", "Июль", "Август",
+                    "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
+                string[] value = { "1-1", "2-33", "3-65", "4-97", "5-129", "6-161", "7-193", "8-225", "9-257", "10-289", "11-321", "12-337" };
+                for (int i = 0; i < value.Length; i++)
+                {
+                    if (value[i] == "1")
+                    {
+                        month.Add(new SelectListItem() { Text = monthArray[i], Value = value[i], Selected = true });
+                    }
+                    else
+                    {
+                        month.Add(new SelectListItem() { Text = monthArray[i], Value = value[i], Selected = false });
+                    }
+                }
+            }
+            else
+            {
+                string[] monthArray = { "Январь", "Февраль", "Март",
+                    "Апрель", "Май", "Июнь", "Июль", "Август",
+                    "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
+                string[] value = { "1-1", "2-33", "3-65", "4-97", "5-129", "6-161", "7-193", "8-225", "9-257", "10-289", "11-305", "12-337" };
+                for (int i = 0; i < value.Length; i++)
+                {
+                    if (value[i] == "1")
+                    {
+                        month.Add(new SelectListItem() { Text = monthArray[i], Value = value[i], Selected = true });
+                    }
+                    else
+                    {
+                        month.Add(new SelectListItem() { Text = monthArray[i], Value = value[i], Selected = false });
+                    }
+                }
+            }
+
+            List<SelectListItem> numberOfMonth = new List<SelectListItem>();
+            for (int i = 1; i < 13; i++)
+            {
+                if (i == 12)
+                {
+                    numberOfMonth.Add(new SelectListItem() { Text = i.ToString(), Value = i.ToString(), Selected = true });
+                }
+                else
+                {
+                    numberOfMonth.Add(new SelectListItem() { Text = i.ToString(), Value = i.ToString(), Selected = false });
+                }
+            }
+            ViewBag.Month = month;
+            ViewBag.NumberOfMonth = numberOfMonth;
             return View();
         }
 
         [HttpPost]
-        public ActionResult GetKATOZonalStat(string KATO, int Year, string ModisSource, string ModisProduct, string ModisDataSet)
+        public ActionResult GetKATOZonalStat(string KATO, int[] Year, string ModisSource, string ModisProduct, string ModisDataSet, string Month, int NumberOfMonth)
         {
             List<int> days = _context.ZonalStatKATO.Select(z => z.DayOfYear).Distinct().OrderBy(d => d).ToList();
-            List<ZonalStatKATO> current = new List<ZonalStatKATO>();
+            List<decimal> current = new List<decimal>();
+            List<int> years = new List<int>();
+            List<int> labels = new List<int>(),
+                nextYearLabels = new List<int>();
             List<decimal> min = new List<decimal>(),
                 max = new List<decimal>(),
-                average = new List<decimal>();
+                average = new List<decimal>(),
+                nextYearMin = new List<decimal>(),
+                nextYearMax = new List<decimal>(),
+                nextYearAverage = new List<decimal>();
+            bool check = true;
+            string[] value = { "1-1", "2-33", "3-65", "4-97", "5-129", "6-161", "7-193", "8-225", "9-257", "10-289", "11-305", "12-337" };
             var all = _context.ZonalStatKATO.Where(z => z.KATO == KATO && z.ModisSource == ModisSource && z.ModisProduct == ModisProduct && z.DataSet == ModisDataSet).ToList();
-            foreach (int day in days)
-            {
-                List<ZonalStatKATO> today = all.Where(z => z.DayOfYear == day).ToList();
-                if (today.Count > 0)
+            if (((NumberOfMonth - 1) + Convert.ToInt32(Month.Remove(Month.IndexOf('-'), (Month.Length - Month.IndexOf('-'))))) > 12) {
+                int countMonthOfNextYear = ((NumberOfMonth - 1) + Convert.ToInt32(Month.Remove(Month.IndexOf('-'), (Month.Length - Month.IndexOf('-'))))) - 12;
+                int DayOfMonthOfNextYear = 0;
+                for (int i = 0; i < value.Length; i++)
                 {
-                    ZonalStatKATO currenZonalStatKATO = today.FirstOrDefault(z => z.Year == Year);
-                    if(currenZonalStatKATO!=null)
+                    if (countMonthOfNextYear == Convert.ToInt32(value[i].Remove(value[i].IndexOf('-'), (value[i].Length - value[i].IndexOf('-')))))
                     {
-                        current.Add(currenZonalStatKATO);
+                        DayOfMonthOfNextYear = Convert.ToInt32(value[i + 1].Substring(value[i + 1].IndexOf('-') + 1));
+                        break;
                     }
-                    min.Add(today.Min(z => z.Value));
-                    max.Add(today.Max(z => z.Value));
-                    average.Add(today.Average(z => z.Value));
                 }
+                foreach (int oneYear in Year)
+                {
+                    List<decimal> nextYearCurrent = new List<decimal>();
+                    List<int> nextYears = new List<int>();
+                    foreach (int day in days)
+                    {
+                        List<ZonalStatKATO> today = new List<ZonalStatKATO>();
+                        if (day > Convert.ToInt32(Month.Substring(Month.IndexOf('-') + 1)) - 1)
+                        {
+
+                            today = all.Where(z => z.DayOfYear == day).ToList();
+                            if (today.Count > 0)
+                            {
+                                ZonalStatKATO currenZonalStatKATO = today.FirstOrDefault(z => z.Year == oneYear);
+                                if (currenZonalStatKATO != null)
+                                {
+                                    current.Add(currenZonalStatKATO.Value);
+                                    years.Add(oneYear);
+                                }
+                            }
+                            if (check)
+                            {
+                                min.Add(today.Min(z => z.Value));
+                                max.Add(today.Max(z => z.Value));
+                                average.Add(today.Average(z => z.Value));
+                                labels.Add(day);
+                            }
+                        }
+                        else
+                        {
+                            if (day < DayOfMonthOfNextYear)
+                            {
+                                    today = all.Where(z => z.DayOfYear == day).ToList();
+                                    if (today.Count > 0)
+                                    {
+                                        ZonalStatKATO currenZonalStatKATO = today.FirstOrDefault(z => z.Year == oneYear + 1);
+                                        if (currenZonalStatKATO != null)
+                                        {
+                                            nextYearCurrent.Add(currenZonalStatKATO.Value);
+                                            nextYears.Add(oneYear);
+                                        }
+                                    }
+                                if (check)
+                                {
+                                    nextYearMin.Add(today.Min(z => z.Value));
+                                    nextYearMax.Add(today.Max(z => z.Value));
+                                    nextYearAverage.Add(today.Average(z => z.Value));
+                                    nextYearLabels.Add(day);
+                                }
+                            }
+                        }
+                    }
+                    check = false;
+
+                    for (int i = 0; i < nextYearCurrent.Count; i++)
+                    {
+                        current.Add(nextYearCurrent[i]);
+                        years.Add(nextYears[i]);
+                    }
+                }
+            }
+            else
+            {
+                int endMonth = NumberOfMonth * 2;
+                foreach (int oneYear in Year)
+                {
+                    int counter = 0;
+                    foreach (int day in days)
+                    {
+                        List<ZonalStatKATO> today = new List<ZonalStatKATO>();
+                        if (day > Convert.ToInt32(Month.Substring(Month.IndexOf('-') + 1)) - 1 && counter < endMonth)
+                        {
+                            if (DateTime.IsLeapYear(oneYear))
+                            {
+                                if (endMonth == 22)
+                                {
+                                    endMonth = endMonth - 1;
+                                }
+                                if (endMonth == 19)
+                                {
+                                    endMonth = endMonth + 1;
+                                }
+                                today = all.Where(z => z.DayOfYear == day).ToList();
+                                if (today.Count > 0)
+                                {
+                                    ZonalStatKATO currenZonalStatKATO = today.FirstOrDefault(z => z.Year == oneYear);
+                                    if (currenZonalStatKATO != null)
+                                    {
+                                        current.Add(currenZonalStatKATO.Value);
+                                        years.Add(oneYear);
+                                    }
+                                    if (check)
+                                    {
+                                        min.Add(today.Min(z => z.Value));
+                                        max.Add(today.Max(z => z.Value));
+                                        average.Add(today.Average(z => z.Value));
+                                        labels.Add(day);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (endMonth == 20)
+                                {
+                                    endMonth = endMonth - 1;
+                                }
+                                today = all.Where(z => z.DayOfYear == day).ToList();
+                                if (today.Count > 0)
+                                {
+                                    ZonalStatKATO currenZonalStatKATO = today.FirstOrDefault(z => z.Year == oneYear);
+                                    if (currenZonalStatKATO != null)
+                                    {
+                                        current.Add(currenZonalStatKATO.Value);
+                                        years.Add(oneYear);
+                                    }
+                                }
+                                if (check)
+                                {
+                                    min.Add(today.Min(z => z.Value));
+                                    max.Add(today.Max(z => z.Value));
+                                    average.Add(today.Average(z => z.Value));
+                                    labels.Add(day);
+                                }
+                            }
+                        }
+                        counter++;
+                    }
+                    check = false;
+                }
+            }
+            for (int i = 0; i < nextYearMin.Count; i++)
+            {
+                min.Add(nextYearMin[i]);
+                max.Add(nextYearMax[i]);
+                average.Add(nextYearAverage[i]);
+                labels.Add(nextYearLabels[i]);
             }
             return Json(new
             {
                 current,
+                years,
+                labels,
                 min,
                 max,
                 average
@@ -103,37 +308,214 @@ namespace GeoServer.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetPastZonalStat(string PastId, int Year, string ModisSource, string ModisProduct, string ModisDataSet)
+        public ActionResult GetPastZonalStat(string PastId, int[] Year, string ModisSource, string ModisProduct, string ModisDataSet, string Month, int NumberOfMonth)
         {
             List<int> days = _context.ZonalStatPast.Select(z => z.DayOfYear).Distinct().OrderBy(d => d).ToList();
-            List<ZonalStatPast> current = new List<ZonalStatPast>();
+            List<decimal> current = new List<decimal>();
+            List<int> years = new List<int>();
+            List<int> labels = new List<int>(),
+                nextYearLabels = new List<int>();
             List<decimal> min = new List<decimal>(),
                 max = new List<decimal>(),
-                average = new List<decimal>();
+                average = new List<decimal>(),
+                nextYearMin = new List<decimal>(),
+                nextYearMax = new List<decimal>(),
+                nextYearAverage = new List<decimal>();
+            bool check = true;
+            string[] value = { "1-1", "2-33", "3-65", "4-97", "5-129", "6-161", "7-193", "8-225", "9-257", "10-289", "11-305", "12-337" };
             var all = _context.ZonalStatPast.Where(z => z.PastId == PastId && z.ModisSource == ModisSource && z.ModisProduct == ModisProduct && z.DataSet == ModisDataSet).ToList();
-            foreach (int day in days)
+            if (((NumberOfMonth - 1) + Convert.ToInt32(Month.Remove(Month.IndexOf('-'), (Month.Length - Month.IndexOf('-'))))) > 12)
             {
-                List<ZonalStatPast> today = all.Where(z => z.DayOfYear == day).ToList();
-                if (today.Count > 0)
+                int countMonthOfNextYear = ((NumberOfMonth - 1) + Convert.ToInt32(Month.Remove(Month.IndexOf('-'), (Month.Length - Month.IndexOf('-'))))) - 12;
+                int DayOfMonthOfNextYear = 0;
+                for (int i = 0; i < value.Length; i++)
                 {
-                    ZonalStatPast currenZonalStatPast = today.FirstOrDefault(z => z.Year == Year);
-                    if (currenZonalStatPast != null)
+                    if (countMonthOfNextYear == Convert.ToInt32(value[i].Remove(value[i].IndexOf('-'), (value[i].Length - value[i].IndexOf('-')))))
                     {
-                        current.Add(currenZonalStatPast);
+                        DayOfMonthOfNextYear = Convert.ToInt32(value[i + 1].Substring(value[i + 1].IndexOf('-') + 1));
+                        break;
                     }
-                    min.Add(today.Min(z => z.Value));
-                    max.Add(today.Max(z => z.Value));
-                    average.Add(today.Average(z => z.Value));
                 }
+                foreach (int oneYear in Year)
+                {
+                    List<decimal> nextYearCurrent = new List<decimal>();
+                    List<int> nextYears = new List<int>();
+                    foreach (int day in days)
+                    {
+                        List<ZonalStatPast> today = new List<ZonalStatPast>();
+                        if (day > Convert.ToInt32(Month.Substring(Month.IndexOf('-') + 1)) - 1)
+                        {
+
+                            today = all.Where(z => z.DayOfYear == day).ToList();
+                            if (today.Count > 0)
+                            {
+                                ZonalStatPast currenZonalStatPast = today.FirstOrDefault(z => z.Year == oneYear);
+                                if (currenZonalStatPast != null)
+                                {
+                                    current.Add(currenZonalStatPast.Value);
+                                    years.Add(oneYear);
+                                }
+                            }
+                            if (check)
+                            {
+                                min.Add(today.Min(z => z.Value));
+                                max.Add(today.Max(z => z.Value));
+                                average.Add(today.Average(z => z.Value));
+                                labels.Add(day);
+                            }
+                        }
+                        else
+                        {
+                            if (day < DayOfMonthOfNextYear)
+                            {
+                                today = all.Where(z => z.DayOfYear == day).ToList();
+                                if (today.Count > 0)
+                                {
+                                    ZonalStatPast currenZonalStatPast = today.FirstOrDefault(z => z.Year == oneYear + 1);
+                                    if (currenZonalStatPast != null)
+                                    {
+                                        nextYearCurrent.Add(currenZonalStatPast.Value);
+                                        nextYears.Add(oneYear);
+                                    }
+                                }
+                                if (check)
+                                {
+                                    nextYearMin.Add(today.Min(z => z.Value));
+                                    nextYearMax.Add(today.Max(z => z.Value));
+                                    nextYearAverage.Add(today.Average(z => z.Value));
+                                    nextYearLabels.Add(day);
+                                }
+                            }
+                        }
+                    }
+                    check = false;
+
+                    for (int i = 0; i < nextYearCurrent.Count; i++)
+                    {
+                        current.Add(nextYearCurrent[i]);
+                        years.Add(nextYears[i]);
+                    }
+                }
+            }
+            else
+            {
+                int endMonth = NumberOfMonth * 2;
+                foreach (int oneYear in Year)
+                {
+                    int counter = 0;
+                    foreach (int day in days)
+                    {
+                        List<ZonalStatPast> today = new List<ZonalStatPast>();
+                        if (day > Convert.ToInt32(Month.Substring(Month.IndexOf('-') + 1)) - 1 && counter < endMonth)
+                        {
+                            if (DateTime.IsLeapYear(oneYear))
+                            {
+                                if (endMonth == 22)
+                                {
+                                    endMonth = endMonth - 1;
+                                }
+                                if (endMonth == 19)
+                                {
+                                    endMonth = endMonth + 1;
+                                }
+                                today = all.Where(z => z.DayOfYear == day).ToList();
+                                if (today.Count > 0)
+                                {
+                                    ZonalStatPast currenZonalStatPast = today.FirstOrDefault(z => z.Year == oneYear);
+                                    if (currenZonalStatPast != null)
+                                    {
+                                        current.Add(currenZonalStatPast.Value);
+                                        years.Add(oneYear);
+                                    }
+                                    if (check)
+                                    {
+                                        min.Add(today.Min(z => z.Value));
+                                        max.Add(today.Max(z => z.Value));
+                                        average.Add(today.Average(z => z.Value));
+                                        labels.Add(day);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (endMonth == 20)
+                                {
+                                    endMonth = endMonth - 1;
+                                }
+                                today = all.Where(z => z.DayOfYear == day).ToList();
+                                if (today.Count > 0)
+                                {
+                                    ZonalStatPast currenZonalStatPast = today.FirstOrDefault(z => z.Year == oneYear);
+                                    if (currenZonalStatPast != null)
+                                    {
+                                        current.Add(currenZonalStatPast.Value);
+                                        years.Add(oneYear);
+                                    }
+                                }
+                                if (check)
+                                {
+                                    min.Add(today.Min(z => z.Value));
+                                    max.Add(today.Max(z => z.Value));
+                                    average.Add(today.Average(z => z.Value));
+                                    labels.Add(day);
+                                }
+                            }
+                        }
+                        counter++;
+                    }
+                    check = false;
+                }
+            }
+            for (int i = 0; i < nextYearMin.Count; i++)
+            {
+                min.Add(nextYearMin[i]);
+                max.Add(nextYearMax[i]);
+                average.Add(nextYearAverage[i]);
+                labels.Add(nextYearLabels[i]);
             }
             return Json(new
             {
                 current,
+                years,
+                labels,
                 min,
                 max,
                 average
             });
         }
+
+        //[HttpPost]
+        //public ActionResult GetPastZonalStat(string PastId, int Year, string ModisSource, string ModisProduct, string ModisDataSet)
+        //{
+        //    List<int> days = _context.ZonalStatPast.Select(z => z.DayOfYear).Distinct().OrderBy(d => d).ToList();
+        //    List<ZonalStatPast> current = new List<ZonalStatPast>();
+        //    List<decimal> min = new List<decimal>(),
+        //        max = new List<decimal>(),
+        //        average = new List<decimal>();
+        //    var all = _context.ZonalStatPast.Where(z => z.PastId == PastId && z.ModisSource == ModisSource && z.ModisProduct == ModisProduct && z.DataSet == ModisDataSet).ToList();
+        //    foreach (int day in days)
+        //    {
+        //        List<ZonalStatPast> today = all.Where(z => z.DayOfYear == day).ToList();
+        //        if (today.Count > 0)
+        //        {
+        //            ZonalStatPast currenZonalStatPast = today.FirstOrDefault(z => z.Year == Year);
+        //            if (currenZonalStatPast != null)
+        //            {
+        //                current.Add(currenZonalStatPast);
+        //            }
+        //            min.Add(today.Min(z => z.Value));
+        //            max.Add(today.Max(z => z.Value));
+        //            average.Add(today.Average(z => z.Value));
+        //        }
+        //    }
+        //    return Json(new
+        //    {
+        //        current,
+        //        min,
+        //        max,
+        //        average
+        //    });
+        //}
 
         [HttpPost]
         public ActionResult GetYearDates(int Year)
@@ -260,6 +642,93 @@ namespace GeoServer.Controllers
                 group_name,
                 recom_name
             });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveToExcel(string KATOName, string KATO, string[] Title, string[] Min, string[] Max, string[] Average, int[] Years, string[] Values)
+        {
+            string sContentRootPath = _hostingEnvironment.WebRootPath;
+            sContentRootPath = Path.Combine(sContentRootPath, "Download");
+
+            List<int> years = new List<int>();
+            years.Add(Years[0]);
+            int counter = 0;
+            for (int i = 1; i < Years.Length; i++)
+            {
+                if (years[counter] != Years[i])
+                {
+                    years.Add(Years[i]);
+                    counter++;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            string sYear = "";
+            for (int i = 0; i < years.Count; i++)
+            {
+                sYear = sYear + years[i] + "-";
+            }
+            sYear = sYear.Remove(sYear.Length - 1, 1);
+
+            string sName = KATOName + " (" + KATO + ") " + sYear;
+            string sFileName = $"{sName}.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(sContentRootPath, sFileName));
+            if (file.Exists)
+            {
+                file.Delete();
+                file = new FileInfo(Path.Combine(sContentRootPath, sFileName));
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(KATOName);
+                worksheet.Cells[1, 1].Value = Title[0];
+                worksheet.Cells[1, 2].Value = Title[1];
+                worksheet.Cells[1, 3].Value = Title[2];
+                for (int col = 3; col < Title.Length; col++)
+                {
+                    worksheet.Cells[1, col + 1].Value = Title[col];
+                }
+
+                for (int row = 0; row < Min.Length; row++)
+                {
+                    worksheet.Cells[row + 2, 1].Value = Min[row];
+                }
+
+                for (int row = 0; row < Max.Length; row++)
+                {
+                    worksheet.Cells[row + 2, 2].Value = Max[row];
+                }
+
+                for (int row = 0; row < Average.Length; row++)
+                {
+                    worksheet.Cells[row + 2, 3].Value = Average[row];
+                }
+
+                for (int i = 0; i < years.Count; i++)
+                {
+                    int row = 2;
+                    for (int j = 0; j < Values.Length; j++)
+                    {
+                        if (years[i] == Years[j])
+                        {
+                            worksheet.Cells[row, i + 4].Value = Values[j];
+                            row++;
+                        }
+                    }
+                }
+                for(int i = 1; i < Title.Length + 1; i++)
+                {
+                    worksheet.Cells[1, i].Style.Font.Bold = true;
+                    worksheet.Column(i).AutoFit();
+                }
+                package.Save();
+            }
+            var mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            byte[] fileBytes = System.IO.File.ReadAllBytes(Path.Combine(sContentRootPath, file.Name));
+            return File(fileBytes, mimeType, sFileName);
         }
     }
 }
