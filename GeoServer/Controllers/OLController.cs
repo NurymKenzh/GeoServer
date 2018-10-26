@@ -39,7 +39,7 @@ namespace GeoServer.Controllers
                 new SelectListItem() { Text="Пастбища", Value="pastALA"},
                 new SelectListItem() { Text="Области", Value="adm1pol"},
                 new SelectListItem() { Text="Районы", Value="adm2pol"},
-                new SelectListItem() { Text="Сельские округи", Value="adm3pol"}                
+                new SelectListItem() { Text="Сельские округи", Value="adm3pol"}
             };
 
             var modisSources = _context.ModisSource.OrderBy(m => m.Name);
@@ -55,7 +55,7 @@ namespace GeoServer.Controllers
             return View();
         }
 
-        public IActionResult ViewModisChart(
+        public IActionResult ViewModisChart1(
             string KATOType,
             string KATO,
             string PastId,
@@ -131,6 +131,32 @@ namespace GeoServer.Controllers
             return View();
         }
 
+        public IActionResult ViewModisChart2(
+            string KATOType,
+            string KATO,
+            string PastId,
+            string ModisSource,
+            string ModisProduct,
+            string ModisDataSet)
+        {
+            ViewBag.KATOType = KATOType;
+            ViewBag.KATO = KATO;
+            ViewBag.PastId = PastId;
+            ViewBag.ModisSource = ModisSource;
+            ViewBag.ModisProduct = ModisProduct;
+            ViewBag.ModisDataSet = ModisDataSet;
+
+            int minYear = _context.ZonalStatKATO.Min(z => z.Year),
+                maxYear = _context.ZonalStatKATO.Max(z => z.Year);
+            List<SelectListItem> year = new List<SelectListItem>();
+            for (int i = minYear; i < maxYear + 1; i++)
+            {
+                year.Add(new SelectListItem() { Text = i.ToString(), Value = i.ToString(), Selected = true });
+            }
+            ViewBag.Year = year;
+            return View();
+        }
+
         [HttpPost]
         public ActionResult GetKATOZonalStat(string KATO, int[] Year, string ModisSource, string ModisProduct, string ModisDataSet, string Month, int NumberOfMonth)
         {
@@ -191,16 +217,16 @@ namespace GeoServer.Controllers
                         {
                             if (day < DayOfMonthOfNextYear)
                             {
-                                    today = all.Where(z => z.DayOfYear == day).ToList();
-                                    if (today.Count > 0)
+                                today = all.Where(z => z.DayOfYear == day).ToList();
+                                if (today.Count > 0)
+                                {
+                                    ZonalStatKATO currenZonalStatKATO = today.FirstOrDefault(z => z.Year == oneYear + 1);
+                                    if (currenZonalStatKATO != null)
                                     {
-                                        ZonalStatKATO currenZonalStatKATO = today.FirstOrDefault(z => z.Year == oneYear + 1);
-                                        if (currenZonalStatKATO != null)
-                                        {
-                                            nextYearCurrent.Add(currenZonalStatKATO.Value);
-                                            nextYears.Add(oneYear);
-                                        }
+                                        nextYearCurrent.Add(currenZonalStatKATO.Value);
+                                        nextYears.Add(oneYear);
                                     }
+                                }
                                 if (check)
                                 {
                                     nextYearMin.Add(today.Min(z => z.Value));
@@ -518,6 +544,75 @@ namespace GeoServer.Controllers
         //}
 
         [HttpPost]
+        public ActionResult GetKATOZonalStatChart2(string KATO, int[] Year, string ModisSource, string ModisProduct, string ModisDataSet)
+        {
+            List<int> days = _context.ZonalStatKATO.Select(z => z.DayOfYear).Distinct().OrderBy(d => d).ToList();
+            List<decimal> current = new List<decimal>();
+            List<int> years = new List<int>();
+            List<decimal> average = new List<decimal>();
+            var all = _context.ZonalStatKATO.Where(z => z.KATO == KATO && z.ModisSource == ModisSource && z.ModisProduct == ModisProduct && z.DataSet == ModisDataSet).ToList();
+            foreach (int oneYear in Year)
+            {
+                foreach (int day in days)
+                {
+                    List<ZonalStatKATO> today = new List<ZonalStatKATO>();
+                    today = all.Where(z => z.DayOfYear == day).ToList();
+                    if (today.Count > 0)
+                    {
+                        ZonalStatKATO currenZonalStatKATO = today.FirstOrDefault(z => z.Year == oneYear);
+                        if (currenZonalStatKATO != null)
+                        {
+                            current.Add(currenZonalStatKATO.Value);
+                            years.Add(oneYear);
+                            average.Add(today.Average(z => z.Value));
+                        }
+                    }
+                }
+            }
+            return Json(new
+            {
+                current,
+                years,
+                average
+            });
+        }
+
+        [HttpPost]
+        public ActionResult GetPastZonalStatChart2(string PastId, int[] Year, string ModisSource, string ModisProduct, string ModisDataSet)
+        {
+            List<int> days = _context.ZonalStatPast.Select(z => z.DayOfYear).Distinct().OrderBy(d => d).ToList();
+            List<decimal> current = new List<decimal>();
+            List<int> years = new List<int>();
+            List<decimal> average = new List<decimal>();
+            var all = _context.ZonalStatPast.Where(z => z.PastId == PastId && z.ModisSource == ModisSource && z.ModisProduct == ModisProduct && z.DataSet == ModisDataSet).ToList();
+            foreach (int oneYear in Year)
+            {
+                foreach (int day in days)
+                {
+                    List<ZonalStatPast> today = new List<ZonalStatPast>();
+                    today = all.Where(z => z.DayOfYear == day).ToList();
+                    if (today.Count > 0)
+                    {
+                        ZonalStatPast currenZonalStatPast = today.FirstOrDefault(z => z.Year == oneYear);
+                        if (currenZonalStatPast != null)
+                        {
+                            current.Add(currenZonalStatPast.Value);
+                            years.Add(oneYear);
+                            average.Add(today.Average(z => z.Value));
+                        }
+                    }
+                }
+            }
+            return Json(new
+            {
+                current,
+                years,
+                average
+            });
+        }
+
+
+        [HttpPost]
         public ActionResult GetYearDates(int Year)
         {
             List<SelectListItem> dates = new List<SelectListItem>();
@@ -673,7 +768,7 @@ namespace GeoServer.Controllers
             }
             sYear = sYear.Remove(sYear.Length - 1, 1);
 
-            string sName = KATOName + " (" + KATO + ") " + sYear;
+            string sName = KATOName + " (" + KATO + ") " + sYear + " (Chart1)";
             string sFileName = $"{sName}.xlsx";
             FileInfo file = new FileInfo(Path.Combine(sContentRootPath, sFileName));
             if (file.Exists)
@@ -720,6 +815,81 @@ namespace GeoServer.Controllers
                     }
                 }
                 for(int i = 1; i < Title.Length + 1; i++)
+                {
+                    worksheet.Cells[1, i].Style.Font.Bold = true;
+                    worksheet.Column(i).AutoFit();
+                }
+                package.Save();
+            }
+            var mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            byte[] fileBytes = System.IO.File.ReadAllBytes(Path.Combine(sContentRootPath, file.Name));
+            return File(fileBytes, mimeType, sFileName);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveToExcelChart2(string KATOName, string KATO, string[] Title, string[] Average, int[] Years, string[] Values)
+        {
+            string sContentRootPath = _hostingEnvironment.WebRootPath;
+            sContentRootPath = Path.Combine(sContentRootPath, "Download");
+
+            List<int> years = new List<int>();
+            years.Add(Years[0]);
+            int counter = 0;
+            for (int i = 1; i < Years.Length; i++)
+            {
+                if (years[counter] != Years[i])
+                {
+                    years.Add(Years[i]);
+                    counter++;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            string sYear = "";
+            for (int i = 0; i < years.Count; i++)
+            {
+                sYear = sYear + years[i] + "-";
+            }
+            sYear = sYear.Remove(sYear.Length - 1, 1);
+
+            string sName = KATOName + " (" + KATO + ") " + sYear + " (Chart2)";
+            string sFileName = $"{sName}.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(sContentRootPath, sFileName));
+            if (file.Exists)
+            {
+                file.Delete();
+                file = new FileInfo(Path.Combine(sContentRootPath, sFileName));
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(KATOName);
+                worksheet.Cells[1, 1].Value = Title[0];
+                for (int col = 1; col < Title.Length; col++)
+                {
+                    worksheet.Cells[1, col + 1].Value = Title[col];
+                }
+
+                for (int row = 0; row < 23; row++)
+                {
+                    worksheet.Cells[row + 2, 1].Value = Average[row];
+                }
+
+                for (int i = 0; i < years.Count; i++)
+                {
+                    int row = 2;
+                    for (int j = 0; j < Values.Length; j++)
+                    {
+                        if (years[i] == Years[j])
+                        {
+                            worksheet.Cells[row, i + 2].Value = Values[j];
+                            row++;
+                        }
+                    }
+                }
+                for (int i = 1; i < Title.Length + 1; i++)
                 {
                     worksheet.Cells[1, i].Style.Font.Bold = true;
                     worksheet.Column(i).AutoFit();

@@ -147,7 +147,9 @@
         <input type="radio" class="ALTDLevel" name="ALTD" value="data3" onclick="Change()"> Антропогенные земли<br>
         <input id="opacity4" type="range" min="0" max="100" value="80" onchange="Opacity(4)" />
         <br />
-        <input type="button" id="info" value="Информация" onclick="ViewChart()" disabled="disabled" />
+        <input type="button" id="info1" value="Информация 1" onclick="ViewChart1()" disabled="disabled" />
+        <br />
+        <input type="button" id="info2" value="Информация 2" onclick="ViewChart2()" disabled="disabled" />
         @*<input type="checkbox" class="Pastures" name="Pastures" value="Pastures" onclick="Change()" checked="checked"> Пастбища<br>*@
         @*<input type="radio" class="PasturesType" name="Pastures" value="pastALAColor" onclick="Change()"> С окрасом
         <input type="button" value="Легенда" class="btn btn-default" onclick="PasLagend()" />
@@ -701,8 +703,10 @@
     var myLineChart = null;
     map.on('singleclick', function (evt) {
 
-        document.getElementById("info").disabled = false;
-        $('#info').addClass('btn btn-default');
+        document.getElementById("info1").disabled = false;
+        $('#info1').addClass('btn btn-default');
+        document.getElementById("info2").disabled = false;
+        $('#info2').addClass('btn btn-default');
         Source_select_pasturepol.clear();
         var viewResolution = (map.getView().getResolution());
         var url = layers[2].getSource().getGetFeatureInfoUrl(
@@ -824,8 +828,10 @@
             }
         }
         else {
-            document.getElementById("info").disabled = true;
-            $('#info').removeClass('btn btn-default');
+            document.getElementById("info1").disabled = true;
+            $('#info1').removeClass('btn btn-default');
+            document.getElementById("info2").disabled = true;
+            $('#info2').removeClass('btn btn-default');
         }
     });
 
@@ -842,14 +848,27 @@
 </script>
 
 <script>
-    function ViewChart() {
+    function ViewChart1() {
         var params = document.cookie.split('.');
         params[2] = params[2].substr(0, params[2].indexOf(";"));
-        var url = '@Url.Action("ViewModisChart")' +
+        var url = '@Url.Action("ViewModisChart1")' +
             '?KATOType=' + params[0] +
             '&PastId=' + params[1] +
             '&KATO=' + params[2] +
             "&Year=" + $('#Year').val() +
+            "&ModisSource=" + "MOLT" +
+            "&ModisProduct=" + "MOD13Q1" +
+            "&ModisDataSet=" + $("#Index").val();
+        window.open(url, "MsgWindow", "width=600,height=400");
+    }
+
+    function ViewChart2() {
+        var params = document.cookie.split('.');
+        params[2] = params[2].substr(0, params[2].indexOf(";"));
+        var url = '@Url.Action("ViewModisChart2")' +
+            '?KATOType=' + params[0] +
+            '&PastId=' + params[1] +
+            '&KATO=' + params[2] +
             "&ModisSource=" + "MOLT" +
             "&ModisProduct=" + "MOD13Q1" +
             "&ModisDataSet=" + $("#Index").val();

@@ -1,0 +1,415 @@
+﻿
+@{
+    ViewData["Title"] = "График";
+    Layout = null;
+}
+
+<style>
+
+    .chart {
+        width: 80%;
+        height: 100%;
+        float: left;
+    }
+
+    .sidepanel {
+        background: rgba(247, 247, 247, 1);
+        width: 20%;
+        height: 100%;
+        float: left;
+    }
+
+    .sidepanel-title {
+        width: 100%;
+        font-size: 3em;
+        color: #ffffff;
+        display: block;
+        text-align: center;
+    }
+</style>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>График</title>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+<body style="padding: 0px;">
+    <script src="~/lib/chart.js/Chart.js"></script>
+    @if (ViewBag.KATOType == "adm1pol")
+    {
+        <h2 align="center">
+            Область
+        </h2>
+    }
+    @if (ViewBag.KATOType == "adm2pol")
+    {
+        <h2 align="center">
+            Район
+        </h2>
+    }
+    @if (ViewBag.KATOType == "adm3pol")
+    {
+        <h2 align="center">
+            Сельский округ
+        </h2>
+    }
+    @if (ViewBag.KATOType == "pastALA")
+    {
+        <h2 align="center">
+            Пастбищные выделы
+        </h2>
+    }
+
+    <div id="chartdiv" style="height: 200px;">
+        <div class="chart">
+            <canvas id="myChart" width="400" height="200"></canvas>
+        </div>
+        <div class="sidepanel" style="padding:15px;">
+            <label class="control-label">Годы</label><br />
+            @*<select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" multiple="multiple"></select>*@
+            @Html.ListBox("Year", (IEnumerable<SelectListItem>)ViewBag.Year, htmlAttributes: new { @class = "form-control", SelectionMode = "Multiple", @id = "Year", AutoPostBack = "true" })<br />
+            <input type="button" id="update" class="btn btn-default" value="Обновить" onclick="Update()" /><br />
+            <input type="button" id="update" class="btn btn-default" value="Сохранить в Excel" onclick="SaveToExcel()" />
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+    <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
+
+    <script type="text/javascript">
+        $(function () {
+            $('[id*=Year]').multiselect({
+                includeSelectAllOption: true
+            });
+        });
+    </script>
+
+    <script>
+        var myLineChart = null;
+        var datacurrent = [],
+            dataaverage = [],
+            yearForExcel = [],
+            valueForExcel = [];
+        var Years = $('#Year').val();
+
+        if ("@ViewBag.KATOType" != 'pastALA') {
+            $.ajax({
+                url: '@Url.Action("GetKATOZonalStatChart2")',
+                data: {
+                    KATO: "@ViewBag.KATO",
+                    Year: Years,
+                    ModisSource: "@ViewBag.ModisSource",
+                    ModisProduct: "@ViewBag.ModisProduct",
+                    ModisDataSet: "@ViewBag.ModisDataSet"
+                },
+                type: 'POST',
+                success: function (data) {
+                    var optionhtml = '';
+                    var oneYear,
+                        check;
+                    var labelYears = [];
+                    $.each(data.years, function (i) {
+                        yearForExcel.push(data.years[i]);
+                        oneYear = data.years[i];
+                        if (check != oneYear) {
+                            labelYears.push(data.years[i]);
+                        }
+                        else {
+                            labelYears.push("");
+                        }
+                        check = data.years[i];
+                    });
+                    $.each(data.current, function (i) {
+                        datacurrent.push(data.current[i] / 10000);
+                        valueForExcel.push(data.current[i] / 10000);
+                    });
+                    $.each(data.average, function (i) {
+                        dataaverage.push(data.average[i] / 10000);
+                    });
+                    var ctx = document.getElementById("myChart").getContext('2d');
+                    if (myLineChart != null) {
+                        myLineChart.destroy();
+                    }
+                    $('#chartdiv').height(200);
+
+                    myLineChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labelYears,
+                            datasets: [{
+                                label: "Среднее",
+                                type: "line",
+                                borderColor: "#000",
+                                data: dataaverage,
+                                fill: false
+                            },{
+                                    label: "Значение года",
+                                    type: "bar",
+                                    backgroundColor: "#3FBF3F",
+                                    //backgroundColorHover: "#3FBF3F",
+                                    data: datacurrent
+                            }
+                            ]
+                        }
+                    });
+                },
+                error: function () {
+                }
+            });
+        }
+        else {
+            $.ajax({
+                url: '@Url.Action("GetPastZonalStatChart2")',
+                data: {
+                    PastId: "@ViewBag.PastId",
+                    Year: Years,
+                    ModisSource: "@ViewBag.ModisSource",
+                    ModisProduct: "@ViewBag.ModisProduct",
+                    ModisDataSet: "@ViewBag.ModisDataSet"
+                },
+                type: 'POST',
+                success: function (data) {
+                    var optionhtml = '';
+                    var oneYear,
+                        check;
+                    var labelYears = [];
+                    $.each(data.years, function (i) {
+                        yearForExcel.push(data.years[i]);
+                        oneYear = data.years[i];
+                        if (check != oneYear) {
+                            labelYears.push(data.years[i]);
+                        }
+                        else {
+                            labelYears.push("");
+                        }
+                        check = data.years[i];
+                    });
+                    $.each(data.current, function (i) {
+                        datacurrent.push(data.current[i] / 10000);
+                        valueForExcel.push(data.current[i] / 10000);
+                    });
+                    $.each(data.average, function (i) {
+                        dataaverage.push(data.average[i] / 10000);
+                    });
+                    var ctx = document.getElementById("myChart").getContext('2d');
+                    if (myLineChart != null) {
+                        myLineChart.destroy();
+                    }
+                    $('#chartdiv').height(200);
+
+                    myLineChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labelYears,
+                            datasets: [{
+                                label: "Среднее",
+                                type: "line",
+                                borderColor: "#000",
+                                data: dataaverage,
+                                fill: false
+                            }, {
+                                label: "Значение года",
+                                type: "bar",
+                                backgroundColor: "#3FBF3F",
+                                backgroundColorHover: "#3FBF3F",
+                                data: datacurrent
+                            }
+                            ]
+                        }
+                    });
+                },
+                error: function () {
+                }
+            });
+        }
+
+        function Update() {
+            datacurrent = [];
+            dataaverage = [];
+            yearForExcel = [];
+            valueForExcel = [];
+            var Years = $('#Year').val();
+            if ("@ViewBag.KATOType" != 'pastALA') {
+                $.ajax({
+                    url: '@Url.Action("GetKATOZonalStatChart2")',
+                    data: {
+                        KATO: "@ViewBag.KATO",
+                        Year: Years,
+                        ModisSource: "@ViewBag.ModisSource",
+                        ModisProduct: "@ViewBag.ModisProduct",
+                        ModisDataSet: "@ViewBag.ModisDataSet"
+                    },
+                    type: 'POST',
+                    success: function (data) {
+                        var optionhtml = '';
+                        var oneYear,
+                            check;
+                        var labelYears = [];
+                        $.each(data.years, function (i) {
+                            yearForExcel.push(data.years[i]);
+                            oneYear = data.years[i];
+                            if (check != oneYear) {
+                                labelYears.push(data.years[i]);
+                            }
+                            else {
+                                labelYears.push("");
+                            }
+                            check = data.years[i];
+                        });
+                        $.each(data.current, function (i) {
+                            datacurrent.push(data.current[i] / 10000);
+                            valueForExcel.push(data.current[i] / 10000);
+                        });
+                        $.each(data.average, function (i) {
+                            dataaverage.push(data.average[i] / 10000);
+                        });
+                        var ctx = document.getElementById("myChart").getContext('2d');
+                        if (myLineChart != null) {
+                            myLineChart.destroy();
+                        }
+                        $('#chartdiv').height(200);
+                        myLineChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labelYears,
+                                datasets: [{
+                                    label: "Среднее",
+                                    type: "line",
+                                    borderColor: "#000",
+                                    data: dataaverage,
+                                    fill: false
+                                }, {
+                                    label: "Значение года",
+                                    type: "bar",
+                                    backgroundColor: "#3FBF3F",
+                                    //backgroundColorHover: "#3FBF3F",
+                                    data: datacurrent
+                                }
+                                ]
+                            }
+                        });
+                        myLineChart.update();
+                    },
+                    error: function () {
+                    }
+                });
+            }
+            else {
+                $.ajax({
+                    url: '@Url.Action("GetPastZonalStatChart2")',
+                    data: {
+                        PastId: "@ViewBag.PastId",
+                        Year: Years,
+                        ModisSource: "@ViewBag.ModisSource",
+                        ModisProduct: "@ViewBag.ModisProduct",
+                        ModisDataSet: "@ViewBag.ModisDataSet"
+                    },
+                    type: 'POST',
+                    success: function (data) {
+                        var optionhtml = '';
+                        var oneYear,
+                            check;
+                        var labelYears = [];
+                        $.each(data.years, function (i) {
+                            yearForExcel.push(data.years[i]);
+                            oneYear = data.years[i];
+                            if (check != oneYear) {
+                                labelYears.push(data.years[i]);
+                            }
+                            else {
+                                labelYears.push("");
+                            }
+                            check = data.years[i];
+                        });
+                        $.each(data.current, function (i) {
+                            datacurrent.push(data.current[i] / 10000);
+                            valueForExcel.push(data.current[i] / 10000);
+                        });
+                        $.each(data.average, function (i) {
+                            dataaverage.push(data.average[i] / 10000);
+                        });
+                        var ctx = document.getElementById("myChart").getContext('2d');
+                        if (myLineChart != null) {
+                            myLineChart.destroy();
+                        }
+                        $('#chartdiv').height(200);
+
+                        myLineChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labelYears,
+                                datasets: [{
+                                    label: "Среднее",
+                                    type: "line",
+                                    borderColor: "#000",
+                                    data: dataaverage,
+                                    fill: false
+                                }, {
+                                    label: "Значение года",
+                                    type: "bar",
+                                    backgroundColor: "#3FBF3F",
+                                    backgroundColorHover: "#3FBF3F",
+                                    data: datacurrent
+                                }
+                                ]
+                            }
+                        });
+                        myLineChart.update();
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        }
+
+        function SaveToExcel() {
+            var title = ["Среднее"];
+            var oneYear,
+                check;
+            for (var i = 0; i < yearForExcel.length; i++) {
+                oneYear = yearForExcel[i];
+                if (check != oneYear) {
+                    title.push(yearForExcel[i]);
+                }
+                check = yearForExcel[i];
+            }
+            if ("@ViewBag.KATOType" == "adm1pol")
+            {
+                var KATOName = "Область";
+            }
+            if ("@ViewBag.KATOType" == "adm2pol")
+            {
+                var KATOName = "Район";
+            }
+            if ("@ViewBag.KATOType" == "adm3pol")
+            {
+                var KATOName = "Сельский_округ";
+            }
+            if ("@ViewBag.KATOType" == "pastALA")
+            {
+                var KATOName = "Пастбищный_выдел";
+            }
+            $.ajax({
+                url: '@Url.Action("SaveToExcelChart2")',
+                data: {
+                    KATOName: KATOName,
+                    KATO: @ViewBag.KATO,
+                    Title: title,
+                    Average: dataaverage,
+                    Years: yearForExcel,
+                    Values: valueForExcel
+                },
+                type: 'POST'
+            });
+        }
+    </script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+</body>
+</html>
