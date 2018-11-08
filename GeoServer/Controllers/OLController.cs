@@ -161,6 +161,7 @@ namespace GeoServer.Controllers
         public ActionResult GetKATOZonalStat(string KATO, int[] Year, string ModisSource, string ModisProduct, string ModisDataSet, string Month, int NumberOfMonth)
         {
             List<int> days = _context.ZonalStatKATO.Select(z => z.DayOfYear).Distinct().OrderBy(d => d).ToList();
+            List<ZonalStatKATO> currentKATO = new List<ZonalStatKATO>();
             List<decimal> current = new List<decimal>();
             List<int> years = new List<int>();
             List<int> labels = new List<int>(),
@@ -275,6 +276,7 @@ namespace GeoServer.Controllers
                                     {
                                         current.Add(currenZonalStatKATO.Value);
                                         years.Add(oneYear);
+                                        currentKATO.Add(currenZonalStatKATO);
                                     }
                                     if (check)
                                     {
@@ -299,6 +301,7 @@ namespace GeoServer.Controllers
                                     {
                                         current.Add(currenZonalStatKATO.Value);
                                         years.Add(oneYear);
+                                        currentKATO.Add(currenZonalStatKATO);
                                     }
                                 }
                                 if (check)
@@ -324,6 +327,7 @@ namespace GeoServer.Controllers
             }
             return Json(new
             {
+                currentKATO,
                 current,
                 years,
                 labels,
@@ -740,7 +744,7 @@ namespace GeoServer.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveToExcel(string KATOName, string KATO, string[] Title, string[] Min, string[] Max, string[] Average, int[] Years, string[] Values)
+        public ActionResult SaveToExcelChart1(string KATOName, string KATO, string[] Title, string[] Min, string[] Max, string[] Average, int[] Years, string[] Values)
         {
             string sContentRootPath = _hostingEnvironment.WebRootPath;
             sContentRootPath = Path.Combine(sContentRootPath, "Download");
@@ -821,13 +825,19 @@ namespace GeoServer.Controllers
                 }
                 package.Save();
             }
-            var mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            byte[] fileBytes = System.IO.File.ReadAllBytes(Path.Combine(sContentRootPath, file.Name));
-            return File(fileBytes, mimeType, sFileName);
+            //var mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            //byte[] fileBytes = System.IO.File.ReadAllBytes(Path.Combine(sContentRootPath, file.Name));
+            //return File(fileBytes, mimeType, sFileName);
+
+            string filepath = Url.Content("~/Download/" + file.Name);
+            return Json(new
+            {
+                filepath
+            });
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveToExcelChart2(string KATOName, string KATO, string[] Title, string[] Average, int[] Years, string[] Values)
+        public ActionResult SaveToExcelChart2(string KATOName, string KATO, string[] Title, string[] Average, int[] Years, string[] Values)
         {
             string sContentRootPath = _hostingEnvironment.WebRootPath;
             sContentRootPath = Path.Combine(sContentRootPath, "Download");
@@ -896,9 +906,14 @@ namespace GeoServer.Controllers
                 }
                 package.Save();
             }
-            var mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            byte[] fileBytes = System.IO.File.ReadAllBytes(Path.Combine(sContentRootPath, file.Name));
-            return File(fileBytes, mimeType, sFileName);
+            //var mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            //byte[] fileBytes = System.IO.File.ReadAllBytes(Path.Combine(sContentRootPath, file.Name));
+
+            string filepath = Url.Content("~/Download/" + file.Name);
+            return Json(new
+            {
+                filepath
+            });
         }
     }
 }

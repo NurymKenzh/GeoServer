@@ -26,7 +26,23 @@
         display: block;
         text-align: center;
     }
+
+    #loading {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 200;
+        width: 100vw;
+        height: 100vh;
+        /*background-color: rgba(192, 192, 192, 0.5);*/
+        /*background-image: url("/Images/sun_preloader.gif");*/
+        /*background-repeat: no-repeat;*/
+        background-position: center;
+    }
 </style>
+
+@Html.Partial("_loadingPartial")
 
 <!DOCTYPE html>
 
@@ -539,8 +555,9 @@
             {
                 var KATOName = "Пастбищный_выдел";
             }
+            document.getElementById("loading").style.display = "block";
             $.ajax({
-                url: '@Url.Action("SaveToExcel")',
+                url: '@Url.Action("SaveToExcelChart1")',
                 data: {
                     KATOName: KATOName,
                     KATO: @ViewBag.KATO,
@@ -551,7 +568,19 @@
                     Years: yearForExcel,
                     Values: valueForExcel
                 },
-                type: 'POST'
+                type: 'POST',
+                success: function (data) {
+                    if (data.Error == null) {
+                        window.location = data.filepath;
+                    }
+                    else {
+                        alert(data.Error);
+                    }
+                    document.getElementById("loading").style.display = "none";
+                },
+                error: function () {
+                    document.getElementById("loading").style.display = "none";
+                }
             });
         }
     </script>
