@@ -145,12 +145,12 @@
         <input id="opacity2" type="range" min="0" max="100" value="80" onchange="Opacity(2)" />
         <br />
         <input type="checkbox" class="Acreage" name="Acreage" value="Acreage" onclick="Change()"> Посевные площади<br>
-        <input type="radio" class="AcreageLevel" name="Acreage" value="acr1" onclick="Change()"> Все<br>
-        <input type="radio" class="AcreageLevel" name="Acreage" value="acr2" onclick="Change()"> Пшеница<br>
-        <input type="radio" class="AcreageLevel" name="Acreage" value="acr3" onclick="Change()"> Кукуруза<br>
-        <input type="radio" class="AcreageLevel" name="Acreage" value="acr4" onclick="Change()"> Рис<br>
-        <input type="radio" class="AcreageLevel" name="Acreage" value="acr5" onclick="Change()"> Залежь<br>
-        <input type="radio" class="AcreageLevel" name="Acreage" value="acr6" onclick="Change()"> Паровые поля<br>
+        <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskAll" onclick="Change()" checked="checked"> Все<br>
+        <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskWheat" onclick="Change()"> Пшеница<br>
+        <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskCorn" onclick="Change()"> Кукуруза<br>
+        <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskRice" onclick="Change()"> Рис<br>
+        <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskDeposit" onclick="Change()"> Залежь<br>
+        <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskSteam" onclick="Change()"> Паровые поля<br>
         <input id="opacity3" type="range" min="0" max="100" value="80" onchange="Opacity(3)" />
         <br />
         <input type="checkbox" class="ALTD" name="ALTD" value="ALTD" onclick="Change()"> Среднемноголетние данные<br>
@@ -290,23 +290,6 @@
             source: Source_pasturepol
         });
 
-    // векторный слой выбранных пастбищ
-    var Source_select_pasturepol = new ol.source.Vector({});
-    var Layer_select_pasturepol = new ol.layer.Vector({
-        source: Source_select_pasturepol,
-        style: new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: [0, 0, 255, 1]
-            }),
-            stroke: new ol.style.Stroke({
-                color: 'red',
-                width: 2
-            })
-        })
-    });
-    // N
-    layers.push(Layer_select_pasturepol);
-
     // векторный слой пастбищ (не отображается на карте)
     var Layer_pasturepol_v = new ol.layer.Vector();
     // векторный слой областей (не отображается на карте)
@@ -408,6 +391,57 @@
     //});
     //Layer_Pastures.setOpacity(0.80);
     //layers.push(Layer_Pastures);
+
+    // источник данных и слой CropMask
+    var Source_CropMask = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:no',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_CropMask = new ol.layer.Tile({
+        source: Source_CropMask
+    });
+    Layer_CropMask.setOpacity(0.80);
+    layers.push(Layer_CropMask);
+
+    //var Source_CropMask = new ol.source.TileWMS({
+    //    url: 'http://' + geoserverAddress + ':8080/geoserver/GeoServer/wms?',
+    //    params: {
+    //        'LAYERS': 'GeoServer:CropMaskAll',
+    //        'VERSION': '1.1.0',
+    //        'FORMAT': 'image/png',
+    //        //'TILED': false
+    //    },
+    //    serverType: 'geoserver'
+    //});
+    //var Layer_CropMask =
+    //    new ol.layer.Image({
+    //        source: Source_CropMask
+    //    });
+    //Layer_CropMask.setOpacity(0.80);
+    //layers.push(Layer_CropMask);
+
+    // векторный слой выбранных пастбищ
+    var Source_select_pasturepol = new ol.source.Vector({});
+    var Layer_select_pasturepol = new ol.layer.Vector({
+        source: Source_select_pasturepol,
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: [0, 0, 255, 1]
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                width: 2
+            })
+        })
+    });
+    // N
+    layers.push(Layer_select_pasturepol);
 
     var source = new ol.source.Vector();
     var layer = new ol.layer.Vector({
@@ -548,6 +582,41 @@
             document.getElementById("withColor").disabled = true;
             document.getElementById("legend").disabled = true;
             $('#legend').removeClass('btn btn-default');
+        }
+
+        if ($('.Acreage:checked').val() === 'Acreage') {
+            var AcreageLayer = 'CropMaskAll';
+            if ($('.AcreageLevel:checked').val() === 'CropMaskWheat') {
+                AcreageLayer = 'CropMaskWheat';
+            }
+            if ($('.AcreageLevel:checked').val() === 'CropMaskCorn') {
+                AcreageLayer = 'CropMaskCorn';
+            }
+            if ($('.AcreageLevel:checked').val() === 'CropMaskRice') {
+                AcreageLayer = 'CropMaskRice';
+            }
+            if ($('.AcreageLevel:checked').val() === 'CropMaskDeposit') {
+                AcreageLayer = 'CropMaskDeposit';
+            }
+            if ($('.AcreageLevel:checked').val() === 'CropMaskSteam') {
+                AcreageLayer = 'CropMaskSteam';
+            }
+            var Source_New = new ol.source.TileWMS({
+                url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                params: {
+                    'LAYERS': 'GeoServer:' + AcreageLayer,
+                    'VERSION': '1.1.0',
+                    'FORMAT': 'image/png',
+                    'TILED': true
+                },
+                serverType: 'geoserver'
+            });
+            var l = map.getLayers().getArray()[3];
+            l.setSource(Source_New);
+            map.getLayers().getArray()[3].setVisible(1);
+        }
+        else {
+            map.getLayers().getArray()[3].setVisible(0);
         }
 
         //if ($('.Pastures:checked').val() === 'Pastures') {
