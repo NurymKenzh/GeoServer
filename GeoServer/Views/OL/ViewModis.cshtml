@@ -52,6 +52,7 @@
         width: 20%;
         height: 100%;
         float: left;
+        position: relative;
     }
 
     .sidepanel-title {
@@ -61,29 +62,40 @@
         display: block;
         text-align: center;
     }
+
+    #click {
+        height: 25px;
+        width: 25px;
+        background-color: gray;
+        /*float: left;*/
+        position: absolute;
+        right: 0px;
+        z-index: 5;
+    }
 </style>
 
 <div id="fullscreen" class="fullscreen">
     <div id="map" class="map"></div>
-    <div class="sidepanel" style="padding:15px;">
+    <div id='click'>>></div>
+    <div id="sidepanel" class="sidepanel" style="padding:15px;">
         @*<span class="sidepanel-title">Выбор</span>*@
         @*<label class="control-label">KATOType</label>
-        @Html.DropDownList("KATOType", (IEnumerable<SelectListItem>)ViewBag.KATOType, htmlAttributes: new { @class = "form-control", @id = "KATOType", @onchange = "ChangeKATOType()" })
+            @Html.DropDownList("KATOType", (IEnumerable<SelectListItem>)ViewBag.KATOType, htmlAttributes: new { @class = "form-control", @id = "KATOType", @onchange = "ChangeKATOType()" })
 
-        <label class="control-label">ModisSource</label>
-        @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control", @id = "ModisSource", @onchange = "ChangeModisSource()" })
+            <label class="control-label">ModisSource</label>
+            @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control", @id = "ModisSource", @onchange = "ChangeModisSource()" })
 
-        <label class="control-label">ModisProduct</label>
-        @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control", @id = "ModisProduct", @onchange = "ChangeModisProduct()" })
+            <label class="control-label">ModisProduct</label>
+            @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control", @id = "ModisProduct", @onchange = "ChangeModisProduct()" })
 
-        <label class="control-label">ModisDataSet</label>
-        <select asp-items="ViewBag.ModisDataSet" name="ModisDataSet" class="form-control" id="ModisDataSet" onchange="ChangeModisDataSet()"></select>
+            <label class="control-label">ModisDataSet</label>
+            <select asp-items="ViewBag.ModisDataSet" name="ModisDataSet" class="form-control" id="ModisDataSet" onchange="ChangeModisDataSet()"></select>
 
-        <label class="control-label">Year</label>
-        <select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" onchange="ChangeYear()"></select>
+            <label class="control-label">Year</label>
+            <select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" onchange="ChangeYear()"></select>
 
-        <label class="control-label">Date</label>
-        <select name="Date" class="form-control" id="Date" onchange="ChangeDate()"></select>*@
+            <label class="control-label">Date</label>
+            <select name="Date" class="form-control" id="Date" onchange="ChangeDate()"></select>*@
         @{
             List<SelectListItem> DataType = new List<SelectListItem>()
             {
@@ -152,9 +164,9 @@
         <input type="button" id="info2" value="Информация 2" onclick="ViewChart2()" disabled="disabled" />
         @*<input type="checkbox" class="Pastures" name="Pastures" value="Pastures" onclick="Change()" checked="checked"> Пастбища<br>*@
         @*<input type="radio" class="PasturesType" name="Pastures" value="pastALAColor" onclick="Change()"> С окрасом
-        <input type="button" value="Легенда" class="btn btn-default" onclick="PasLagend()" />
-        <br>
-        <input type="radio" class="PasturesType" name="Pastures" value="pastALA" onclick="Change()" checked="checked"> Без окраса<br>*@
+            <input type="button" value="Легенда" class="btn btn-default" onclick="PasLagend()" />
+            <br>
+            <input type="radio" class="PasturesType" name="Pastures" value="pastALA" onclick="Change()" checked="checked"> Без окраса<br>*@
         @*<input id="opacity3" type="range" min="0" max="100" value="80" onchange="Opacity(3)" />*@
     </div>
 </div>
@@ -563,6 +575,8 @@
     }
 
     Change();
+
+    
 </script>
 
 <script>
@@ -881,4 +895,28 @@
         var o = '#opacity' + l.toString();
         layers[l].setOpacity($(o).val() / 100);
     }
+    $('#click').click(function () {
+        //$("#sidepanel").animate({ width: 'toggle' }, 500);
+        //var f = $('#map').width() / $('#map').parent().width() * 100;
+        //if (f > 79 && f < 81) {
+        //    $('#map').animate({ width: '100%' }, 500);
+        //    $('#click').text('<<');
+        //}
+        //else {
+        //    $('#map').animate({ width: '80%' }, 500);
+        //    $('#click').text('>>');
+        //}
+        $("#sidepanel").toggle();
+        var f = $('#map').width() / $('#map').parent().width() * 100;
+        if (f > 79 && f < 81) {
+            $('#map').width('100%');
+            $('#click').text('<<');
+        }
+        else {
+            $('#map').width('80%');
+            $('#click').text('>>');
+        }
+
+        map.updateSize();
+    });
 </script>
