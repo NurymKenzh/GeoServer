@@ -1,10 +1,35 @@
-﻿body {
-    padding-top: 35px;
-    padding-bottom: 10px;
-}
-
+﻿
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+footer.footer {
+    padding-top: 1rem;
+    padding-bottom: 40px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 40px;
+    background-color: #f5f5f5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+}
+
 .body-content {
     padding-left: 5px;
     padding-right: 5px;
@@ -97,3 +122,137 @@ dd {
     margin-left: 0;
     margin-bottom: .3125em;
 }
+
+
+.dropdown {
+    border-radius: 0;
+    border: 0;
+}
+
+.dropdown-menu {
+    background: #326295;
+    border: 0;
+    top: 80%;
+    border-radius: 0px 0px 5px 5px;
+}
+
+.dropdown-item:hover {
+    background: #085ca5;
+    color: #fff;
+}
+
+.dropdown-menu a {
+    color: #fff;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    color: #212529;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+    background: #fec400;
+}
+
+.nav-item::after {
+    content: '';
+    display: block;
+    width: 0px;
+    height: 2px;
+    background: #fec400;
+}
+
+.nav-item:hover::after {
+    width: 100%;
+}
+
+.navbar-dark .navbar-nav .active > .nav-link, .navbar-dark .navbar-nav .nav-link.active, .navbar-dark .navbar-nav .nav-link.show, .navbar-dark .navbar-nav .show > .nav-link, .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
+    color: #fec400;
+}
+
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+}
+
+    .form-signin .checkbox {
+        font-weight: 400;
+    }
+
+    .form-signin .form-control {
+        position: relative;
+        box-sizing: border-box;
+        height: auto;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+    .form-signin input[type="email"] {
+        margin-bottom: -1px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .form-signin input[type="password"] {
+        margin-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+.tree {
+    margin: 0 10px 0 0px;
+}
+
+    .tree label {
+        padding-left: 0px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .tree input:checked + label {
+        cursor: pointer;
+        color: black;
+        font-weight: bold;
+    }
+
+
+.tree li input + ul {
+    margin: -0.938em 0 0 -44px; /* 15px */
+    height: 1em;
+}
+
+    .tree li input + ul > li {
+        height: 0;
+        overflow: hidden;
+        margin-left: -14px !important;
+        padding-left: 1px;
+    }
+
+.tree li label {
+    cursor: pointer;
+    padding-left: 20px;
+}
+
+.tree li input:checked + ul {
+    margin: -1.463em 0 0 -44px; /* 20px */
+    padding: 1.563em 0 0 75px; /* 25px */
+    height: auto;
+}
+
+    .tree li input:checked + ul > li {
+        height: auto;
+        margin: 0px;
+    }
+
+article {
+    margin-top: 1em;
+    padding: initial;
+    position: absolute;
+    display: none;
+    z-index: 4;
+}
+

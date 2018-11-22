@@ -2,20 +2,23 @@
     Layout = "/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Manage your account</h2>
-
 <div>
-    <h4>Change your account settings</h4>
-    <hr />
-    <div class="row">
-        <div class="col-md-3">
-            @await Html.PartialAsync("_ManageNav")
+    <div class="container">
+        <div class="text-center mt-5 mb-4">
+            <img class="mb-4" src="~/images/user.svg" alt="" width="72" height="72">
+            <h1 class="h3 mb-3 font-weight-normal">Manage your account</h1>
+            <div class="p-0 flex-grow-1 bd-highlight">
+                <p class="lead text-info">Change your account settings</p>
+            </div>
         </div>
-        <div class="col-md-9">
+        <div class="form-signin">
+            @await Html.PartialAsync("_ManageNav")
             @RenderBody()
         </div>
     </div>
 </div>
+
+
 
 @section Scripts {
     @RenderSection("Scripts", required: false)

@@ -12,10 +12,10 @@
     <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">@UserManager.GetUserName(User)!</a>
+                <a class="btn btn-outline-warning btn-sm mr-1" asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">@UserManager.GetUserName(User)!</a>
             </li>
             <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">@SharedLocalizer["LogOut"]</button>
+                <button type="submit" class="btn btn-outline-light  btn-sm" title="@SharedLocalizer["LogOut"]"><i class="fa fa-sign-out"></i></button>
             </li>
         </ul>
     </form>
@@ -23,7 +23,8 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="" asp-controller="Account" asp-action="Register">@SharedLocalizer["Register"]</a></li>
-        <li><a asp-area="" asp-controller="Account" asp-action="Login">@SharedLocalizer["LogIn"]</a></li>
+        @*<li><a class="btn btn-outline-light  btn-sm" asp-area="" asp-controller="Account" asp-action="Register">@SharedLocalizer["Register"]</a></li>*@
+        <li><a class="btn btn-outline-light  btn-sm" asp-area="" asp-controller="Account" asp-action="Login"><i class="fa fa-sign-in"></i></a></li>
     </ul>
 }
+   

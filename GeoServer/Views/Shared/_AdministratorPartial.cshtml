@@ -8,12 +8,32 @@
 {
     if (user.IsInRole("Administrator"))
     {
-        <li>@Html.ActionLink(SharedLocalizer["Administration"], "Administrator", "Home")</li>
-        <li><a asp-area="" asp-controller="Home" asp-action="Directories">Справочники</a></li>
-        <li><a asp-area="" asp-controller="Home" asp-action="Analize">Аналитика</a></li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Home" asp-action="Administrator">
+                <i class="fa fa-cogs"></i>
+                Управления данными               
+                <span class="sr-only">(current)</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Home" asp-action="Directories">
+                <i class="fa fa-list-alt"></i>
+                Справочники
+                <span class="sr-only">(current)</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Home" asp-action="Administrator">
+                <i class="fa fa-users"></i>
+                @SharedLocalizer["Administration"]
+                <span class="sr-only">(current)</span>
+            </a>
+        </li>
     }
     if (user.IsInRole("Moderator"))
     {
 
     }
 }
+
+
