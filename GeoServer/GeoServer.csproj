@@ -74,4 +74,19 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Python\GetLayerCoordinateSystemName.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Python\GetRasterBandsCount.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Python\ModisDownload.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Python\ZonalStatAsTable.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
