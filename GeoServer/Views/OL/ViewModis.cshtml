@@ -11,6 +11,68 @@
 <link href="~/lib/ol/ol.css" rel="stylesheet" />
 <script src="~/lib/ol/ol.js"></script>
 
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+</style>
+
 @*<script src="~/js/loadingoverlay.js"></script>*@
 
 
@@ -21,7 +83,7 @@
             <main role="main" class="col-md-12 ml-sm-auto col-lg-12 p-0">
                 <div class="row justify-content-end mr-3">
                     <article>
-                        <nav class="col-10 col-md-auto bg-light sidebar">                            
+                        <nav class="col-10 col-md-auto bg-light sidebar">
                             <div class="media">
                                 <div class="media-body text-info">
                                     <h6 class="mt-2 mb-2">ЭЛЕКТРОННЫЙ <br> АТЛАС <br>ПАСТБИЩНЫХ <br>РЕСУРСОВ</h6>
@@ -30,32 +92,39 @@
                             </div>
                             @{
                                 List<SelectListItem> DataType = new List<SelectListItem>()
-                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="Снег", Value="snow"},
-                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
-                                                                                                                                                                                                                                                                                                            };
-
+                                                                                            {
+                                                                                                new SelectListItem() { Text="Снег", Value="snow"},
+                                                                                                new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
+                                                                                            };
                                 List<SelectListItem> State = new List<SelectListItem>()
-                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="Фактическое", Value="Fact"},
-                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="Аномальное", Value="Anomal"}
-                                                                                                                                                                                                                                                                                                            };
-
+                                                                                            {
+                                                                                                new SelectListItem() { Text="Фактическое", Value="Fact"},
+                                                                                                new SelectListItem() { Text="Аномальное", Value="Anomal"}
+                                                                                            };
                                 List<SelectListItem> Index = new List<SelectListItem>()
-                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
-                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
-                                                                                                                                                                                                                                                                                                            };
+                                                                                            {
+                                                                                                new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
+                                                                                                new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
+                                                                                            };
                             }
                             <label class="font-weight-normal mb-0">Тип данных</label>
-                            @Html.DropDownList("DataType", (IEnumerable<SelectListItem>)DataType, htmlAttributes: new { @class = "form-control form-control-sm", @id = "DataType", @onchange = "Change()" })
+                            <br />
+                            @Html.DropDownList("DataType", (IEnumerable<SelectListItem>)DataType, htmlAttributes: new { @class = "form-control form-control-sm", @id = "DataType", @onchange = "Change()", @style = "display: none;" })
+                            <label class="switch">
+                                <input id="DataTypeSwitch" type="checkbox" name="DataTypeSwitch" checked="checked">@*onchange="Change()"*@
+                                <span class="slider round"></span>
+                            </label><label id="DataTypeLabel" class="font-weight-normal mb-0">Вегетационные данные</label>
+                            <br />
 
                             <label class="font-weight-normal mb-0">Состояние</label>
                             @Html.DropDownList("State", (IEnumerable<SelectListItem>)State, htmlAttributes: new { @class = "form-control form-control-sm", @id = "State", @onchange = "Change()" })
-
+                            @*<i class="material-icons" id="legend" value="Легенда" onclick="AnomalyLegend()">info_outline</i>
+                            <br />*@
 
                             <label class="font-weight-normal mb-0">Индекс</label>
                             @Html.DropDownList("Index", (IEnumerable<SelectListItem>)Index, htmlAttributes: new { @class = "form-control form-control-sm", @id = "Index", @onchange = "Change()" })
+                            <i class="material-icons" id="legend" value="Легенда" onclick="NDVILegend()">info_outline</i>
+                            <br />
 
                             <label class="font-weight-normal mb-0">Год</label>
                             <select asp-items="ViewBag.Year" name="Year" class="custom-select custom-select-sm" id="Year" onchange="ChangeYear()"></select>
@@ -143,7 +212,7 @@
                                                     <label class="form-check-label" for="KATO">
                                                         <small> С окрасом</small>
                                                     </label>
-                                                    <i class="material-icons" id="legend" value="Легенда" onclick="PasLagend()" disabled="disabled">info_outline</i>                                                   
+                                                    <i class="material-icons" id="legend" value="Легенда" onclick="PasLagend()" disabled="disabled">info_outline</i>
                                                 </div>
                                                 <div class="form-check text-black-50 ml-2">
                                                     <input type="radio" id="withoutColor" class="PasturesType" name="Pastures" value="pastALA" onclick="Change()" disabled="disabled">
@@ -296,6 +365,14 @@
     <img src="~/images/pastlegend.jpg" style="width: 630px;" />
 </div>
 
+<div id="ndvilegenddialog" title="Легенда" hidden="hidden">
+    <img src="~/images/ndvilegend.jpg" style="width: 630px;" />
+</div>
+
+<div id="anomlegenddialog" title="Легенда" hidden="hidden">
+    <img src="~/images/pastlegend.jpg" style="width: 630px;" />
+</div>
+
 <script>
     $(document).ready(function () {
         $(".menu").click(function () {
@@ -306,6 +383,24 @@
 
 <script type="text/javascript">
     //$("#fullscreen").LoadingOverlay("show");
+
+    //function transform(extent) {
+    //    return ol.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+    //}
+    var extents = {
+        Almaty: [7991617, 5172524, 9408704, 6016344],
+        //Argentina: transform([-73.41544, -55.25, -53.62835, -21.83231]),
+        //Nigeria: transform([2.6917, 4.24059, 14.57718, 13.86592]),
+        //Sweden: transform([11.02737, 55.36174, 23.90338, 69.10625])
+    };
+
+    //var overlay = new TileLayer({
+    //    extent: extents.India,
+    //    source: new TileJSON({
+    //        url: 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
+    //        crossOrigin: 'anonymous'
+    //    })
+    //});
 
     var layers = [];
     layers.push(new ol.layer.Tile({
@@ -327,7 +422,8 @@
         serverType: 'geoserver'
     });
     var Layer_Modis = new ol.layer.Tile({
-        source: Source_Modis
+        source: Source_Modis,
+        extent: extents.Almaty,
     });
     Layer_Modis.setOpacity(0.80);
     layers.push(Layer_Modis);
@@ -343,7 +439,8 @@
         serverType: 'geoserver'
     });
     var Layer_KATO = new ol.layer.Tile({
-        source: Source_KATO
+        source: Source_KATO,
+        extent: extents.Almaty,
     });
     Layer_KATO.setOpacity(0.80);
     layers.push(Layer_KATO);
@@ -361,7 +458,8 @@
     });
     var Layer_pasturepol =
         new ol.layer.Image({
-            source: Source_pasturepol
+            source: Source_pasturepol,
+            extent: extents.Almaty,
         });
 
     // векторный слой пастбищ (не отображается на карте)
@@ -387,7 +485,8 @@
                     features: (new ol.format.GeoJSON()).readFeatures(data_pasturepol_v, {
                         featureProjection: 'EPSG:3857'
                     })
-                })
+                }),
+                extent: extents.Almaty,
             });
             // векторный слой областей
             var url_adm1pol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:adm1pol&outputFormat=text/javascript&format_options=callback:getJson";
@@ -404,7 +503,8 @@
                             features: (new ol.format.GeoJSON()).readFeatures(data_adm1pol_v, {
                                 featureProjection: 'EPSG:3857'
                             })
-                        })
+                        }),
+                        extent: extents.Almaty,
                     });
                     // векторный слой районов
                     var url_adm2pol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:adm2pol&outputFormat=text/javascript&format_options=callback:getJson";
@@ -421,7 +521,8 @@
                                     features: (new ol.format.GeoJSON()).readFeatures(data_adm2pol_v, {
                                         featureProjection: 'EPSG:3857'
                                     })
-                                })
+                                }),
+                                extent: extents.Almaty,
                             });
                             // векторный слой сельских округов
                             var url_adm3pol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:adm3pol&outputFormat=text/javascript&format_options=callback:getJson";
@@ -438,7 +539,8 @@
                                             features: (new ol.format.GeoJSON()).readFeatures(data_adm3pol_v, {
                                                 featureProjection: 'EPSG:3857'
                                             })
-                                        })
+                                        }),
+                                        extent: extents.Almaty,
                                     });
                                     //$("#fullscreen").LoadingOverlay("hide");
                                 }
@@ -462,7 +564,8 @@
         serverType: 'geoserver'
     });
     var Layer_CropMask = new ol.layer.Tile({
-        source: Source_CropMask
+        source: Source_CropMask,
+        extent: extents.Almaty,
     });
     Layer_CropMask.setOpacity(0.80);
     layers.push(Layer_CropMask);
@@ -479,7 +582,8 @@
         serverType: 'geoserver'
     });
     var Layer_hdrlin = new ol.layer.Tile({
-        source: Source_hdrlin
+        source: Source_hdrlin,
+        extent: extents.Almaty,
     });
     Layer_hdrlin.setOpacity(0.80);
     layers.push(Layer_hdrlin);
@@ -496,7 +600,8 @@
         serverType: 'geoserver'
     });
     var Layer_hdrpol = new ol.layer.Tile({
-        source: Source_hdrpol
+        source: Source_hdrpol,
+        extent: extents.Almaty,
     });
     Layer_hdrpol.setOpacity(0.80);
     layers.push(Layer_hdrpol);
@@ -513,7 +618,8 @@
         serverType: 'geoserver'
     });
     var Layer_poppnt = new ol.layer.Tile({
-        source: Source_poppnt
+        source: Source_poppnt,
+        extent: extents.Almaty,
     });
     Layer_poppnt.setOpacity(0.80);
     layers.push(Layer_poppnt);
@@ -530,7 +636,8 @@
         serverType: 'geoserver'
     });
     var Layer_poppntl = new ol.layer.Tile({
-        source: Source_poppntl
+        source: Source_poppntl,
+        extent: extents.Almaty,
     });
     Layer_poppntl.setOpacity(0.80);
     layers.push(Layer_poppntl);
@@ -547,7 +654,8 @@
         serverType: 'geoserver'
     });
     var Layer_poppol = new ol.layer.Tile({
-        source: Source_poppol
+        source: Source_poppol,
+        extent: extents.Almaty,
     });
     Layer_poppol.setOpacity(0.80);
     layers.push(Layer_poppol);
@@ -564,7 +672,8 @@
         serverType: 'geoserver'
     });
     var Layer_poppoll = new ol.layer.Tile({
-        source: Source_poppoll
+        source: Source_poppoll,
+        extent: extents.Almaty,
     });
     Layer_poppoll.setOpacity(0.80);
     layers.push(Layer_poppoll);
@@ -581,7 +690,8 @@
         serverType: 'geoserver'
     });
     var Layer_rdslin = new ol.layer.Tile({
-        source: Source_rdslin
+        source: Source_rdslin,
+        extent: extents.Almaty,
     });
     Layer_rdslin.setOpacity(0.80);
     layers.push(Layer_rdslin);
@@ -590,6 +700,7 @@
     var Source_select_pasturepol = new ol.source.Vector({});
     var Layer_select_pasturepol = new ol.layer.Vector({
         source: Source_select_pasturepol,
+        extent: extents.Almaty,
         style: new ol.style.Style({
             fill: new ol.style.Fill({
                 color: [0, 0, 255, 1]
@@ -605,7 +716,8 @@
 
     var source = new ol.source.Vector();
     var layer = new ol.layer.Vector({
-        source: source
+        source: source,
+        extent: extents.Almaty,
     });
 
     var map = new ol.Map({
@@ -613,16 +725,20 @@
         layers: layers,
         view: new ol.View({
             center: ol.proj.fromLonLat([78.5, 45]),
-            zoom: 7,
-            //maxZoom: ...,
-            minZoom: 7,
+            zoom: 8,
+            minZoom: 8,
             extent: [7991617, 5172524, 9408704, 6016344]
-            //extent: ol.proj.transform([74, 42, 83, 48], 'EPSG:4326', 'EPSG:3857')
-
         })
     });
 
     function Change() {
+        //if ($('input:checkbox[name="DataTypeSwitch"]:checked')) {
+        //    alert(0);
+        //}
+        //$('input[name="DataTypeSwitch"]:checked').each(function () {
+        //    console.log(this.value);
+        //});
+
         var year = $('#Year').val();
         var day = $('#Date').val();
         if (day.length < 3) day = '0' + day;
@@ -821,7 +937,7 @@
 
     Change();
 
-    
+
 </script>
 
 <script>
@@ -1043,10 +1159,11 @@
                         document.cookie = KATOLayer + "." + result[0].get('id') + "." + result[0].get('kato_te');
                         // pastures info
                         //if ($("#KATOType").val() === 'pastALA') {
-                        if ($('.KATO:checked').val() === 'KATO') {
+                        //if ($('.KATO:checked').val() === 'KATO') {
 
-                        }
-                        else if (($('.Pastures:checked').val() === 'Pastures') && ($('.PasturesType:checked').val() === 'pastALAColor')) {
+                        //}
+                        //if (($('.Pastures:checked').val() === 'Pastures') && ($('.PasturesType:checked').val() === 'pastALAColor')) {
+                        if ($('.KATOLevel:checked').val() === 'Pastures') {
                             $.ajax({
                                 url: '@Url.Action("GetPasInfo")',
                                 data: {
@@ -1100,6 +1217,20 @@
 <script>
     function PasLagend() {
         $("#paslegenddialog").dialog({
+            width: 690,
+            height: 500
+        });
+    }
+
+    function NDVILegend() {
+        $("#ndvilegenddialog").dialog({
+            width: 690,
+            height: 500
+        });
+    }
+
+    function AnomalyLegend() {
+        $("#anomlegenddialog").dialog({
             width: 690,
             height: 500
         });
@@ -1171,5 +1302,22 @@
         }
 
         map.updateSize();
+    });
+
+    var switchStatus = false;
+    $("#DataTypeSwitch").on('change', function () {
+        if ($(this).is(':checked')) {
+            switchStatus = $(this).is(':checked');
+            //alert(switchStatus);// To verify
+            $('#DataTypeLabel').text('Вегетационные данные');
+            $('#DataType').val('vegetation');
+        }
+        else {
+            switchStatus = $(this).is(':checked');
+            //alert(switchStatus);// To verify
+            $('#DataTypeLabel').text('Снег');
+            $('#DataType').val('snow');
+        }
+        Change();
     });
 </script>

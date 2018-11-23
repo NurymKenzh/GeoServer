@@ -76,7 +76,14 @@
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
-        <div class="float-right mr-5"><button class="menu btn btn-outline-light btn-sm"><i class="fa fa-bars"></i> Menu</button></div>
+        @{
+            var controller = ViewContext.RouteData.Values["Controller"];
+            var action = ViewContext.RouteData.Values["Action"];
+        }
+        @if (controller.ToString() == "OL" && action.ToString() == "ViewModis")
+        {
+            <div class="float-right mr-5"><button class="menu btn btn-outline-light btn-sm"><i class="fa fa-bars"></i> Меню</button></div>
+        }
     </nav>
     @RenderBody()
     <!-- FOOTER -->
