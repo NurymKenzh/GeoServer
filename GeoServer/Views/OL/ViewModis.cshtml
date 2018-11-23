@@ -21,7 +21,7 @@
             <main role="main" class="col-md-12 ml-sm-auto col-lg-12 p-0">
                 <div class="row justify-content-end mr-3">
                     <article>
-                        <nav class="col-10 col-md-auto bg-light sidebar">
+                        <nav class="col-10 col-md-auto bg-light sidebar">                            
                             <div class="media">
                                 <div class="media-body text-info">
                                     <h6 class="mt-2 mb-2">ЭЛЕКТРОННЫЙ <br> АТЛАС <br>ПАСТБИЩНЫХ <br>РЕСУРСОВ</h6>
@@ -30,22 +30,22 @@
                             </div>
                             @{
                                 List<SelectListItem> DataType = new List<SelectListItem>()
-                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                            new SelectListItem() { Text="Снег", Value="snow"},
-                                                                                                                                                                                                                                                                                            new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
-                                                                                                                                                                                                                                                                                        };
+                                                                                                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="Снег", Value="snow"},
+                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
+                                                                                                                                                                                                                                                                                                            };
 
                                 List<SelectListItem> State = new List<SelectListItem>()
-                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                            new SelectListItem() { Text="Фактическое", Value="Fact"},
-                                                                                                                                                                                                                                                                                            new SelectListItem() { Text="Аномальное", Value="Anomal"}
-                                                                                                                                                                                                                                                                                        };
+                                                                                                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="Фактическое", Value="Fact"},
+                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="Аномальное", Value="Anomal"}
+                                                                                                                                                                                                                                                                                                            };
 
                                 List<SelectListItem> Index = new List<SelectListItem>()
-                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                            new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
-                                                                                                                                                                                                                                                                                            new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
-                                                                                                                                                                                                                                                                                        };
+                                                                                                                                                                                                                                                                                                            {
+                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
+                                                                                                                                                                                                                                                                                                                new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
+                                                                                                                                                                                                                                                                                                            };
                             }
                             <label class="font-weight-normal mb-0">Тип данных</label>
                             @Html.DropDownList("DataType", (IEnumerable<SelectListItem>)DataType, htmlAttributes: new { @class = "form-control form-control-sm", @id = "DataType", @onchange = "Change()" })
@@ -143,7 +143,7 @@
                                                     <label class="form-check-label" for="KATO">
                                                         <small> С окрасом</small>
                                                     </label>
-                                                    <i class="icon-action fa fa-info-circle" id="legend" value="Легенда" onclick="PasLagend()" disabled="disabled"></i>
+                                                    <i class="material-icons" id="legend" value="Легенда" onclick="PasLagend()" disabled="disabled">info_outline</i>                                                   
                                                 </div>
                                                 <div class="form-check text-black-50 ml-2">
                                                     <input type="radio" id="withoutColor" class="PasturesType" name="Pastures" value="pastALA" onclick="Change()" disabled="disabled">

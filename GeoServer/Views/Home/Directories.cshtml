@@ -5,33 +5,47 @@
     ViewData["Title"] = "Модуль «Справочники»";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="contcentr" style="background:inherit;border:1px solid #fff;padding:5px 10px; margin-right:100px; margin-left:100px;">
-    @*<h2>@SharedLocalizer["Administrator"]</h2>*@
-    <h3>Модуль «Справочники»</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-primary" role="alert">
+                <button type="button" class="close" data-dismiss="alert">x</button> <h4 class="alert-heading">Модуль «Справочники»</h4>
+                <hr />
+                <div class="d-flex bd-highlight">
+                    <div class="flex-grow-1 bd-highlight">
+                        <p class="text-info">Модуль «Справочники» предназначен для дополнения и редактирования легенды пастбищной карты, а также управление структурой данных продуктов Модис</p>
+                    </div>
+                    <!-- Button trigger modal -->
+                    <div class="bd-highlight">
+                        <button type="button" class="btn btn-link" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-exclamation-triangle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-warning" role="alert">
+                <strong>Системы координат:</strong>
+                <a class="btn btn-sm btn-outline-primary fa-pull-right" asp-controller="CoordinateSystems" asp-action="Index">Перейти</a>
+            </div>
+            <div class="alert alert-warning" role="alert">
+                <strong>Источники MODIS:</strong>
+                <a class="btn btn-sm btn-outline-primary fa-pull-right" asp-controller="ModisSources" asp-action="Index">Перейти</a>
+            </div>
+            <div class="alert alert-warning" role="alert">
+                <strong>Продукты MODI:</strong>
+                <a class="btn btn-sm btn-outline-primary fa-pull-right" asp-controller="ModisProducts" asp-action="Index">Перейти</a>
+            </div>
+            <div class="alert alert-warning" role="alert">
+                <strong>Наборы данных MODIS:</strong>
+                <a class="btn btn-sm btn-outline-primary fa-pull-right" asp-controller="ModisDataSets" asp-action="Index">Перейти</a>
+            </div>
+            <div class="alert alert-warning" role="alert">
+                <strong>Пролеты MODIS:</strong>
+                <a class="btn btn-sm btn-outline-primary fa-pull-right" asp-controller="ModisSpans" asp-action="Index">Перейти</a>
+            </div>
+        </div>
 
-    <dl class="admlist">
-        <dt>Системы координат</dt>
-        <dd><a class="btn btn-default" asp-controller="CoordinateSystems" asp-action="Index">Перейти</a></dd>
-    </dl>
-
-    <dl class="admlist">
-        <dt>Источники MODIS</dt>
-        <dd><a class="btn btn-default" asp-controller="ModisSources" asp-action="Index">Перейти</a></dd>
-    </dl>
-
-    <dl class="admlist">
-        <dt>Продукты MODIS</dt>
-        <dd><a class="btn btn-default" asp-controller="ModisProducts" asp-action="Index">Перейти</a></dd>
-    </dl>
-
-    <dl class="admlist">
-        <dt>Наборы данных MODIS</dt>
-        <dd><a class="btn btn-default" asp-controller="ModisDataSets" asp-action="Index">Перейти</a></dd>
-    </dl>
-
-    <dl class="admlist">
-        <dt>Пролеты MODIS</dt>
-        <dd><a class="btn btn-default" asp-controller="ModisSpans" asp-action="Index">Перейти</a></dd>
-    </dl>
-
+    </div>
 </div>

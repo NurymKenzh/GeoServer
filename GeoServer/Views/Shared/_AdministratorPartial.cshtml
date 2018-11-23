@@ -8,12 +8,20 @@
 {
     if (user.IsInRole("Administrator"))
     {
-        <li class="nav-item">
-            <a class="nav-link" asp-controller="Home" asp-action="Administrator">
-                <i class="fa fa-cogs"></i>
-                Управления данными               
-                <span class="sr-only">(current)</span>
-            </a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown07" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cogs"></i> MODIS</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown07">
+                <div class="dropdown-divider"></div>
+                <h6 class="dropdown-header text-light"> СКАЧАТЬ СНИМКИ MODIS</h6>
+                <a class="dropdown-item" asp-controller="GDAL" asp-action="DownloadModis">Скачать снимки MODIS</a>
+                <a class="dropdown-item" asp-controller="GDAL" asp-action="DownloadModisDelta">Скачать снимки MODIS (дельта)</a>
+                <div class="dropdown-divider"></div>
+                <h6 class="dropdown-header text-light">ОБРАБОТКА СПУТНИКОВЫХ ДАННЫХ</h6>
+                <a class="dropdown-item" asp-controller="GDAL" asp-action="ModisMosaic">Построение мозаики MODIS</a>
+                <a class="dropdown-item" asp-controller="GDAL" asp-action="Reproject">Перепроецирование MODIS</a>
+                <a class="dropdown-item"  asp-controller="GDAL" asp-action="ModisAnomaly">Расчет аномалий NDVI</a>
+                <a class="dropdown-item" asp-controller="GDAL" asp-action="PublishGeoTiff">Публикация снимка</a>
+            </div>
         </li>
         <li class="nav-item">
             <a class="nav-link" asp-controller="Home" asp-action="Directories">

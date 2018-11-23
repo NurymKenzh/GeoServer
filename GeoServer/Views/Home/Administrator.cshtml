@@ -5,48 +5,41 @@
     ViewData["Title"] = SharedLocalizer["Administrator"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="contcentr" style="background:inherit;border:1px solid #fff;padding:5px 10px; margin-right:100px; margin-left:100px;">
-    <h3>Модуль «Администрирование»</h3>
-    <dl class="admlist">
-        <dt>Управление ролями пользователей и назначение роли пользователя в приложении</dt>
-        <dd><a class="btn btn-default" asp-controller="Users" asp-action="Index">Перейти</a></dd>
-    </dl>
 
-    <dl class="admlist">
-        <dt>Журнал</dt>
-        <dd><a class="btn btn-default" asp-controller="Logs" asp-action="Index">Перейти</a></dd>
-    </dl>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-primary" role="alert">
+                <button type="button" class="close" data-dismiss="alert">x</button> <h4 class="alert-heading">Модуль «Администрирование»</h4>
+                <hr />
+                <div class="d-flex bd-highlight">
+                    <div class="flex-grow-1 bd-highlight">
+                        <p class="text-info">Модуль  «Администрирование» предназначен для работы с данными о Пользователях, а так же для настройки и администрирования системы.</p>
+                    </div>
+                    <!-- Button trigger modal -->
+                    <div class="bd-highlight">
+                        <button type="button" class="btn btn-link" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-exclamation-triangle"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-warning" role="alert">
+                <strong>Управление ролями пользователей и назначение роли пользователя в приложении:</strong>
+                <a class="btn btn-sm btn-outline-primary fa-pull-right" asp-controller="Users" asp-action="Index">Перейти</a>
+            </div>
+            <div class="alert alert-warning" role="alert">
+                <strong>Журнал:</strong>
+                <a class="btn btn-sm btn-outline-primary fa-pull-right" asp-controller="Logs" asp-action="Index">Перейти</a>
+            </div>
+        </div>
 
-    <dl class="admlist">
-        <dt>Скачать снимки MODIS</dt>
-        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="DownloadModis">Перейти</a></dd>
-    </dl>
-
-    <dl class="admlist">
-        <dt>Скачать снимки MODIS (дельта)</dt>
-        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="DownloadModisDelta">Перейти</a></dd>
-    </dl>
-
-    <dl class="admlist">
-        <dt>Построение мозаики MODIS</dt>
-        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="ModisMosaic">Перейти</a></dd>
-    </dl>
-
-    <dl class="admlist">
-        <dt>Перепроецирование MODIS</dt>
-        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="Reproject">Перейти</a></dd>
-    </dl>
-
-    <dl class="admlist">
-        <dt>Расчет аномалий NDVI</dt>
-        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="ModisAnomaly">Перейти</a></dd>
-    </dl>
-
-    <dl class="admlist">
-        <dt>Публикация снимка</dt>
-        <dd><a class="btn btn-default" asp-controller="GDAL" asp-action="PublishGeoTiff">Перейти</a></dd>
-    </dl>
+    </div>
 </div>
+
+
 
 <script src="~/lib/aimaraJS-master/lib/Aimara.js"></script>
 <link rel="stylesheet" href="~/lib/aimaraJS-master/css/Aimara.css" />

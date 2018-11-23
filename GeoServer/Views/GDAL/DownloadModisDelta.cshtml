@@ -6,45 +6,71 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
 <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
-<h2>Скачать снимки MODIS (дельта)</h2>
-@if (!string.IsNullOrEmpty(ViewBag.Message))
-{
-    <h4>@ViewBag.Message</h4>
-}
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="DownloadModisDelta">
-            <div class="form-group">
-                <label class="control-label">Пролеты MODIS</label>
-                @*@Html.DropDownList("ModisSpan", (IEnumerable<SelectListItem>)ViewBag.ModisSpan, htmlAttributes: new { @class = "form-control", @id = "ModisSpan", @multiple = "multiple" })*@
-                <select asp-items="ViewBag.ModisSpan" name="ModisSpan" multiple="multiple" class="form-control" id="ModisSpan"></select>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Источник MODIS</label>
-                @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control", @id = "ModisSource", @onchange = "ChangeModisSource()" })
-            </div>
-            <div class="form-group">
-                <label class="control-label">Продукт MODIS</label>
-                @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control", @id = "ModisProduct" })
-            </div>
-            <div class="form-group">
-                <label class="control-label">Количество дней</label>
-                <input id="Delta" name="Delta" type="number" class="form-control" value="@ViewBag.Delta" />
-            </div>
-            <div class="form-group">
-                <label class="control-label">Дата окончания</label>
-                @{
-                    DateTime DateFinish = (DateTime)ViewBag.DateFinish;
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-primary" role="alert">
+                <button type="button" class="close" data-dismiss="alert">x</button> <h4 class="alert-heading">Скачать снимки MODIS (дельта)</h4>
+                <hr />
+                <div class="d-flex bd-highlight">
+                    <div class="flex-grow-1 bd-highlight">
+                        <p class="text-info">
+                            Данный функционал предназначен для формирования исторических или обновления фактических
+                            спутниковых данных путем автозагрузки данных, начиная с первого дня и по дням обновления спутниковых данных.
+                        </p>
+                    </div>
+                    <!-- Button trigger modal -->
+                    <div class="bd-highlight">
+                        <button type="button" class="btn btn-link" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-exclamation-triangle"></i></button>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(ViewBag.Message))
+                {
+                    <h4>@ViewBag.Message</h4>
                 }
-                <input asp-for="@DateFinish" id="DateFinish" name="DateFinish" type="date" class="form-control" />
             </div>
-            <div class="form-group">
-                <input type="submit" value="Начать" class="btn btn-default" />
-            </div>
-        </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <form asp-action="DownloadModisDelta">
+                <div class="form-group">
+                    <label class="control-label">Пролеты MODIS</label>
+                    @*@Html.DropDownList("ModisSpan", (IEnumerable<SelectListItem>)ViewBag.ModisSpan, htmlAttributes: new { @class = "form-control", @id = "ModisSpan", @multiple = "multiple" })*@
+                    <select asp-items="ViewBag.ModisSpan" name="ModisSpan" multiple="multiple" class="custom-select" id="ModisSpan"></select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Источник MODIS</label>
+                    @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control is-invalid", @id = "ModisSource", @onchange = "ChangeModisSource()" })
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Продукт MODIS</label>
+                    @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control is-invalid", @id = "ModisProduct" })
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Количество дней</label>
+                    <input id="Delta" name="Delta" type="number" class="form-control is-invalid" value="@ViewBag.Delta" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Дата окончания</label>
+                    @{
+                        DateTime DateFinish = (DateTime)ViewBag.DateFinish;
+                    }
+                    <input asp-for="@DateFinish" id="DateFinish" name="DateFinish" type="date" class="form-control is-invalid" />
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Начать" class="btn btn-outline-primary btn-block" />
+                </div>
+            </form>
+
+        </div>
+
     </div>
 </div>
+
+
 <script>
     //document.getElementById('DateStart').valueAsDate = new Date();
     //document.getElementById('DateFinish').valueAsDate = new Date();

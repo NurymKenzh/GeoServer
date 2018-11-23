@@ -8,128 +8,172 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@SharedLocalizer["Users"]</h2>
-
-@using (Html.BeginForm("Index", "Users", new { SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter }, FormMethod.Get))
-{
-    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
-    @if (Model.Pager.EndPage > 1)
-    {
-        <ul class="pagination">
-            @if (Model.Pager.CurrentPage > 1)
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-secondary" role="alert">
+                <button type="button" class="close" data-dismiss="alert">x</button> <h4 class="alert-heading">@SharedLocalizer["Users"]</h4>
+                <hr />
+                <div class="d-flex bd-highlight">
+                    <div class="flex-grow-1 bd-highlight">
+                        <p class="text-info">Функция предназначена для регистрации пользователя</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            @using (Html.BeginForm("Index", "Users", new { SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter }, FormMethod.Get))
             {
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                        new { Page = Model.Pager.CurrentPage - 1, SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
-            }
+                @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
+                @if (Model.Pager.EndPage > 1)
+                {
+                    <div class="row no-gutters">
+                        <div class="col-12 col-sm-2 col-md-8">
+                            <p>
+                                <a class="btn btn-outline-success ml-1" asp-action="Create"><i class="fa fa-pencil-square-o"></i> @SharedLocalizer["Create"]</a>
+                            </p>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <ul class="pagination justify-content-end">
+                                @if (Model.Pager.CurrentPage > 1)
+                                {
+                                    <li class="page-item page-link">
+                                        @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                                            new { SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                                    </li>
+                                    <li class="page-item page-link">
+                                        @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                                            new { Page = Model.Pager.CurrentPage - 1, SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                                    </li>
+                                }
 
-            @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
-            {
-                <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
-                    @Html.ActionLink(page.ToString(), "Index",
-                        new { Page = page, SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
-            }
+                                @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+                                {
 
-            @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
-            {
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { Page = Model.Pager.CurrentPage + 1, SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { Page = Model.Pager.TotalPages, SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
-            }
-        </ul>
-    }
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.ActionLink(Html.DisplayNameFor(u => u.Items.FirstOrDefault().Email).ToString(), "Index",
-                        new { SortOrder = ViewBag.EmailSort, Email = ViewBag.EmailFilter })
-                    <br />
-                    @Html.Editor("Email", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
-                </th>
-                <th>
-                    @Html.DisplayNameFor(u => u.Items.FirstOrDefault().RoleNames)
-                </th>
-                <th>
-                    <br />
-                    <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-default">
-                </th>
-            </tr>
-        </thead>
-        @foreach (var item in Model.Items)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @for (int i = 0; i < item.RoleNames.Count; i++)
-                    {
-                        if (i < item.RoleNames.Count - 1)
+                                    <li class="page-item page-link @(page == Model.Pager.CurrentPage ? "active" : "")" @(page == Model.Pager.CurrentPage ? "style=background-color:#b8daff;" : "")>
+                                        @Html.ActionLink(page.ToString(), "Index",
+                                            new { Page = page, SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                                    </li>
+                                }
+
+                                @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+                                {
+                                    <li class="page-item page-link">
+                                        @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                                            new { Page = Model.Pager.CurrentPage + 1, SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                                    </li>
+                                    <li class="page-item page-link">
+                                        @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                                            new { Page = Model.Pager.TotalPages, SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                                    </li>
+                                }
+                            </ul>
+
+                        </div>
+                    </div>
+
+                }
+                <div class="table-responsive-md">
+                    <table class="table table-bordered table table-sm">
+                        <thead>
+                            <tr class="table-primary">
+                                <th scope="col">
+                                    <div class="form-row align-items-center">
+                                        <div class="col-sm-4 my-1">
+                                            @Html.Editor("Email", null, new { htmlAttributes = new { @class = "form-control is-valid" }, value = "" })
+                                        </div>
+                                        <div class="col-sm-auto my-1">
+                                            @Html.ActionLink(Html.DisplayNameFor(u => u.Items.FirstOrDefault().Email).ToString(), "Index",
+                                           new { SortOrder = ViewBag.EmailSort, Email = ViewBag.EmailFilter })
+                                        </div>
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="form-row align-items-center">
+                                        <div class="col-auto my-1">
+                                            @Html.DisplayNameFor(u => u.Items.FirstOrDefault().RoleNames)
+                                        </div>
+                                    </div>
+                                </th>
+                                <th scope="col">
+                                    <div class="form-row align-items-center">
+                                        <div class="col-auto my-1">
+                                            <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-outline-primary">
+                                        </div>
+                                    </div>
+
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model.Items)
                         {
-                            <text>
-                                @Html.Raw(item.RoleNames[i] + ", ")
-                            </text>
+                            <tr>
+                                <th scope="row"> @Html.DisplayFor(modelItem => item.Email)</th>
+                                <td>
+                                    @for (int i = 0; i < item.RoleNames.Count; i++)
+                                    {
+                                        if (i < item.RoleNames.Count - 1)
+                                        {
+                                            <text>
+                                                @Html.Raw(item.RoleNames[i] + ", ")
+                                            </text>
+                                        }
+                                        else
+                                        {
+                                            <text>
+                                                @Html.Raw(item.RoleNames[i])
+                                            </text>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-user"></i> @SharedLocalizer["Edit"]</a>
+                                </td>
+                            </tr>
                         }
-                        else
+                    </table>
+                </div>
+                @if (Model.Pager.EndPage > 1)
+                {
+                    <ul class="pagination justify-content-end">
+                        @if (Model.Pager.CurrentPage > 1)
                         {
-                            <text>
-                                @Html.Raw(item.RoleNames[i])
-                            </text>
+                            <li class="page-item page-link">
+                                @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                                    new { SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                            </li>
+                            <li class="page-item page-link">
+                                @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                                    new { Page = Model.Pager.CurrentPage - 1, SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                            </li>
                         }
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">@SharedLocalizer["Edit"]</a>
-                </td>
-            </tr>
-        }
-    </table>
-    @if (Model.Pager.EndPage > 1)
-    {
-        <ul class="pagination">
-            @if (Model.Pager.CurrentPage > 1)
-            {
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                        new { Page = Model.Pager.CurrentPage - 1, SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
-            }
 
-            @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
-            {
-                <li class="@(page == Model.Pager.CurrentPage ? "active" : "")">
-                    @Html.ActionLink(page.ToString(), "Index",
-                        new { Page = page, SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
-            }
+                        @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+                        {
 
-            @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
-            {
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { Page = Model.Pager.CurrentPage + 1, SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { Page = Model.Pager.TotalPages, SortOrder = ViewBag.SortOrder, Email = ViewBag.EmailFilter })
-                </li>
+                            <li class="page-item page-link @(page == Model.Pager.CurrentPage ? "active" : "")" @(page == Model.Pager.CurrentPage ? "style=background-color:#b8daff;" : "")>
+                                @Html.ActionLink(page.ToString(), "Index",
+                                    new { Page = page, SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                            </li>
+                        }
+
+                        @if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+                        {
+                            <li class="page-item page-link">
+                                @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                                    new { Page = Model.Pager.CurrentPage + 1, SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                            </li>
+                            <li class="page-item page-link">
+                                @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                                    new { Page = Model.Pager.TotalPages, SortOrder = ViewBag.SortOrder, LakeId = ViewBag.LakeIdFilter, Year = ViewBag.YearFilter })
+                            </li>
+                        }
+                    </ul>
+
+                }
             }
-        </ul>
-    }
-}
+        </div>
+    </div>
+</div>

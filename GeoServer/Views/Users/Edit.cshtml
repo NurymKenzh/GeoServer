@@ -6,42 +6,58 @@
     ViewData["Title"] = SharedLocalizer["Edit"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>@SharedLocalizer["Edit"]</h2>
-
-<form asp-action="Edit">
-    <div class="form-horizontal">
-        <h4>@SharedLocalizer["User"]</h4>
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input type="hidden" asp-for="Id" />
-        <div class="form-group">
-            <label asp-for="Email" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="Email" class="form-control" readonly="readonly" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.RoleNames, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @foreach (string role in ViewBag.Roles)
-                {
-                    <input type="checkbox" name="RoleNames" value="@role"
-                           @(Model.RoleNames.Contains(role) ? "checked=\"checked\"" : "") />@role <br />
-                    }
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="@SharedLocalizer["Save"]" class="btn btn-default" />
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-secondary" role="alert">
+                <button type="button" class="close" data-dismiss="alert">x</button> <h4 class="alert-heading">@SharedLocalizer["Edit"]</h4>
+                <hr />
+                <div class="d-flex bd-highlight">
+                    <div class="p-2 flex-grow-1 bd-highlight">
+                        <p class="lead text-info">There should be a description</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</form>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <form asp-action="Edit">
+                <div class="form-horizontal">
+                    <h4>@SharedLocalizer["User"]</h4>
+                    <hr />
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="Email" class="col-md-2 control-label"></label>
+                        <div class="col-md-3">
+                            <input asp-for="Email" class="form-control" readonly="readonly" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.RoleNames, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @foreach (string role in ViewBag.Roles)
+                            {
+                                <input type="checkbox" name="RoleNames" value="@role"
+                                       @(Model.RoleNames.Contains(role) ? "checked=\"checked\"" : "") />@role <br />
+                                }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="@SharedLocalizer["Save"]" class="btn btn-secondary" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <small class="d-block text-right mt-3">
+                <a asp-action="Index">@SharedLocalizer["BackToList"]</a>
+            </small>
+        </div>
 
-<div>
-    <a asp-action="Index">@SharedLocalizer["BackToList"]</a>
+    </div>
 </div>
 
 @section Scripts {
