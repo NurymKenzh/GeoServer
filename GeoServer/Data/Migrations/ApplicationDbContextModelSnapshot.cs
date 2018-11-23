@@ -244,6 +244,50 @@ namespace GeoServer.Data.Migrations
                     b.ToTable("PasSubtype");
                 });
 
+            modelBuilder.Entity("GeoServer.Models.Pasture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<decimal>("areaGa");
+
+                    b.Property<int>("class_id");
+
+                    b.Property<int>("group_id");
+
+                    b.Property<int>("group_lt");
+
+                    b.Property<decimal>("korm_l");
+
+                    b.Property<decimal>("korm_o");
+
+                    b.Property<decimal>("korm_v");
+
+                    b.Property<decimal>("korm_z");
+
+                    b.Property<string>("note");
+
+                    b.Property<int>("otdely_id");
+
+                    b.Property<int>("pid");
+
+                    b.Property<int>("recom_id");
+
+                    b.Property<int>("subtype_id");
+
+                    b.Property<decimal>("ur_l");
+
+                    b.Property<decimal>("ur_o");
+
+                    b.Property<decimal>("ur_v");
+
+                    b.Property<decimal>("ur_z");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Pasture");
+                });
+
             modelBuilder.Entity("GeoServer.Models.ZonalStatKATO", b =>
                 {
                     b.Property<int>("Id")

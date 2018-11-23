@@ -717,7 +717,8 @@ namespace GeoServer.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetPasInfo(int class_id,
+        public ActionResult GetPasInfo(int pid,
+            int class_id,
             int otdely_id,
             int subtype_id,
             int group_id,
@@ -733,13 +734,18 @@ namespace GeoServer.Controllers
             {
                 group_name += $" ({group_nameLat})";
             }
+
+            Pasture pasture = _context.Pasture.FirstOrDefault(p => p.pid == pid);
+            decimal e = pasture.E;
+
             return Json(new
             {
                 class_name,
                 otdely_name,
                 subtype_name,
                 group_name,
-                recom_name
+                recom_name,
+                e
             });
         }
 

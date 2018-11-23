@@ -198,7 +198,7 @@
                                                 <div class="form-check text-black-50">
                                                     <input class="KATOLevel" type="radio" name="KATO" value="adm3pol" id="KATOLevel" onclick="Change()" checked="checked">
                                                     <label class="form-check-label" for="KATO">
-                                                        <small> Сельские округи</small>
+                                                        <small> Сельские округа</small>
                                                     </label>
                                                 </div>
                                                 <div class="form-check text-black-50">
@@ -356,6 +356,10 @@
         <tr>
             <td>Кормовая единица, зима, ц/га</td>
             <td id="pas_korm_z"></td>
+        </tr>
+        <tr>
+            <td>Скотоемкость</td>
+            <td id="pas_e"></td>
         </tr>
     </table>
     <br />
@@ -1167,6 +1171,7 @@
                             $.ajax({
                                 url: '@Url.Action("GetPasInfo")',
                                 data: {
+                                    pid: result[0].get('id'),
                                     class_id: result[0].get('class_id'),
                                     otdely_id: result[0].get('otdely_id'),
                                     subtype_id: result[0].get('subtype_id'),
@@ -1189,6 +1194,9 @@
                                     $('#pas_korm_l').html(result[0].get('korm_l'));
                                     $('#pas_korm_o').html(result[0].get('korm_o'));
                                     $('#pas_korm_z').html(result[0].get('korm_z'));
+
+                                    //alert(result[0].get('e'));
+                                    $('#pas_e').html(data.e);
 
                                     $("#dialog").dialog({
                                         width: 700,

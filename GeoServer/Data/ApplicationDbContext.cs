@@ -56,6 +56,8 @@ namespace GeoServer.Data
         public DbSet<GeoServer.Models.PasGroup> PasGroup { get; set; }
 
         public DbSet<GeoServer.Models.PasRecom> PasRecom { get; set; }
+
+        public DbSet<GeoServer.Models.Pasture> Pasture { get; set; }
     }
 
     //public class MyContext : DbContext
