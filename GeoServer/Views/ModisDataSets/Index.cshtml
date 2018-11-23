@@ -5,80 +5,103 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-secondary" role="alert">
+                <button type="button" class="close" data-dismiss="alert">x</button> <h4 class="alert-heading">Наборы данных MODIS:</h4>
+                <hr />
+                <div class="d-flex bd-highlight">
+                    <div class="flex-grow-1 bd-highlight">
+                        <p class="text-info">Функция предназначена для загрузки Наборы данных MODIS: </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 ">
+            <div class="col pt-0">
+                <p>
+                    <a class="btn btn-outline-success ml-1" asp-action="Create"><i class="fa fa-pencil"></i> Create New</a>
+                </p>
+            </div>
+            <div class="table-responsive-lg">
+                <table class="table table-hover table-bordered table-sm">
+                    <thead>
+                        <tr class="table-primary">
+                            <th class="text-center" scope="col">
+                                @Html.DisplayNameFor(model => model.ModisProduct)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.Units)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.DataType)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.FillValue)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.ValidRange)
+                            </th>
+                            <th scope="col">
+                                @Html.DisplayNameFor(model => model.ScalingFactor)
+                            </th>
+                            <th scope="col">
+                                Еdit
+                            </th>
+                        </tr>
+                    </thead>
+                    @foreach (var item in Model)
+                    {
+                    <tr class="text-center">
+                        <td >
+                            @Html.DisplayFor(modelItem => item.ModisProduct.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Index)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Units)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DataType)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FillValue)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ValidRange)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ScalingFactor)
+                        </td>
+                        <td style="width: 75px;">
+                            <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-eye"></i></a> |
+                            <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil-square-o"></i></a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ModisProduct)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Index)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Units)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FillValue)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValidRange)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ScalingFactor)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModisProduct.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Index)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Units)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FillValue)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ValidRange)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ScalingFactor)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
