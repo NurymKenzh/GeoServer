@@ -718,6 +718,42 @@
     // N
     layers.push(Layer_select_pasturepol);
 
+    // источник данных и слой adm0lin
+    var Source_adm0lin = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:adm0lin',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm0lin = new ol.layer.Tile({
+        source: Source_adm0lin,
+        extent: extents.Almaty,
+    });
+    Layer_adm0lin.setOpacity(0.80);
+    layers.push(Layer_adm0lin);
+
+    // источник данных и слой adm1lin
+    var Source_adm1lin = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:adm1lin',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm1lin = new ol.layer.Tile({
+        source: Source_adm1lin,
+        extent: extents.Almaty,
+    });
+    Layer_adm1lin.setOpacity(0.80);
+    layers.push(Layer_adm1lin);
+
     var source = new ol.source.Vector();
     var layer = new ol.layer.Vector({
         source: source,
@@ -750,6 +786,7 @@
         var layer_Modis = '';
 
         map.getLayers().getArray()[1].setVisible(1);
+        Layer_adm1lin.setVisible(false);
 
         if ($('#DataType').val() === 'snow') {
             map.getLayers().getArray()[1].setVisible(0);
@@ -801,6 +838,7 @@
             var KATOLayer = 'adm2pol';
             if ($('.KATOLevel:checked').val() === 'adm1pol') {
                 KATOLayer = 'adm1pol';
+                Layer_adm1lin.setVisible(true);
             }
             if ($('.KATOLevel:checked').val() === 'adm3pol') {
                 KATOLayer = 'adm3pol';
