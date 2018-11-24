@@ -26,10 +26,13 @@ namespace GeoServer.Models
         public string note { get; set; }
         public decimal areaGa { get; set; }
 
-        private const decimal N_v = 1.17M;
-        private const decimal N_l = 1.17M;
-        private const decimal N_o = 1.17M;
-        private const int P = 625;
+        public const decimal N_v = 2.5M;
+        public const decimal N_l = 2.5M;
+        public const decimal N_o = 2.5M;
+        //private const decimal N = 1.17M;
+        public const decimal P_v = 70;
+        public const decimal P_l = 90;
+        public const decimal P_o = 90;
 
         public decimal W_v
         {
@@ -67,7 +70,7 @@ namespace GeoServer.Models
         {
             get
             {
-                return (ur_v * P / 3 + ur_l * P / 3 + ur_o * P / 3) / P;
+                return (ur_v * P_v + ur_l * P_l + ur_o * P_o) / (P_v + P_l + P_o);
             }
         }
 
