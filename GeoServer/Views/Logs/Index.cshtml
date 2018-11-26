@@ -44,7 +44,7 @@
                                 @Html.DisplayNameFor(model => model.Parameters)
                             </th>
                             <th scope="col">
-                                Red
+                                
                             </th>
 
                         </tr>
@@ -59,7 +59,6 @@
                             <td> @Html.DisplayFor(modelItem => item.Parameters)</td>
                             <td style="width: 75px;">
                                 <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-eye"></i></a> |
-                                <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil-square-o"></i></a> |
                                 <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>
