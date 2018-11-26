@@ -33,7 +33,7 @@
     </div>
     <div class="row">
         <div class="col-md-8 offset-md-2 mt-3">
-            <form asp-action="ModisMosaic" class="col-md-6">
+            <form asp-action="ModisMosaic">
                 <div class="form-group">
                     <label class="control-label">Источник MODIS</label>
                     @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control is-invalid", @id = "ModisSource", @onchange = "ChangeModisSource()" })

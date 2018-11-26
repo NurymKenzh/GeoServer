@@ -54,50 +54,10 @@
                 </dd>
             </dl>
             <small class="d-block text-right mt-3">
-                <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
                 <a asp-action="Index">Back to List</a>
             </small>
         </div>
+    </div>    
+</div>
 
-    </div>
-</div>
-<div>
-    <h4>Log</h4>
-    <hr />
-    <dl class="table table-striped">
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DateTime)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DateTime)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Function)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Function)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Operation)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Operation)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Parameters)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Parameters)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
