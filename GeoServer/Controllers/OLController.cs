@@ -71,6 +71,19 @@ namespace GeoServer.Controllers
             ViewBag.ModisSource = ModisSource;
             ViewBag.ModisProduct = ModisProduct;
             ViewBag.ModisDataSet = ModisDataSet;
+            int pastId = 0;
+            try
+            {
+                pastId = Convert.ToInt32(PastId);
+            }
+            catch
+            {
+
+            }
+            Pasture pasture = _context.Pasture.FirstOrDefault(p => p.Id == pastId);
+            ViewBag.ClassId = pasture?.class_id;
+            KATO kato = _context.KATO.FirstOrDefault(k => k.Number == KATO);
+            ViewBag.KATOName = kato.NameRU;
 
             int minYear = _context.ZonalStatKATO.Min(z => z.Year),
                 maxYear = _context.ZonalStatKATO.Max(z => z.Year);
@@ -145,6 +158,19 @@ namespace GeoServer.Controllers
             ViewBag.ModisSource = ModisSource;
             ViewBag.ModisProduct = ModisProduct;
             ViewBag.ModisDataSet = ModisDataSet;
+            int pastId = 0;
+            try
+            {
+                pastId = Convert.ToInt32(PastId);
+            }
+            catch
+            {
+
+            }
+            Pasture pasture = _context.Pasture.FirstOrDefault(p => p.Id == pastId);
+            ViewBag.ClassId = pasture?.class_id;
+            KATO kato = _context.KATO.FirstOrDefault(k => k.Number == KATO);
+            ViewBag.KATOName = kato.NameRU;
 
             int minYear = _context.ZonalStatKATO.Min(z => z.Year),
                 maxYear = _context.ZonalStatKATO.Max(z => z.Year);

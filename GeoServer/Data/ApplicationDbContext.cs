@@ -58,6 +58,8 @@ namespace GeoServer.Data
         public DbSet<GeoServer.Models.PasRecom> PasRecom { get; set; }
 
         public DbSet<GeoServer.Models.Pasture> Pasture { get; set; }
+
+        public DbSet<GeoServer.Models.KATO> KATO { get; set; }
     }
 
     //public class MyContext : DbContext

@@ -4,9 +4,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+@*<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
 
 <link href="~/lib/ol/ol.css" rel="stylesheet" />
 <script src="~/lib/ol/ol.js"></script>
@@ -274,7 +277,7 @@
                                                     </label>
                                                 </div>
                                                 <div class="form-check  text-black-50">
-                                                    <input type="radio" class="ALTDLevel" name="ALTD" value="data1" onclick="Change()">
+                                                    <input type="radio" class="ALTDLevel" name="ALTD" value="data1" onclick="Change()" checked="checked">
                                                     <label class="form-check-label" for="hdrpol">
                                                         <small>Деградированные земли</small>
                                                     </label>
@@ -754,6 +757,24 @@
     Layer_adm1lin.setOpacity(0.80);
     layers.push(Layer_adm1lin);
 
+    // источник данных и слой degradrtr2018
+    var Source_degradrtr2018 = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:degradrtr2018',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_degradrtr2018 = new ol.layer.Tile({
+        source: Source_degradrtr2018,
+        extent: extents.Almaty,
+    });
+    Layer_degradrtr2018.setOpacity(0.80);
+    layers.push(Layer_degradrtr2018);
+
     var source = new ol.source.Vector();
     var layer = new ol.layer.Vector({
         source: source,
@@ -974,6 +995,17 @@
         }
         else {
             map.getLayers().getArray()[10].setVisible(0);
+        }
+        if ($('.ALTD:checked').val() === 'ALTD') {
+            if ($('.ALTDLevel:checked').val() === 'data1') {
+                map.getLayers().getArray()[14].setVisible(1);
+            }
+            else {
+                map.getLayers().getArray()[14].setVisible(0);
+            }
+        }
+        else {
+            map.getLayers().getArray()[14].setVisible(0);
         }
     }
 
@@ -1295,7 +1327,8 @@
             "&ModisSource=" + "MOLT" +
             "&ModisProduct=" + "MOD13Q1" +
             "&ModisDataSet=" + $("#Index").val();
-        window.open(url, "MsgWindow", "width=600,height=400");
+        //window.open(url, "MsgWindow", "width=600,height=400");
+        window.open(url, '_blank');
     }
 
     function ViewChart2() {
@@ -1308,7 +1341,8 @@
             "&ModisSource=" + "MOLT" +
             "&ModisProduct=" + "MOD13Q1" +
             "&ModisDataSet=" + $("#Index").val();
-        window.open(url, "MsgWindow", "width=600,height=400");
+        //window.open(url, "MsgWindow", "width=600,height=400");
+        window.open(url, '_blank');
     }
 </script>
 
