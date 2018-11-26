@@ -38,21 +38,21 @@ namespace GeoServer.Models
         {
             get
             {
-                return areaGa * N_v / korm_v;
+                return korm_v != 0 ? areaGa * N_v / korm_v : 0;
             }
         }
         public decimal W_l
         {
             get
             {
-                return areaGa * N_l / korm_l;
+                return korm_l != 0 ? areaGa * N_l / korm_l : 0;
             }
         }
         public decimal W_o
         {
             get
             {
-                return areaGa * N_o / korm_o;
+                return korm_o != 0 ? areaGa * N_o / korm_o : 0;
             }
         }
 

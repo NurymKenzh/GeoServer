@@ -82,6 +82,26 @@ namespace GeoServer.Data.Migrations
                     b.ToTable("CoordinateSystems");
                 });
 
+            modelBuilder.Entity("GeoServer.Models.KATO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("Level");
+
+                    b.Property<string>("NameEN");
+
+                    b.Property<string>("NameKK");
+
+                    b.Property<string>("NameRU");
+
+                    b.Property<string>("Number");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("KATO");
+                });
+
             modelBuilder.Entity("GeoServer.Models.Log", b =>
                 {
                     b.Property<int>("Id")

@@ -60,25 +60,25 @@
     @if (ViewBag.KATOType == "adm1pol")
     {
         <h2 align="center">
-            Область
+            Область (@(ViewBag.KATOName))
         </h2>
     }
     @if (ViewBag.KATOType == "adm2pol")
     {
         <h2 align="center">
-            Район
+            Район (@(ViewBag.KATOName))
         </h2>
     }
     @if (ViewBag.KATOType == "adm3pol")
     {
         <h2 align="center">
-            Сельский округ
+            Сельский округ (@(ViewBag.KATOName))
         </h2>
     }
     @if (ViewBag.KATOType == "pastALA")
     {
         <h2 align="center">
-            Пастбищные выделы
+            Пастбищный выдел (@(ViewBag.ClassId))
         </h2>
     }
 
