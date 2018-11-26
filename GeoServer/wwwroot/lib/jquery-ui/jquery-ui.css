@@ -491,7 +491,6 @@ button.ui-button::-moz-focus-inner {
 	position: absolute;
 	top: 0;
 	left: 0;
-	padding: .2em;
 	outline: 0;
 }
 .ui-dialog .ui-dialog-titlebar {
@@ -510,6 +509,7 @@ button.ui-button::-moz-focus-inner {
 	position: absolute;
 	right: .3em;
 	top: 50%;
+    color: #2b2b2b;
 	width: 20px;
 	margin: -10px 0 0 0;
 	padding: 1px;
@@ -1290,13 +1290,13 @@ a.ui-button:active,
 .ui-corner-bottom,
 .ui-corner-left,
 .ui-corner-bl {
-	border-bottom-left-radius: 3px;
+	border-bottom-left-radius: 0px;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-right,
 .ui-corner-br {
-	border-bottom-right-radius: 3px;
+	border-bottom-right-radius: 0px;
 }
 
 /* Overlays */
