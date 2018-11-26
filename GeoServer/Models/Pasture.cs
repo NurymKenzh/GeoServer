@@ -82,5 +82,30 @@ namespace GeoServer.Models
                 return Y * areaGa / ((N_v + N_l +N_o) / 3);
             }
         }
+
+        // скотоемкость КРС
+        public decimal EY_KRS
+        {
+            get
+            {
+                return EY / 5;
+            }
+        }
+        // скотоемкость лошади
+        public decimal EY_horses
+        {
+            get
+            {
+                return EY / 6;
+            }
+        }
+        // скотоемкость верблюды
+        public decimal EY_camels
+        {
+            get
+            {
+                return EY / 7;
+            }
+        }
     }
 }

@@ -361,8 +361,20 @@
             <td id="pas_korm_z"></td>
         </tr>
         <tr>
-            <td>Скотоемкость</td>
-            <td id="pas_e"></td>
+            <td>Скотоемкость (условные овцеголовы)</td>
+            <td id="pas_ey"></td>
+        </tr>
+        <tr>
+            <td>Скотоемкость (КРС)</td>
+            <td id="pas_ey_krs"></td>
+        </tr>
+        <tr>
+            <td>Скотоемкость (лошади)</td>
+            <td id="pas_ey_horses"></td>
+        </tr>
+        <tr>
+            <td>Скотоемкость (верблюды)</td>
+            <td id="pas_ey_camels"></td>
         </tr>
     </table>
     <br />
@@ -1266,7 +1278,15 @@
                                     $('#pas_korm_z').html(result[0].get('korm_z'));
 
                                     //alert(result[0].get('e'));
-                                    $('#pas_e').html(data.e);
+                                    //$('#pas_ey').html(data.ey);
+                                    //$('#pas_ey_krs').html(data.ey_krs);
+                                    //$('#pas_ey_horses').html(data.ey_horses);
+                                    //$('#pas_ey_camels').html(data.ey_camels);
+
+                                    $('#pas_ey').html(data.ey != null ? data.ey.toFixed(2) : null);
+                                    $('#pas_ey_krs').html(data.ey != null ? data.ey_krs.toFixed(2) : null);
+                                    $('#pas_ey_horses').html(data.ey != null ? data.ey_horses.toFixed(2) : null);
+                                    $('#pas_ey_camels').html(data.ey != null ? data.ey_camels.toFixed(2) : null);
 
                                     $("#dialog").dialog({
                                         width: 700,
