@@ -27,7 +27,7 @@
                 </p>
             </div>
             <div class="table-responsive-lg">
-                <table class="table table-hover table-bordered table-sm">
+                <table class="table table-striped table-hover table-bordered table-sm">
                     <thead>
                         <tr class="table-primary">
                             <th class="text-center" scope="col">
@@ -65,7 +65,7 @@
                     @foreach (var item in Model)
                     {
                     <tr class="text-center">
-                        <td >
+                        <td class="text-center" >
                             @Html.DisplayFor(modelItem => item.ModisProduct.Name)
                         </td>
                         <td>

@@ -29,47 +29,22 @@
                     <thead>
                         <tr class="table-primary">
                             <th scope="col">
-                                <div class="form-row align-items-center">
-                                    <div class="col-sm-2 my-1">
-                                        @Html.DisplayNameFor(model => model.Email)
-                                    </div>
-                                </div>
+                                @Html.DisplayNameFor(model => model.Email)
                             </th>
                             <th scope="col">
-                                <div class="form-row align-items-center">
-                                    <div class="col-sm-2 my-1">
-                                        @Html.DisplayNameFor(model => model.DateTime)
-                                    </div>
-                                </div>
+                                @Html.DisplayNameFor(model => model.DateTime)
                             </th>
                             <th scope="col">
-                                <div class="form-row align-items-center">
-                                    <div class="col-auto my-2">
-                                        @Html.DisplayNameFor(model => model.Function)
-                                    </div>
-                                </div>
+                                @Html.DisplayNameFor(model => model.Function)
                             </th>
                             <th scope="col">
-                                <div class="form-row align-items-center">
-                                    <div class="col-auto my-1">
-                                        @Html.DisplayNameFor(model => model.Operation)
-                                    </div>
-                                </div>
-
+                                @Html.DisplayNameFor(model => model.Operation)
                             </th>
                             <th scope="col">
-                                <div class="form-row align-items-center">
-                                    <div class="col-auto my-1">
-                                        @Html.DisplayNameFor(model => model.Parameters)
-                                    </div>
-                                </div>
+                                @Html.DisplayNameFor(model => model.Parameters)
                             </th>
                             <th scope="col">
-                                <div class="form-row align-items-center">
-                                    <div class="col-sm-4 my-1">
-                                        Red
-                                    </div>
-                                </div>
+                                Red
                             </th>
 
                         </tr>
@@ -82,7 +57,7 @@
                             <td>@Html.DisplayFor(modelItem => item.Function)</td>
                             <td> @Html.DisplayFor(modelItem => item.Operation)</td>
                             <td> @Html.DisplayFor(modelItem => item.Parameters)</td>
-                            <td>
+                            <td style="width: 75px;">
                                 <a asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-eye"></i></a> |
                                 <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-pencil-square-o"></i></a> |
                                 <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>

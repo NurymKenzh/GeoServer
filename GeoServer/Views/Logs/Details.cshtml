@@ -5,12 +5,66 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-secondary" role="alert">
+                <button type="button" class="close" data-dismiss="alert">x</button> <h4 class="alert-heading">Details</h4>
+                <hr />
+                <div class="d-flex bd-highlight">
+                    <div class="p-2 flex-grow-1 bd-highlight">
+                        <p class="lead text-info">There should be a description</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <dl class="table table-striped">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.DateTime)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.DateTime)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Function)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Function)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Operation)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Operation)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Parameters)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Parameters)
+                </dd>
+            </dl>
+            <small class="d-block text-right mt-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+                <a asp-action="Index">Back to List</a>
+            </small>
+        </div>
 
+    </div>
+</div>
 <div>
     <h4>Log</h4>
     <hr />
-    <dl class="dl-horizontal">
+    <dl class="table table-striped">
         <dt>
             @Html.DisplayNameFor(model => model.Email)
         </dt>
