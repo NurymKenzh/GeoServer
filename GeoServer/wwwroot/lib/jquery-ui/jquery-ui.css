@@ -488,11 +488,15 @@ button.ui-button::-moz-focus-inner {
 	top: .3em;
 }
 .ui-dialog {
-	position: absolute;
-	top: 0;
-	left: 0;
-	outline: 0;
+    position: absolute;
+    width: auto !important;
+    max-width: 650px;
+    height: auto !important;
+    top: 0;
+    left: 0;
+    outline: 0;
 }
+
 .ui-dialog .ui-dialog-titlebar {
 	padding: .4em 1em;
 	position: relative;
@@ -518,7 +522,8 @@ button.ui-button::-moz-focus-inner {
 .ui-dialog .ui-dialog-content {
 	position: relative;
 	border: 0;
-	padding: .5em 1em;
+    width: auto;
+	padding: .0em 0em;
 	background: none;
 	overflow: auto;
 }
@@ -903,6 +908,7 @@ body .ui-tooltip {
 	border: 1px solid #dddddd;
 	background: #ffffff;
 	color: #333333;
+    font-size: small;
 }
 .ui-widget-content a {
 	color: #333333;
