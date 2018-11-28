@@ -10,7 +10,9 @@ body {
     margin-bottom: 60px;
     font-family: Lato, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-
+.navbar {
+    background: #326295 !important;
+}
 footer.footer {
     padding-top: 1rem;
     padding-bottom: 40px;

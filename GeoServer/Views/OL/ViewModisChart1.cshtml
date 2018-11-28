@@ -53,8 +53,56 @@
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/vendor/font-awesome/css/font-awesome.min.css" />
 </head>
-
+<div class="container-fluid">
+    <!-- Project-->
+    <div class="project">
+        <div class="row bg-white has-shadow">
+            <div class="left-col col-lg-6 d-flex m-3">
+                <div class="project-title d-flex align-items-center">
+                    <button type="button" class="btn btn-link" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-area-chart fa-2x"></i></button>
+                    <div class="text">
+                        <h3 class="h3">Metadata</h3><small>extra info</small>
+                    </div>
+                </div>                
+            </div>            
+        </div>
+    </div>
+    <div class="row">
+        <!-- Line Charts-->
+        <div class="col-lg-9">
+            <div class="line-chart-example card">
+                <div class="card-header d-flex align-items-center">
+                    <h3 class="h4">Пастбищный выдел (@(ViewBag.ClassId))</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="myChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="line-chart-example card no-margin-bottom">
+                <div class="card-header d-flex align-items-center">
+                    <h3 class="h4">Конфигурировать:</h3>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <label class="control-label">Начальный месяц</label><br />
+                        <select asp-items="ViewBag.Month" name="Month" class="form-control" id="Month"></select>
+                        <label class="control-label">Количество месяцев</label><br />
+                        <select asp-items="ViewBag.NumberOfMonth" name="NumberOfMonth" class="form-control" id="NumberOfMonth"></select>
+                        <label class="control-label">Год</label><br />
+                        @*<select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" multiple="multiple"></select>*@
+                        @Html.ListBox("Year", (IEnumerable<SelectListItem>)ViewBag.Year, htmlAttributes: new { @class = "form-control", SelectionMode = "Multiple", @id = "Year", AutoPostBack = "true" })<br />
+                        <input type="button" id="update" class="btn btn-default" value="Обновить" onclick="Update()" /><br />
+                        <input type="button" id="update" class="btn btn-default" value="Сохранить в Excel" onclick="SaveToExcel()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <body style="padding: 0px;">
     <script src="~/lib/chart.js/Chart.js"></script>
     @if (ViewBag.KATOType == "adm1pol")
@@ -77,27 +125,10 @@
     }
     @if (ViewBag.KATOType == "pastALA")
     {
-        <h2 align="center">
-            Пастбищный выдел (@(ViewBag.ClassId))
-        </h2>
+        
     }
 
-    <div id="chartdiv" style="height: 200px;">
-        <div class="chart">
-            <canvas id="myChart" width="400" height="200"></canvas>
-        </div>
-        <div class="sidepanel" style="padding:15px;">
-            <label class="control-label">Начальный месяц</label><br />
-            <select asp-items="ViewBag.Month" name="Month" class="form-control" id="Month"></select>
-            <label class="control-label">Количество месяцев</label><br />
-            <select asp-items="ViewBag.NumberOfMonth" name="NumberOfMonth" class="form-control" id="NumberOfMonth"></select>
-            <label class="control-label">Год</label><br />
-            @*<select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" multiple="multiple"></select>*@
-            @Html.ListBox("Year", (IEnumerable<SelectListItem>)ViewBag.Year, htmlAttributes: new { @class = "form-control", SelectionMode = "Multiple", @id = "Year", AutoPostBack = "true" })<br />
-            <input type="button" id="update" class="btn btn-default" value="Обновить" onclick="Update()" /><br />
-            <input type="button" id="update" class="btn btn-default" value="Сохранить в Excel" onclick="SaveToExcel()" />
-        </div>
-    </div>
+    
 
     <script src="~/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
     <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
