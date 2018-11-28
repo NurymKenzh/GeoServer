@@ -55,91 +55,95 @@
 
 <body style="padding: 0px;">
     <script src="~/lib/chart.js/Chart.js"></script>
-    @if (ViewBag.KATOType == "adm1pol")
-    {
-        <h2 align="center">
-            Область (@(ViewBag.KATOName))
-        </h2>
-    }
-    @if (ViewBag.KATOType == "adm2pol")
-    {
-        <h2 align="center">
-            Район (@(ViewBag.KATOName))
-        </h2>
-    }
-    @if (ViewBag.KATOType == "adm3pol")
-    {
-        <h2 align="center">
-            Сельский округ (@(ViewBag.KATOName))
-        </h2>
-    }
-    @if (ViewBag.KATOType == "pastALA")
-    {
-        <h2 align="center">
-            Пастбищный выдел (@(ViewBag.ClassId))
-        </h2>
-    }
-    <div class="project">
-        <div class="row bg-white has-shadow">
-            <div class="left-col col-lg-6 d-flex m-3">
-                <div class="project-title d-flex align-items-center">
-                    <button type="button" class="btn btn-link" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-area-chart fa-2x"></i></button>
-                    <div class="text">
-                        @if (ViewBag.KATOType == "pastALA")
-                        {
-                            <h3 class="h3">Дополнительная информация</h3>
-                            <small>Класс: @ViewBag.class_name</small>
-                            <br />
-                            <small>Отдел: @ViewBag.otdely_name</small>
-                            <br />
-                            <small>Подтип: @ViewBag.subtype_name</small>
-                            <br />
-                            <small>Группа: @ViewBag.group_name</small>
-                        }
-                        @if (ViewBag.KATOType == "adm1pol")
-                        {
-                            <h3 class="h3">Дополнительная информация</h3>
-                            <small>КАТО: @ViewBag.KATO</small>
-                            <br />
-                            <small>Область: @ViewBag.KATOName</small>
-                        }
-                        @if (ViewBag.KATOType == "adm2pol")
-                        {
-                            <h3 class="h3">Дополнительная информация</h3>
-                            <small>КАТО: @ViewBag.KATO</small>
-                            <br />
-                            <small>Область: @ViewBag.OblName</small>
-                            <br />
-                            <small>Район: @ViewBag.KATOName</small>
-                        }
-                        @if (ViewBag.KATOType == "adm3pol")
-                        {
-                            <h3 class="h3">Дополнительная информация</h3>
-                            <small>КАТО: @ViewBag.KATO</small>
-                            <br />
-                            <small>Область: @ViewBag.OblName</small>
-                            <br />
-                            <small>Район: @ViewBag.RayName</small>
-                            <br />
-                            <small>Сельский округ: @ViewBag.KATOName</small>
-                        }
+    <div class="container-fluid">
+        <!-- Project-->
+        @if (ViewBag.KATOType == "adm1pol")
+        {
+            
+        }
+        @if (ViewBag.KATOType == "adm2pol")
+        {
+            
+        }
+        @if (ViewBag.KATOType == "adm3pol")
+        {
+            
+        }
+        @if (ViewBag.KATOType == "pastALA")
+        {
+
+        }
+        <div class="project">
+            <div class="row bg-white has-shadow">
+                <div class="col alert alert-primary m-3">
+                    <div class="project-title d-flex align-items-center">
+                        <div class="text-justify">
+                            @if (ViewBag.KATOType == "pastALA")
+                            {
+                                <h5 class="alert-heading">Пастбищный выдел №(@(ViewBag.ClassId))</h5>
+                                <p class="m-0">Класс: @ViewBag.class_name</p>
+                                <p class="m-0">Отдел: @ViewBag.otdely_name</p>
+                                <p class="m-0">Подтип: @ViewBag.subtype_name</p>
+                                <p class="m-0">Группа: @ViewBag.group_name</p>
+                            }
+                            @if (ViewBag.KATOType == "adm1pol")
+                            {
+                                <h5 class="alert-heading">Дополнительная информация</h5>
+                                <p class="m-0">КАТО: @ViewBag.KATO</p>
+                                <smp class="p" all>Область: @ViewBag.KATOName</smp>
+                            }
+                            @if (ViewBag.KATOType == "adm2pol")
+                            {
+                                <h5 class="alert-heading">Дополнительная информация</h5>
+                                <p class="m-0">КАТО: @ViewBag.KATO</p>
+                                <p class="m-0">Область: @ViewBag.OblName</p>
+                                <p class="m-0">Район: @ViewBag.KATOName</p>
+                            }
+                            @if (ViewBag.KATOType == "adm3pol")
+                            {
+                                <h5 class="alert-heading">Дополнительная информация</h5>
+                                <p class="m-0">КАТО: @ViewBag.KATO</p>
+                                <p class="m-0">Область: @ViewBag.OblName</p>
+                                <p class="m-0">Район: @ViewBag.RayName</p>
+                                <p class="m-0">Сельский округ: @ViewBag.KATOName</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Line Charts-->
+            <div class="col-lg-9">
+                <div class="line-chart-example card">
+                    <div class="card-header d-flex align-items-center">
+                        <h3 class="h4">Диаграмма межгодовой изменчивости NDVI</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="myChart" style="max-height: 600px;"></canvas>
+                        <canvas id="myChart" style="max-height: 600px;"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="line-chart-example card no-margin-bottom">
+                    <div class="card-header d-flex align-items-center">
+                        <h3 class="h4">Конфигурировать:</h3>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <label class="control-label">Годы</label><br />
+                            @*<select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" multiple="multiple"></select>*@
+                            @Html.ListBox("Year", (IEnumerable<SelectListItem>)ViewBag.Year, htmlAttributes: new { @class = "form-control", SelectionMode = "Multiple", @id = "Year", AutoPostBack = "true" })<br />
+                            <input type="button" id="update" class="btn btn-outline-primary btn-block" value="Обновить" onclick="Update()" /><br />
+                            <input type="button" id="update" class="btn btn-outline-primary btn-block" value="Сохранить в Excel" onclick="SaveToExcel()" />
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div id="chartdiv" style="height: 200px;">
-        <div class="chart">
-            <canvas id="myChart" width="400" height="200"></canvas>
-        </div>
-        <div class="sidepanel" style="padding:15px;">
-            <label class="control-label">Годы</label><br />
-            @*<select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" multiple="multiple"></select>*@
-            @Html.ListBox("Year", (IEnumerable<SelectListItem>)ViewBag.Year, htmlAttributes: new { @class = "form-control", SelectionMode = "Multiple", @id = "Year", AutoPostBack = "true" })<br />
-            <input type="button" id="update" class="btn btn-default" value="Обновить" onclick="Update()" /><br />
-            <input type="button" id="update" class="btn btn-default" value="Сохранить в Excel" onclick="SaveToExcel()" />
-        </div>
-    </div>
+   
 
     <script src="~/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
     <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
