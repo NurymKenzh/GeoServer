@@ -819,10 +819,11 @@ namespace GeoServer.Controllers
             }
 
             Pasture pasture = _context.Pasture.FirstOrDefault(p => p.pid == pid);
-            decimal ey = pasture.EY,
-                ey_krs = pasture.EY_KRS,
-                ey_horses = pasture.EY_horses,
-                ey_camels = pasture.EY_camels;
+            int e = Convert.ToInt32(pasture.E);
+            //,
+            //    ey_krs = pasture.EY_KRS,
+            //    ey_horses = pasture.EY_horses,
+            //    ey_camels = pasture.EY_camels;
 
             return Json(new
             {
@@ -831,10 +832,7 @@ namespace GeoServer.Controllers
                 subtype_name,
                 group_name,
                 recom_name,
-                ey,
-                ey_krs,
-                ey_horses,
-                ey_camels
+                e
             });
         }
 
