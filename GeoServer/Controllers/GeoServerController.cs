@@ -548,6 +548,42 @@ namespace GeoServer.Controllers
 
                 FileName = FileName.Replace('\\', '/');
 
+                string s1 = $" -u " +
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -v -XPOST" +
+                    $" -H \"Content-type: text/xml\"" +
+                    $" \\ -d \"<coverageStore><name>{fileNameWithoutExtension}</name>" +
+                    $"<workspace>{WorkspaceName}</workspace>" +
+                    $"<enabled>true</enabled>" +
+                    $"<type>GeoTIFF</type>" +
+                    $"<url>/data/{WorkspaceName}/{FileName}</url></coverageStore>\"" +
+                    $" \\ http://{Startup.Configuration["GeoServer:Address"]}:" +
+                    $"{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/coveragestores?configure=all",
+
+                    s2 = $" -u " +
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -v -XPOST" +
+                    $" -H \"Content-type: text/xml\"" +
+                    $" -d \"<coverage><name>{fileNameWithoutExtension}</name>" +
+                    $"<title>{fileNameWithoutExtension}</title>" +
+                    $"<nativeCRS>EPSG:3857</nativeCRS>" +
+                    $"<srs>EPSG:3857</srs>" +
+                    $"<projectionPolicy>FORCE_DECLARED</projectionPolicy>" +
+                    $"<defaultInterpolationMethod><name>nearest neighbor</name></defaultInterpolationMethod></coverage>\"" +
+                    $" \\ \"http://{Startup.Configuration["GeoServer:Address"]}" +
+                    $":{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/workspaces/{WorkspaceName}/coveragestores/{fileNameWithoutExtension}/coverages?recalculate=nativebbox\"",
+
+                    s3 = $" -v -u " +
+                    $"{Startup.Configuration["GeoServer:User"]}:" +
+                    $"{Startup.Configuration["GeoServer:Password"]}" +
+                    $" -XPUT" +
+                    $" -H \"Content-type: text/xml\"" +
+                    $" -d \"<layer><defaultStyle><name>{WorkspaceName}:{Style}</name></defaultStyle></layer>\"" +
+                    $" http://{Startup.Configuration["GeoServer:Address"]}" +
+                    $":{Startup.Configuration["GeoServer:Port"]}/geoserver/rest/layers/{WorkspaceName}:{fileNameWithoutExtension}";
+
                 Process process1 = CurlExecute($" -u " +
                     $"{Startup.Configuration["GeoServer:User"]}:" +
                     $"{Startup.Configuration["GeoServer:Password"]}" +

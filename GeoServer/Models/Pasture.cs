@@ -26,33 +26,33 @@ namespace GeoServer.Models
         public string note { get; set; }
         public decimal areaGa { get; set; }
 
-        public const decimal N_v = 2.5M;
-        public const decimal N_l = 2.5M;
-        public const decimal N_o = 2.5M;
+        //public const decimal N_v = 1.5M; // 2.5 кг * 60 дней / 100 = ц
+        //public const decimal N_l = 2.25M; // 2.5 кг * 90 дней / 100 = ц
+        //public const decimal N_o = 2.25M; // 2.5 кг * 90 дней / 100 = ц
         //private const decimal N = 1.17M;
-        public const decimal P_v = 70;
-        public const decimal P_l = 90;
-        public const decimal P_o = 90;
+        public const decimal P_v = 1.5M; // 2.5 кг * 60 дней / 100 = ц
+        public const decimal P_l = 2.25M; // 2.5 кг * 90 дней / 100 = ц
+        public const decimal P_o = 2.25M; // 2.5 кг * 90 дней / 100 = ц
 
         public decimal W_v
         {
             get
             {
-                return korm_v != 0 ? areaGa * N_v / korm_v : 0;
+                return korm_v != 0 ? areaGa * 0.7M * P_v / (ur_v * areaGa * 0.7M) : 0;
             }
         }
         public decimal W_l
         {
             get
             {
-                return korm_l != 0 ? areaGa * N_l / korm_l : 0;
+                return korm_l != 0 ? areaGa * 0.7M * P_l / (ur_l * areaGa * 0.7M) : 0;
             }
         }
         public decimal W_o
         {
             get
             {
-                return korm_o != 0 ? areaGa * N_o / korm_o : 0;
+                return korm_o != 0 ? areaGa * 0.7M * P_o / (ur_o * areaGa * 0.7M) : 0;
             }
         }
 
@@ -61,51 +61,51 @@ namespace GeoServer.Models
         {
             get
             {
-                return areaGa / (W_v + W_l + W_o);
+                return areaGa * 0.7M / (W_v + W_l + W_o);
             }
         }
 
-        // скотоемкость
-        public decimal Y
-        {
-            get
-            {
-                return (ur_v * P_v + ur_l * P_l + ur_o * P_o) / (P_v + P_l + P_o);
-            }
-        }
+        //// скотоемкость
+        //public decimal Y
+        //{
+        //    get
+        //    {
+        //        return (ur_v * P_v + ur_l * P_l + ur_o * P_o) / (P_v + P_l + P_o);
+        //    }
+        //}
 
-        // скотоемкость
-        public decimal EY
-        {
-            get
-            {
-                return Y * areaGa / ((N_v + N_l +N_o) / 3);
-            }
-        }
+        //// скотоемкость
+        //public decimal EY
+        //{
+        //    get
+        //    {
+        //        return Y * areaGa * 0.7M / ((P_v + P_l +P_o) / 3);
+        //    }
+        //}
 
-        // скотоемкость КРС
-        public decimal EY_KRS
-        {
-            get
-            {
-                return EY / 5;
-            }
-        }
-        // скотоемкость лошади
-        public decimal EY_horses
-        {
-            get
-            {
-                return EY / 6;
-            }
-        }
-        // скотоемкость верблюды
-        public decimal EY_camels
-        {
-            get
-            {
-                return EY / 7;
-            }
-        }
+        //// скотоемкость КРС
+        //public decimal EY_KRS
+        //{
+        //    get
+        //    {
+        //        return EY / 5;
+        //    }
+        //}
+        //// скотоемкость лошади
+        //public decimal EY_horses
+        //{
+        //    get
+        //    {
+        //        return EY / 6;
+        //    }
+        //}
+        //// скотоемкость верблюды
+        //public decimal EY_camels
+        //{
+        //    get
+        //    {
+        //        return EY / 7;
+        //    }
+        //}
     }
 }

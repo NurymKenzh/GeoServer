@@ -5,11 +5,17 @@
 }
 
 @*<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+
 <script src="~/lib/jquery/dist/jquery.js"></script>
-<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script>
+
+@*<script src="~/lib/jquery/dist/jquery.js"></script>
 <script src="~/lib/jquery-ui/jquery-ui.js"></script>
+<link href="~/lib/jquery-ui/themes/base/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>*@
 
 <link href="~/lib/ol/ol.css" rel="stylesheet" />
 
@@ -96,20 +102,24 @@
                             </div>
                             @{
                                 List<SelectListItem> DataType = new List<SelectListItem>()
-                                                                                            {
-                                                                                                new SelectListItem() { Text="Снег", Value="snow"},
-                                                                                                new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
-                                                                                            };
+                                                                                                                                                                            {
+                                                                                                                                                                                new SelectListItem() { Text="Снег", Value="snow"},
+                                                                                                                                                                                new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
+                                                                                                                                                                            };
                                 List<SelectListItem> State = new List<SelectListItem>()
-                                                                                            {
-                                                                                                new SelectListItem() { Text="Фактическое", Value="Fact"},
-                                                                                                new SelectListItem() { Text="Аномальное", Value="Anomal"}
-                                                                                            };
+                                                                                                                                                                            {
+                                                                                                                                                                                new SelectListItem() { Text="Фактическое", Value="Fact"},
+                                                                                                                                                                                new SelectListItem() { Text="Аномальное", Value="Anomal"}
+                                                                                                                                                                            };
                                 List<SelectListItem> Index = new List<SelectListItem>()
-                                                                                            {
-                                                                                                new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
-                                                                                                new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
-                                                                                            };
+                                                                                                                                                                            {
+                                                                                                                                                                                new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
+                                                                                                                                                                                new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
+                                                                                                                                                                            };
+                                List<SelectListItem> IndexSnow = new List<SelectListItem>()
+                                                                                                                                                                            {
+                                                                                                                                                                                new SelectListItem() { Text="NDSI", Value="NDSI"}
+                                                                                                                                                                            };
                             }
                             <label class="font-weight-normal mb-0">Тип данных</label>
                             <form class="form-inline">
@@ -125,19 +135,26 @@
                                     <i class="material-icons btn-sm" id="legend" value="Легенда" onclick="NDVILegend()">info_outline</i>
                                 </div>
                             </form>
-                            <label class="font-weight-normal m-1">Состояние</label>
-                            @Html.DropDownList("State", (IEnumerable<SelectListItem>)State, htmlAttributes: new { @class = "form-control form-control-sm", @id = "State", @onchange = "Change()" })
+                            <label class="font-weight-normal m-1 NoSnow">Состояние</label>
+                            @Html.DropDownList("State", (IEnumerable<SelectListItem>)State, htmlAttributes: new { @class = "form-control form-control-sm NoSnow", @id = "State", @onchange = "Change()" })
                             @*<i class="material-icons" id="legend" value="Легенда" onclick="AnomalyLegend()">info_outline</i>
-                            <br />*@
+                                <br />*@
 
                             <label class="font-weight-normal m-1">Индекс</label>
-                            @Html.DropDownList("Index", (IEnumerable<SelectListItem>)Index, htmlAttributes: new { @class = "form-control form-control-sm", @id = "Index", @onchange = "Change()" })
-                            
+                            @Html.DropDownList("Index", (IEnumerable<SelectListItem>)Index, htmlAttributes: new { @class = "form-control form-control-sm NoSnow", @id = "Index", @onchange = "Change()" })
+                            @Html.DropDownList("Index", (IEnumerable<SelectListItem>)IndexSnow, htmlAttributes: new { @class = "form-control form-control-sm Snow", @id = "IndexSnow", @onchange = "ChangeSnowIndex()" })
+
                             <label class="font-weight-normal m-1">Год</label>
-                            <select asp-items="ViewBag.Year" name="Year" class="custom-select custom-select-sm" id="Year" onchange="ChangeYear()"></select>
+                            <select asp-items="ViewBag.Year" name="Year" class="custom-select custom-select-sm NoSnow" id="Year" onchange="ChangeYear()"></select>
+                            <select asp-items="ViewBag.YearSnow" name="YearSnow" class="custom-select custom-select-sm Snow" id="YearSnow" onchange="ChangeYearSnow()"></select>
+
+                            <label class="font-weight-normal m-1 Snow">Месяц</label>
+                            <select name="MonthSnow" class="custom-select custom-select-sm Snow" id="MonthSnow" onchange="ChangeMonthSnow()"></select>
 
                             <label class="font-weight-normal m-1">День</label>
-                            <select name="Date" class="custom-select custom-select-sm" id="Date" onchange="ChangeDate()"></select>
+                            <select name="Date" class="custom-select custom-select-sm NoSnow" id="Date" onchange="ChangeDate()"></select>
+                            <select name="DaySnow" class="custom-select custom-select-sm Snow" id="DaySnow" onchange="ChangeDaySnow()"></select>
+
                             <input id="opacity1" type="range" class="form-control-range m-1" min="0" max="100" value="100" onchange="Opacity(1)" />
                             <div data-spy="scroll" style="overflow:scroll;overflow-x:hidden;height:300px;">
                                 <div class="tree" id="accordion">
@@ -316,7 +333,7 @@
 
 <div class="ui-dialog" id="dialog" title="Пастбище" hidden="hidden" style="width: 200px;">
     <table class="table table-sm">
-        <thead class="thead-light">            
+        <thead class="thead-light">
         </thead>
         <tbody>
             <tr>
@@ -334,7 +351,7 @@
             <tr>
                 <th class="align-middle font-weight-bold" scope="row">Группа</th>
                 <td id="pas_group_id"></td>
-            </tr>            
+            </tr>
         </tbody>
     </table>
     <table class="table table-sm">
@@ -777,6 +794,41 @@
     Layer_degradrtr2018.setOpacity(0.80);
     layers.push(Layer_degradrtr2018);
 
+    // источник данных и слой snow1
+    var Source_NDSI1 = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:NDSI1',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_NDSI1 = new ol.layer.Tile({
+        source: Source_NDSI1,
+        extent: extents.Almaty,
+    });
+    Layer_NDSI1.setOpacity(0.80);
+    layers.push(Layer_NDSI1);
+    //// источник данных и слой snow2
+    //var Source_NDSI2 = new ol.source.TileWMS({
+    //    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+    //    params: {
+    //        'LAYERS': 'GeoServer:NDSI2',
+    //        'VERSION': '1.1.0',
+    //        'FORMAT': 'image/png',
+    //        'TILED': true
+    //    },
+    //    serverType: 'geoserver'
+    //});
+    //var Layer_NDSI2 = new ol.layer.Tile({
+    //    source: Source_NDSI2,
+    //    extent: extents.Almaty,
+    //});
+    //Layer_NDSI2.setOpacity(0.80);
+    //layers.push(Layer_NDSI2);
+
     var source = new ol.source.Vector();
     var layer = new ol.layer.Vector({
         source: source,
@@ -793,6 +845,82 @@
             extent: [7991617, 5172524, 9408704, 6016344]
         })
     });
+
+    function ChangeSnowYear() {
+         $.ajax({
+            url: '@Url.Action("GetSnowMonths")',
+             data: { Year: $('#YearSnow').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data.months, function (i) {
+                    optionhtml += '<option value="' + data.months[i] + '"' +
+                        '>' + data.months[i] +
+                        '</option>';
+                });
+                $("#MonthSnow").empty();
+                $('#MonthSnow').append(optionhtml);
+                ChangeMonthSnow();
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function ChangeMonthSnow() {
+         $.ajax({
+            url: '@Url.Action("GetSnowDays")',
+             data: {
+                 Year: $('#YearSnow').val(),
+                 Month: $('#MonthSnow').val()
+             },
+            type: 'POST',
+             success: function (data) {
+                var optionhtml = '';
+                $.each(data.days, function (i) {
+                    optionhtml += '<option value="' + data.days[i] + '"' +
+                        '>' + data.days[i] +
+                        '</option>';
+                });
+                 $("#DaySnow").empty();
+                 $('#DaySnow').append(optionhtml);
+                 ChangeDaySnow();
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function ChangeDaySnow() {
+        if ($('#DataType').val() === 'snow') {
+            var layer_NDSI1 = "NDSI" + $('#YearSnow').val().toString() + "_";
+            var month = $('#MonthSnow').val().toString();
+            if (month.length == 1) {
+                month = "0" + month;
+            }
+            layer_NDSI1 += month + "_";
+            var day = $('#DaySnow').val().toString();
+            if (day.length == 1) {
+                day = "0" + day;
+            }
+            layer_NDSI1 += day;
+            var Source_New = new ol.source.TileWMS({
+                url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                params: {
+                    'LAYERS': 'GeoServer:' + layer_NDSI1,
+                    'VERSION': '1.1.0',
+                    'FORMAT': 'image/png',
+                    'TILED': true
+                },
+                serverType: 'geoserver'
+            });
+            var l = map.getLayers().getArray()[15];
+            l.setSource(Source_New);
+            l.setVisible(1);
+        }
+    }
+
+    ChangeSnowYear();
 
     function Change() {
         //if ($('input:checkbox[name="DataTypeSwitch"]:checked')) {
@@ -813,8 +941,15 @@
 
         if ($('#DataType').val() === 'snow') {
             map.getLayers().getArray()[1].setVisible(0);
+            map.getLayers().getArray()[15].setVisible(1);
+            $('.NoSnow').hide();
+            $('.Snow').show();
+            ChangeSnowYear();
         }
         else if ($('#DataType').val() === 'vegetation') {
+            map.getLayers().getArray()[15].setVisible(0);
+            $('.NoSnow').show();
+            $('.Snow').hide();
             if ($('#State').val() === 'Fact') {
                 layer_Modis = "MOLT";
                 layer_Modis += '_' + "MOD13Q1";
@@ -1012,8 +1147,6 @@
     }
 
     Change();
-
-
 </script>
 
 <script>
