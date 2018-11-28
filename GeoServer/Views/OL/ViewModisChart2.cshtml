@@ -57,9 +57,9 @@
     <script src="~/lib/chart.js/Chart.js"></script>
     @if (ViewBag.KATOType == "adm1pol")
     {
-    <h2 align="center">
-        Область (@(ViewBag.KATOName))
-    </h2>
+        <h2 align="center">
+            Область (@(ViewBag.KATOName))
+        </h2>
     }
     @if (ViewBag.KATOType == "adm2pol")
     {
@@ -79,7 +79,55 @@
             Пастбищный выдел (@(ViewBag.ClassId))
         </h2>
     }
-
+    <div class="project">
+        <div class="row bg-white has-shadow">
+            <div class="left-col col-lg-6 d-flex m-3">
+                <div class="project-title d-flex align-items-center">
+                    <button type="button" class="btn btn-link" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-area-chart fa-2x"></i></button>
+                    <div class="text">
+                        @if (ViewBag.KATOType == "pastALA")
+                        {
+                            <h3 class="h3">Дополнительная информация</h3>
+                            <small>Класс: @ViewBag.class_name</small>
+                            <br />
+                            <small>Отдел: @ViewBag.otdely_name</small>
+                            <br />
+                            <small>Подтип: @ViewBag.subtype_name</small>
+                            <br />
+                            <small>Группа: @ViewBag.group_name</small>
+                        }
+                        @if (ViewBag.KATOType == "adm1pol")
+                        {
+                            <h3 class="h3">Дополнительная информация</h3>
+                            <small>КАТО: @ViewBag.KATO</small>
+                            <br />
+                            <small>Область: @ViewBag.KATOName</small>
+                        }
+                        @if (ViewBag.KATOType == "adm2pol")
+                        {
+                            <h3 class="h3">Дополнительная информация</h3>
+                            <small>КАТО: @ViewBag.KATO</small>
+                            <br />
+                            <small>Область: @ViewBag.OblName</small>
+                            <br />
+                            <small>Район: @ViewBag.KATOName</small>
+                        }
+                        @if (ViewBag.KATOType == "adm3pol")
+                        {
+                            <h3 class="h3">Дополнительная информация</h3>
+                            <small>КАТО: @ViewBag.KATO</small>
+                            <br />
+                            <small>Область: @ViewBag.OblName</small>
+                            <br />
+                            <small>Район: @ViewBag.RayName</small>
+                            <br />
+                            <small>Сельский округ: @ViewBag.KATOName</small>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="chartdiv" style="height: 200px;">
         <div class="chart">
             <canvas id="myChart" width="400" height="200"></canvas>
@@ -97,8 +145,8 @@
     <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
 
     @*<script>
-        document.getElementById("loading").style.display = "block";
-    </script>*@
+            document.getElementById("loading").style.display = "block";
+        </script>*@
 
     <script type="text/javascript">
         //$(function () {

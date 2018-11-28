@@ -50,6 +50,7 @@ namespace GeoServer.Controllers
             int minYear = _context.ZonalStatKATO.Min(z => z.Year),
                 maxYear = _context.ZonalStatKATO.Max(z => z.Year);
             ViewBag.Year = new SelectList(Enumerable.Range(minYear, (maxYear - minYear) + 1), maxYear);
+            ViewBag.YearSnow = new SelectList(GetSnowYears());
 
             ViewBag.GeoserverAddress = Startup.Configuration["GeoServer:Address"];
             return View();
@@ -82,8 +83,35 @@ namespace GeoServer.Controllers
             }
             Pasture pasture = _context.Pasture.FirstOrDefault(p => p.Id == pastId);
             ViewBag.ClassId = pasture?.class_id;
+            if(pasture!=null)
+            {
+                ViewBag.class_name = _context.PasClass.FirstOrDefault(p => p.Code == pasture.class_id)?.Name;
+                ViewBag.otdely_name = _context.PasOtdel.FirstOrDefault(p => p.Code == pasture.otdely_id)?.Name;
+                ViewBag.subtype_name = _context.PasSubtype.FirstOrDefault(p => p.Code == pasture.subtype_id)?.Name;
+                ViewBag.group_name = _context.PasGroup.FirstOrDefault(p => p.Code == pasture.group_id)?.Name;
+            }
             KATO kato = _context.KATO.FirstOrDefault(k => k.Number == KATO);
             ViewBag.KATOName = kato?.NameRU;
+            if (kato != null)
+            {
+                //сельский округ
+                if(kato.Number.Substring(4,2)!="00")
+                {
+                    ViewBag.OblName = _context.KATO
+                        .FirstOrDefault(k => k.Number.Substring(0, 2) == KATO.Substring(0, 2) && k.Level == 1)
+                        .NameRU;
+                    ViewBag.RayName = _context.KATO
+                        .FirstOrDefault(k => k.Number.Substring(0, 4) == KATO.Substring(0, 4))// && //k.Level == 2 &&
+                            //KATO.Substring(4, 2) == "00" && KATO.Substring(2, 2) != "00")
+                        .NameRU;
+                }
+                if (kato.Level == 2)
+                {
+                    ViewBag.OblName = _context.KATO
+                        .FirstOrDefault(k => k.Number.Substring(0, 2) == KATO.Substring(0, 2) && k.Level == 1)
+                        .NameRU;
+                }
+            }
 
             int minYear = _context.ZonalStatKATO.Min(z => z.Year),
                 maxYear = _context.ZonalStatKATO.Max(z => z.Year);
@@ -169,8 +197,36 @@ namespace GeoServer.Controllers
             }
             Pasture pasture = _context.Pasture.FirstOrDefault(p => p.Id == pastId);
             ViewBag.ClassId = pasture?.class_id;
+            if (pasture != null)
+            {
+                ViewBag.class_name = _context.PasClass.FirstOrDefault(p => p.Code == pasture.class_id)?.Name;
+                ViewBag.otdely_name = _context.PasOtdel.FirstOrDefault(p => p.Code == pasture.otdely_id)?.Name;
+                ViewBag.subtype_name = _context.PasSubtype.FirstOrDefault(p => p.Code == pasture.subtype_id)?.Name;
+                ViewBag.group_name = _context.PasGroup.FirstOrDefault(p => p.Code == pasture.group_id)?.Name;
+            }
             KATO kato = _context.KATO.FirstOrDefault(k => k.Number == KATO);
             ViewBag.KATOName = kato?.NameRU;
+            if(kato!=null)
+            {
+                //сельский округ
+                if (kato.Number.Substring(4, 2) != "00")
+                {
+                    ViewBag.OblName = _context.KATO
+                        .FirstOrDefault(k => k.Number.Substring(0, 2) == KATO.Substring(0, 2) && k.Level == 1)
+                        .NameRU;
+                    ViewBag.RayName = _context.KATO
+                        .FirstOrDefault(k => k.Number.Substring(0, 4) == KATO.Substring(0, 4))// && //k.Level == 2 &&
+                                                                                              //KATO.Substring(4, 2) == "00" && KATO.Substring(2, 2) != "00")
+                        .NameRU;
+                }
+                if (kato.Level == 2)
+                {
+                    ViewBag.OblName = _context.KATO
+                        .FirstOrDefault(k => k.Number.Substring(0,2) == KATO.Substring(0,2) && k.Level==1)
+                        .NameRU;
+                }
+            }
+            
 
             int minYear = _context.ZonalStatKATO.Min(z => z.Year),
                 maxYear = _context.ZonalStatKATO.Max(z => z.Year);
@@ -201,7 +257,8 @@ namespace GeoServer.Controllers
             bool check = true;
             string[] value = { "1-1", "2-33", "3-65", "4-97", "5-129", "6-161", "7-193", "8-225", "9-257", "10-289", "11-305", "12-337" };
             var all = _context.ZonalStatKATO.Where(z => z.KATO == KATO && z.ModisSource == ModisSource && z.ModisProduct == ModisProduct && z.DataSet == ModisDataSet).ToList();
-            if (((NumberOfMonth - 1) + Convert.ToInt32(Month.Remove(Month.IndexOf('-'), (Month.Length - Month.IndexOf('-'))))) > 12) {
+            if (((NumberOfMonth - 1) + Convert.ToInt32(Month.Remove(Month.IndexOf('-'), (Month.Length - Month.IndexOf('-'))))) > 12)
+            {
                 int countMonthOfNextYear = ((NumberOfMonth - 1) + Convert.ToInt32(Month.Remove(Month.IndexOf('-'), (Month.Length - Month.IndexOf('-'))))) - 12;
                 int DayOfMonthOfNextYear = 0;
                 for (int i = 0; i < value.Length; i++)
@@ -646,7 +703,7 @@ namespace GeoServer.Controllers
         public ActionResult GetYearDates(int Year)
         {
             List<SelectListItem> dates = new List<SelectListItem>();
-            if(DateTime.IsLeapYear(Year))
+            if (DateTime.IsLeapYear(Year))
             {
                 int dayOfYear = _context.ZonalStatKATO.Where(m => m.Year == Year).Max(m => m.DayOfYear);
                 string[] numberOf = { ".01.01 - 1", ".01.17 - 17", ".02.02 - 33", ".02.18 - 49", ".03.05 - 65",
@@ -702,7 +759,7 @@ namespace GeoServer.Controllers
                     "177", "193", "209", "225", "241", "257", "273", "289", "305", "321", "337", "353" };
                 for (int i = 0; i < value.Length; i++)
                 {
-                    if(dayOfYear == Convert.ToInt32(value[i]))
+                    if (dayOfYear == Convert.ToInt32(value[i]))
                     {
                         dates.Add(new SelectListItem() { Text = $"{Year.ToString()}" + numberOf[i], Value = value[i], Selected = true });
                     }
@@ -756,7 +813,7 @@ namespace GeoServer.Controllers
                 group_name = _context.PasGroup.FirstOrDefault(p => p.Code == group_id).Name,
                 group_nameLat = _context.PasGroup.FirstOrDefault(p => p.Code == group_id).NameLat,
                 recom_name = _context.PasRecom.FirstOrDefault(p => p.Code == recom_id).Name;
-            if(!string.IsNullOrEmpty(group_nameLat))
+            if (!string.IsNullOrEmpty(group_nameLat))
             {
                 group_name += $" ({group_nameLat})";
             }
@@ -856,7 +913,7 @@ namespace GeoServer.Controllers
                         }
                     }
                 }
-                for(int i = 1; i < Title.Length + 1; i++)
+                for (int i = 1; i < Title.Length + 1; i++)
                 {
                     worksheet.Cells[1, i].Style.Font.Bold = true;
                     worksheet.Column(i).AutoFit();
@@ -951,6 +1008,79 @@ namespace GeoServer.Controllers
             return Json(new
             {
                 filepath
+            });
+        }
+
+        public int GetSnowFileYear(string FileName)
+        {
+            return Convert.ToInt32(FileName.Substring(4, 4));
+        }
+
+        public int GetSnowFileMonth(string FileName)
+        {
+            return Convert.ToInt32(FileName.Substring(9, 2));
+        }
+
+        public int GetSnowFileDay(string FileName)
+        {
+            return Convert.ToInt32(FileName.Substring(12, 2));
+        }
+
+        public int[] GetSnowYears()
+        {
+            string path = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], "NDSI_Snow_Cover");
+            string[] files = Directory.GetFiles(path, "*.tif");
+            List<int> r = new List<int>();
+            foreach (var file in files)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                r.Add(GetSnowFileYear(fileName));
+            }
+            return r.Distinct().ToArray();
+        }
+
+        [HttpPost]
+        public ActionResult GetSnowMonths(int Year)
+        {
+            string path = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], "NDSI_Snow_Cover");
+            string[] files = Directory.GetFiles(path, "*.tif");
+            List<int> r = new List<int>();
+            foreach (var file in files)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                int year = GetSnowFileYear(fileName);
+                if (year == Year)
+                {
+                    r.Add(GetSnowFileMonth(fileName));
+                }
+            }
+            int[] months = r.Distinct().ToArray();
+            return Json(new
+            {
+                months
+            });
+        }
+
+        [HttpPost]
+        public ActionResult GetSnowDays(int Year, int Month)
+        {
+            string path = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], "NDSI_Snow_Cover");
+            string[] files = Directory.GetFiles(path, "*.tif");
+            List<int> r = new List<int>();
+            foreach (var file in files)
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                int year = GetSnowFileYear(fileName),
+                    month = GetSnowFileMonth(fileName);
+                if (year == Year && month == Month)
+                {
+                    r.Add(GetSnowFileDay(fileName));
+                }
+            }
+            int[] days = r.Distinct().ToArray();
+            return Json(new
+            {
+                days
             });
         }
     }
