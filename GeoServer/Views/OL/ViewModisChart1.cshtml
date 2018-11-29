@@ -4,43 +4,7 @@
     Layout = null;
 }
 
-<style>
 
-    .chart {
-        width: 80%;
-        height: 100%;
-        float: left;
-    }
-
-    .sidepanel {
-        background: rgba(247, 247, 247, 1);
-        width: 20%;
-        height: 100%;
-        float: left;
-    }
-
-    .sidepanel-title {
-        width: 100%;
-        font-size: 3em;
-        color: #ffffff;
-        display: block;
-        text-align: center;
-    }
-
-    #loading {
-        display: none;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 200;
-        width: 100vw;
-        height: 100vh;
-        /*background-color: rgba(192, 192, 192, 0.5);*/
-        /*background-image: url("/Images/sun_preloader.gif");*/
-        /*background-repeat: no-repeat;*/
-        background-position: center;
-    }
-</style>
 
 @Html.Partial("_loadingPartial")
 
@@ -77,7 +41,7 @@
         }
         <div class="project">
             <div class="row bg-white has-shadow">
-                <div class="col alert alert-primary m-3">
+                <div class="col alert alert-primary m-3 border-primary">
                     <div class="project-title d-flex align-items-center">                        
                         <div class="text-justify">
                             @if (ViewBag.KATOType == "pastALA")
@@ -117,9 +81,9 @@
         <div class="row">
             <!-- Line Charts-->
             <div class="col-lg-9">
-                <div class="line-chart-example card">
-                    <div class="card-header d-flex align-items-center">
-                        <h3 class="h4">Диаграмма годовой изменчивости NDVI</h3>
+                <div class="line-chart-example card border-secondary ">
+                    <div class="card-header border-secondary ">
+                        <h3 class="h4">Диаграмма годовой изменчивости</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="myChart" style="max-height: 600px;" ></canvas>
@@ -127,8 +91,8 @@
                 </div>
             </div>
             <div class="col-lg-3">
-                <div class="line-chart-example card no-margin-bottom">
-                    <div class="card-header d-flex align-items-center">
+                <div class="line-chart-example card border-secondary ">
+                    <div class="card-header border-secondary ">
                         <h3 class="h4">Конфигурировать:</h3>
                     </div>
                     <div class="card-body">
