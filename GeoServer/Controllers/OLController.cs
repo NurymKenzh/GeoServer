@@ -1021,7 +1021,7 @@ namespace GeoServer.Controllers
 
         public int GetSnowFileDay(string FileName)
         {
-            return Convert.ToInt32(FileName.Substring(12, 2));
+            return Convert.ToInt32(FileName.Substring(12, 1));
         }
 
         public int[] GetSnowYears()

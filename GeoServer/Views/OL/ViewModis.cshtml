@@ -88,6 +88,8 @@
 
 
 <body>
+    @*<input type="button" name="Test" onclick="alert(map.getLayers().getArray()[15].getVisible());" />*@
+
     <div class="container-fluid">
         <div class="row">
             <main role="main" class="col-md-12 ml-sm-auto col-lg-12 p-0">
@@ -151,7 +153,7 @@
                             <label class="font-weight-normal m-1 Snow">Месяц</label>
                             <select name="MonthSnow" class="custom-select custom-select-sm Snow" id="MonthSnow" onchange="ChangeMonthSnow()"></select>
 
-                            <label class="font-weight-normal m-1">День</label>
+                            <label class="font-weight-normal m-1">Декада</label>
                             <select name="Date" class="custom-select custom-select-sm NoSnow" id="Date" onchange="ChangeDate()"></select>
                             <select name="DaySnow" class="custom-select custom-select-sm Snow" id="DaySnow" onchange="ChangeDaySnow()"></select>
 
@@ -796,6 +798,7 @@
 
     // источник данных и слой snow1
     var Source_NDSI1 = new ol.source.TileWMS({
+        //projection: 'EPSG:3857',
         url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
         params: {
             'LAYERS': 'GeoServer:NDSI1',
@@ -839,6 +842,7 @@
         target: 'map',
         layers: layers,
         view: new ol.View({
+            //projection: 'EPSG:3857',
             center: ol.proj.fromLonLat([78.5, 45]),
             zoom: 8,
             minZoom: 8,
@@ -846,7 +850,7 @@
         })
     });
 
-    function ChangeSnowYear() {
+    function ChangeYearSnow() {
          $.ajax({
             url: '@Url.Action("GetSnowMonths")',
              data: { Year: $('#YearSnow').val() },
@@ -900,11 +904,13 @@
             }
             layer_NDSI1 += month + "_";
             var day = $('#DaySnow').val().toString();
-            if (day.length == 1) {
-                day = "0" + day;
-            }
+            //if (day.length == 1) {
+            //    day = "0" + day;
+            //}
             layer_NDSI1 += day;
+            //alert(layer_NDSI1);
             var Source_New = new ol.source.TileWMS({
+                //projection: 'EPSG:3857',
                 url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
                 params: {
                     'LAYERS': 'GeoServer:' + layer_NDSI1,
@@ -920,7 +926,7 @@
         }
     }
 
-    ChangeSnowYear();
+    ChangeYearSnow();
 
     function Change() {
         //if ($('input:checkbox[name="DataTypeSwitch"]:checked')) {
@@ -932,8 +938,10 @@
 
         var year = $('#Year').val();
         var day = $('#Date').val();
-        if (day.length < 3) day = '0' + day;
-        if (day.length < 3) day = '0' + day;
+        if (day != null) {
+            if (day.length < 3) day = '0' + day;
+            if (day.length < 3) day = '0' + day;
+        }
         var layer_Modis = '';
 
         map.getLayers().getArray()[1].setVisible(1);
@@ -944,7 +952,7 @@
             map.getLayers().getArray()[15].setVisible(1);
             $('.NoSnow').hide();
             $('.Snow').show();
-            ChangeSnowYear();
+            ChangeYearSnow();
         }
         else if ($('#DataType').val() === 'vegetation') {
             map.getLayers().getArray()[15].setVisible(0);
