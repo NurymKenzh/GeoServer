@@ -385,8 +385,20 @@
                 <td class="align-middle" id="pas_korm_z"></td>
             </tr>
             <tr>
-                <th class="align-middle font-weight-bold" scope="row">Скотоемкость</th>
+                <th class="align-middle font-weight-bold" scope="row">Скотоемкость (овцы)</th>
                 <td id="pas_e"></td>
+            </tr>
+            <tr>
+                <th class="align-middle font-weight-bold" scope="row">Скотоемкость (КРС)</th>
+                <td id="pas_e_krs"></td>
+            </tr>
+            <tr>
+                <th class="align-middle font-weight-bold" scope="row">Скотоемкость (лошади)</th>
+                <td id="pas_e_horses"></td>
+            </tr>
+            <tr>
+                <th class="align-middle font-weight-bold" scope="row">Скотоемкость (верблюды)</th>
+                <td id="pas_e_camels"></td>
             </tr>
         </tbody>
     </table>
@@ -1410,6 +1422,9 @@
 
                                     //alert(result[0].get('e'));
                                     $('#pas_e').html(data.e);
+                                    $('#pas_e_krs').html(data.e_krs);
+                                    $('#pas_e_horses').html(data.e_horses);
+                                    $('#pas_e_camels').html(data.e_camels);
 
                                     $("#dialog").dialog({
                                         width: 700,

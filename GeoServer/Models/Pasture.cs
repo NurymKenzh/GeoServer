@@ -83,29 +83,29 @@ namespace GeoServer.Models
         //    }
         //}
 
-        //// скотоемкость КРС
-        //public decimal EY_KRS
-        //{
-        //    get
-        //    {
-        //        return EY / 5;
-        //    }
-        //}
-        //// скотоемкость лошади
-        //public decimal EY_horses
-        //{
-        //    get
-        //    {
-        //        return EY / 6;
-        //    }
-        //}
-        //// скотоемкость верблюды
-        //public decimal EY_camels
-        //{
-        //    get
-        //    {
-        //        return EY / 7;
-        //    }
-        //}
+        // скотоемкость КРС
+        public decimal E_KRS
+        {
+            get
+            {
+                return E / 5;
+            }
+        }
+        // скотоемкость лошади
+        public decimal E_horses
+        {
+            get
+            {
+                return E / 6;
+            }
+        }
+        // скотоемкость верблюды
+        public decimal E_camels
+        {
+            get
+            {
+                return E / 7;
+            }
+        }
     }
 }
