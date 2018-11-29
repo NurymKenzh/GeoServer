@@ -38,21 +38,33 @@ namespace GeoServer.Models
         {
             get
             {
-                return korm_v != 0 ? areaGa * 0.7M * P_v / (ur_v * areaGa * 0.7M) : 0;
+                if(ur_v * areaGa * 0.7M!=0)
+                {
+                    return korm_v != 0 ? areaGa * 0.7M * P_v / (ur_v * areaGa * 0.7M) : 0;
+                }
+                return 0;
             }
         }
         public decimal W_l
         {
             get
             {
-                return korm_l != 0 ? areaGa * 0.7M * P_l / (ur_l * areaGa * 0.7M) : 0;
+                if (ur_l * areaGa * 0.7M != 0)
+                {
+                    return korm_l != 0 ? areaGa * 0.7M * P_l / (ur_l * areaGa * 0.7M) : 0;
+                }
+                return 0;
             }
         }
         public decimal W_o
         {
             get
             {
-                return korm_o != 0 ? areaGa * 0.7M * P_o / (ur_o * areaGa * 0.7M) : 0;
+                if (ur_o * areaGa * 0.7M != 0)
+                {
+                    return korm_o != 0 ? areaGa * 0.7M * P_o / (ur_o * areaGa * 0.7M) : 0;
+                }
+                return 0;
             }
         }
 
@@ -61,7 +73,14 @@ namespace GeoServer.Models
         {
             get
             {
-                return areaGa * 0.7M / (W_v + W_l + W_o);
+                if(W_v + W_l + W_o!=0)
+                {
+                    return areaGa * 0.7M / (W_v + W_l + W_o);
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
 
