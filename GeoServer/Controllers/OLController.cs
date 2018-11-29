@@ -823,6 +823,13 @@ namespace GeoServer.Controllers
                 e_krs = Convert.ToInt32(pasture.E_KRS),
                 e_horses = Convert.ToInt32(pasture.E_horses),
                 e_camels = Convert.ToInt32(pasture.E_camels);
+            if(otdely_id==12)
+            {
+                e = 0;
+                e_krs = 0;
+                e_horses = 0;
+                e_camels = 0;
+            }
             //,
             //    ey_krs = pasture.EY_KRS,
             //    ey_horses = pasture.EY_horses,
