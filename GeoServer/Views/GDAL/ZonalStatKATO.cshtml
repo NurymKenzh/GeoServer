@@ -1,40 +1,91 @@
 ﻿
 @{
-    ViewData["Title"] = "ZonalStatKATO";
+    ViewData["Title"] = "Расчет зональной статистики по КАТО";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @*<script src="~/lib/jquery/dist/jquery.js"></script>*@
 <script src="~/lib/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
 <link href="~/lib/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" rel="stylesheet" />
-<h2>ZonalStatKATO</h2>
-@if (!string.IsNullOrEmpty(ViewBag.Message))
-{
-    <h4>@ViewBag.Message</h4>
-}
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="ZonalStatKATO">
-            <div class="form-group">
-                <label class="control-label">ModisSource</label>
-                @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control", @id = "ModisSource", @onchange = "ChangeModisSource()" })
+@*<h2>Расчет зональной статистики по КАТО</h2>*@
+@*@if (!string.IsNullOrEmpty(ViewBag.Message))
+    {
+    <h4></h4>
+    }*@
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <div class="alert alert-primary" role="alert">
+                <button type="button" class="close" data-dismiss="alert">x</button> <h4 class="alert-heading">Расчет зональной статистики по КАТО</h4>
+                <hr />
+                <div class="d-flex bd-highlight">
+                    <div class="flex-grow-1 bd-highlight">
+                        <p class="text-info">
+                            Расчет зональной статистики по КАТО
+                        </p>
+                    </div>
+                    <!-- Button trigger modal -->
+                    <div class="bd-highlight">
+                        <button type="button" class="btn btn-link" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-exclamation-triangle"></i></button>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(ViewBag.Message))
+                {
+                    <h4>@ViewBag.Message</h4>
+                }
             </div>
-            <div class="form-group">
-                <label class="control-label">ModisProduct</label>
-                @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control", @id = "ModisProduct", @onchange = "ChangeModisProduct()" })
-            </div>
-            <div class="form-group">
-                <label class="control-label">File</label>
-                @*@Html.DropDownList("File", (IEnumerable<SelectListItem>)ViewBag.File, htmlAttributes: new { @class = "form-control", @id = "File" })*@
-                <select asp-items="ViewBag.File" name="File" multiple="multiple" class="form-control" id="File"></select>
-                @*<select asp-items="ViewBag.File" name="File" class="form-control" id="File"></select>*@
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2 mt-3">
+            <form asp-action="ZonalStatKATO">
+                <div class="form-group">
+                    <label class="control-label">ModisSource</label>
+                    @Html.DropDownList("ModisSource", (IEnumerable<SelectListItem>)ViewBag.ModisSource, htmlAttributes: new { @class = "form-control", @id = "ModisSource", @onchange = "ChangeModisSource()" })
+                </div>
+                <div class="form-group">
+                    <label class="control-label">ModisProduct</label>
+                    @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control", @id = "ModisProduct", @onchange = "ChangeModisProduct()" })
+                </div>
+                <div class="form-group">
+                    <label class="control-label">File</label>
+                    @*@Html.DropDownList("File", (IEnumerable<SelectListItem>)ViewBag.File, htmlAttributes: new { @class = "form-control", @id = "File" })*@
+                    <select asp-items="ViewBag.File" name="File" multiple="multiple" class="form-control" id="File"></select>
+                    @*<select asp-items="ViewBag.File" name="File" class="form-control" id="File"></select>*@
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+
     </div>
 </div>
+
+@*<div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 mt-3">
+                <form asp-action="ZonalStatKATO">
+                    <div class="form-group">
+
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">ModisProduct</label>
+                        @Html.DropDownList("ModisProduct", (IEnumerable<SelectListItem>)ViewBag.ModisProduct, htmlAttributes: new { @class = "form-control", @id = "ModisProduct", @onchange = "ChangeModisProduct()" })
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">File</label>
+                        <select asp-items="ViewBag.File" name="File" multiple="multiple" class="form-control" id="File"></select>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-default" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>*@
+
 
 <script>
     function ChangeModisSource() {
@@ -74,7 +125,7 @@
                 });
                 $("#File").empty();
                 $('#File').append(optionhtml);
-                $('#File').multiselect('rebuild');
+                //$('#File').multiselect('rebuild');
             },
             error: function () {
             }
