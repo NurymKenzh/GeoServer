@@ -87,256 +87,251 @@
 
 
 
-<body>
-    @*<input type="button" name="Test" onclick="alert(map.getLayers().getArray()[15].getVisible());" />*@
-
-    <div class="container-fluid">
-        <div class="row">
-            <main role="main" class="col-md-12 ml-sm-auto col-lg-12 p-0">
-                <div class="row justify-content-end mr-3">
-                    <article>
-                        <nav class="col-10 col-md-auto bg-light sidebar">
-                            <div class="media">
-                                <div class="media-body text-info">
-                                    <h6 class="mt-2 mb-2">ЭЛЕКТРОННЫЙ <br> АТЛАС <br>ПАСТБИЩНЫХ <br>РЕСУРСОВ</h6>
-                                </div>
-                                <img src="~/images/logoN.png" class="align-self-center ml-3" height="80" alt="">
+@*<input type="button" name="Test" onclick="alert(map.getLayers().getArray()[15].getVisible());" />*@
+<div class="container-fluid">
+    <div class="row">
+        <main role="main" class="col-md-12 ml-sm-auto col-lg-12 p-0">
+            <div class="row justify-content-end mr-3">
+                <article>
+                    <nav class="col-10 col-md-auto bg-light sidebar">
+                        <div class="media">
+                            <div class="media-body text-info">
+                                <h6 class="mt-2 mb-2">ЭЛЕКТРОННЫЙ <br> АТЛАС <br>ПАСТБИЩНЫХ <br>РЕСУРСОВ</h6>
                             </div>
-                            @{
-                                List<SelectListItem> DataType = new List<SelectListItem>()
-                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                        new SelectListItem() { Text="Снег", Value="snow"},
-                                                                                                                                                                                                                        new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
-                                                                                                                                                                                                                    };
-                                List<SelectListItem> State = new List<SelectListItem>()
-                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                        new SelectListItem() { Text="Фактическое", Value="Fact"},
-                                                                                                                                                                                                                        new SelectListItem() { Text="Аномальное", Value="Anomal"}
-                                                                                                                                                                                                                    };
-                                List<SelectListItem> Index = new List<SelectListItem>()
-                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                        new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
-                                                                                                                                                                                                                        new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
-                                                                                                                                                                                                                    };
-                                List<SelectListItem> IndexSnow = new List<SelectListItem>()
-                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                        new SelectListItem() { Text="NDSI", Value="NDSI"}
-                                                                                                                                                                                                                    };
-                            }
-                            <label class="font-weight-normal mb-0">Тип данных</label>
-                            <form class="form-inline">
-                                <div class="form-group">
-                                    @Html.DropDownList("DataType", (IEnumerable<SelectListItem>)DataType, htmlAttributes: new { @class = "form-control form-control-sm", @id = "DataType", @onchange = "Change()", @style = "display: none;" })
-                                    <label class="switch m-1">
-                                        <input id="DataTypeSwitch" type="checkbox" name="DataTypeSwitch" checked="checked">@*onchange="Change()"*@
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <small id="DataTypeLabel" class="text-primary">
-                                        <label class="font-weight-normal ml-1 mr-sm-2">Вегетационные данные</label>
-                                    </small>
-                                    <i class="material-icons btn-sm NoSnow btn btn-default" id="legendNDVI" value="Легенда" onclick="NDVILegend()">info_outline</i>
-                                    <i class="material-icons btn-sm Snow btn btn-default" id="legendSnow" value="Легенда" onclick="NDSILegend()">info_outline</i>
-                                </div>
-                            </form>
-                            <label class="font-weight-normal m-1 NoSnow">Состояние</label>
-                            @Html.DropDownList("State", (IEnumerable<SelectListItem>)State, htmlAttributes: new { @class = "form-control form-control-sm NoSnow", @id = "State", @onchange = "Change()" })
-                            @*<i class="material-icons" id="legend" value="Легенда" onclick="AnomalyLegend()">info_outline</i>
-                                <br />*@
+                            <img src="~/images/logoN.png" class="align-self-center ml-3" height="80" alt="">
+                        </div>
+                        @{
+                            List<SelectListItem> DataType = new List<SelectListItem>()
+                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="Снег", Value="snow"},
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
+                                                                                                                                                                                                                                                    };
+                            List<SelectListItem> State = new List<SelectListItem>()
+                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="Фактическое", Value="Fact"},
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="Аномальное", Value="Anomal"}
+                                                                                                                                                                                                                                                    };
+                            List<SelectListItem> Index = new List<SelectListItem>()
+                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
+                                                                                                                                                                                                                                                    };
+                            List<SelectListItem> IndexSnow = new List<SelectListItem>()
+                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="NDSI", Value="NDSI"}
+                                                                                                                                                                                                                                                    };
+                        }
+                        <label class="font-weight-normal mb-0">Тип данных</label>
+                        <form class="form-inline">
+                            <div class="form-group">
+                                @Html.DropDownList("DataType", (IEnumerable<SelectListItem>)DataType, htmlAttributes: new { @class = "form-control form-control-sm", @id = "DataType", @onchange = "Change()", @style = "display: none;" })
+                                <label class="switch m-1">
+                                    <input id="DataTypeSwitch" type="checkbox" name="DataTypeSwitch" checked="checked">@*onchange="Change()"*@
+                                    <span class="slider round"></span>
+                                </label>
+                                <small id="DataTypeLabel" class="text-primary">
+                                    <label class="font-weight-normal ml-1 mr-sm-2">Вегетационные данные</label>
+                                </small>
+                                <i class="material-icons btn-sm NoSnow btn btn-default" id="legendNDVI" value="Легенда" onclick="NDVILegend()">info_outline</i>
+                                <i class="material-icons btn-sm Snow btn btn-default" id="legendSnow" value="Легенда" onclick="NDSILegend()">info_outline</i>
+                            </div>
+                        </form>
+                        <label class="font-weight-normal m-1 NoSnow">Состояние</label>
+                        @Html.DropDownList("State", (IEnumerable<SelectListItem>)State, htmlAttributes: new { @class = "form-control form-control-sm NoSnow", @id = "State", @onchange = "Change()" })
+                        @*<i class="material-icons" id="legend" value="Легенда" onclick="AnomalyLegend()">info_outline</i>
+                            <br />*@
 
-                            <label class="font-weight-normal m-1">Индекс</label>
-                            @Html.DropDownList("Index", (IEnumerable<SelectListItem>)Index, htmlAttributes: new { @class = "form-control form-control-sm NoSnow", @id = "Index", @onchange = "Change()" })
-                            @Html.DropDownList("Index", (IEnumerable<SelectListItem>)IndexSnow, htmlAttributes: new { @class = "form-control form-control-sm Snow", @id = "IndexSnow", @onchange = "ChangeSnowIndex()" })
+                        <label class="font-weight-normal m-1">Индекс</label>
+                        @Html.DropDownList("Index", (IEnumerable<SelectListItem>)Index, htmlAttributes: new { @class = "form-control form-control-sm NoSnow", @id = "Index", @onchange = "Change()" })
+                        @Html.DropDownList("Index", (IEnumerable<SelectListItem>)IndexSnow, htmlAttributes: new { @class = "form-control form-control-sm Snow", @id = "IndexSnow", @onchange = "ChangeSnowIndex()" })
 
-                            <label class="font-weight-normal m-1">Год</label>
-                            <select asp-items="ViewBag.Year" name="Year" class="custom-select custom-select-sm NoSnow" id="Year" onchange="ChangeYear()"></select>
-                            <select asp-items="ViewBag.YearSnow" name="YearSnow" class="custom-select custom-select-sm Snow" id="YearSnow" onchange="ChangeYearSnow()"></select>
+                        <label class="font-weight-normal m-1">Год</label>
+                        <select asp-items="ViewBag.Year" name="Year" class="custom-select custom-select-sm NoSnow" id="Year" onchange="ChangeYear()"></select>
+                        <select asp-items="ViewBag.YearSnow" name="YearSnow" class="custom-select custom-select-sm Snow" id="YearSnow" onchange="ChangeYearSnow()"></select>
 
-                            <label class="font-weight-normal m-1 Snow">Месяц</label>
-                            <select name="MonthSnow" class="custom-select custom-select-sm Snow" id="MonthSnow" onchange="ChangeMonthSnow()"></select>
+                        <label class="font-weight-normal m-1 Snow">Месяц</label>
+                        <select name="MonthSnow" class="custom-select custom-select-sm Snow" id="MonthSnow" onchange="ChangeMonthSnow()"></select>
 
-                            <label class="font-weight-normal m-1 Snow">Декада</label>
-                            <label class="font-weight-normal m-1 NoSnow">День</label>
-                            <select name="Date" class="custom-select custom-select-sm NoSnow" id="Date" onchange="ChangeDate()"></select>
-                            <select name="DaySnow" class="custom-select custom-select-sm Snow" id="DaySnow" onchange="ChangeDaySnow()"></select>
+                        <label class="font-weight-normal m-1 Snow">Декада</label>
+                        <label class="font-weight-normal m-1 NoSnow">День</label>
+                        <select name="Date" class="custom-select custom-select-sm NoSnow" id="Date" onchange="ChangeDate()"></select>
+                        <select name="DaySnow" class="custom-select custom-select-sm Snow" id="DaySnow" onchange="ChangeDaySnow()"></select>
 
-                            <input id="opacity1" type="range" class="form-control-range m-1" min="0" max="100" value="100" onchange="Opacity(1)" />
-                            <div data-spy="scroll" style="overflow:scroll;overflow-x:hidden;height:300px;">
-                                <div class="tree" id="accordion">
-                                    <div class="card">
-                                        <button class="btn btn-light btn-sm" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="fa fa-chevron-down float-left"></i>Топографические слои</button>
-                                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                                            <div class="card-body pt-1">
-                                                <div class="form-check  text-black-50">
-                                                    <input type="checkbox" class="TopographyLabel form-check-input" name="TopographyLabel" value="TopographyLabel" onclick="Change()" checked="checked">
-                                                    <label class="form-check-label" for="TopographyLabel">
-                                                        <small> Подписи</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check  text-black-50">
-                                                    <input type="checkbox" class="poppnt" name="poppnt" value="poppnt" onclick="Change()">
-                                                    <label class="form-check-label" for="poppnt">
-                                                        <small>Населенные пункты</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check  text-black-50">
-                                                    <input type="checkbox" class="rdslin" name="rdslin" value="rdslin" onclick="Change()">
-                                                    <label class="form-check-label" for="rdslin">
-                                                        <small>Дороги</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check  text-black-50">
-                                                    <input type="checkbox" class="hdrlin" name="hdrlin" value="hdrlin" onclick="Change()">
-                                                    <label class="form-check-label" for="hdrlin">
-                                                        <small>Реки</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check  text-black-50">
-                                                    <input type="checkbox" class="hdrpol" name="hdrpol" value="hdrpol" onclick="Change()" checked="checked">
-                                                    <label class="form-check-label" for="hdrpol">
-                                                        <small>Озера</small>
-                                                    </label>
-                                                </div>
-                                                <input id="opacity4" type="range" class="form-control-range" min="0" max="100" value="70" onchange="Opacity(4)" />
-
+                        <input id="opacity1" type="range" class="form-control-range m-1" min="0" max="100" value="100" onchange="Opacity(1)" />
+                        <div data-spy="scroll" style="overflow:scroll;overflow-x:hidden;height:300px;">
+                            <div class="tree" id="accordion">
+                                <div class="card">
+                                    <button class="btn btn-light btn-sm" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="fa fa-chevron-down float-left"></i>Топографические слои</button>
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body pt-1">
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="TopographyLabel form-check-input" name="TopographyLabel" value="TopographyLabel" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="TopographyLabel">
+                                                    <small> Подписи</small>
+                                                </label>
                                             </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="poppnt" name="poppnt" value="poppnt" onclick="Change()">
+                                                <label class="form-check-label" for="poppnt">
+                                                    <small>Населенные пункты</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="rdslin" name="rdslin" value="rdslin" onclick="Change()">
+                                                <label class="form-check-label" for="rdslin">
+                                                    <small>Дороги</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="hdrlin" name="hdrlin" value="hdrlin" onclick="Change()">
+                                                <label class="form-check-label" for="hdrlin">
+                                                    <small>Реки</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="hdrpol" name="hdrpol" value="hdrpol" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="hdrpol">
+                                                    <small>Озера</small>
+                                                </label>
+                                            </div>
+                                            <input id="opacity4" type="range" class="form-control-range" min="0" max="100" value="70" onchange="Opacity(4)" />
+
                                         </div>
                                     </div>
-                                    <div class="card">
-                                        <button class="btn btn-light btn-sm" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"><i class="fa fa-chevron-down float-left"></i> Тематические слои</button>
-                                        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
-                                            <div class="card-body pt-1">
-                                                <div class="form-check ">
-                                                    <input class="KATO form-check-input" type="checkbox" name="KATO" value="KATO" id="KATO" onclick="Change()" checked="checked">
-                                                    <label class="form-check-label" for="KATO">
-                                                        КАТО
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input class="KATOLevel" type="radio" name="KATO" value="adm1pol" id="KATOLevel" onclick="Change()">
-                                                    <label class="form-check-label" for="KATO">
-                                                        <small> Области</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input class="KATOLevel" type="radio" name="KATO" value="adm2pol" id="KATOLevel" onclick="Change()" checked="checked">
-                                                    <label class="form-check-label" for="KATO">
-                                                        <small> Районы</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input class="KATOLevel" type="radio" name="KATO" value="adm3pol" id="KATOLevel" onclick="Change()" checked="checked">
-                                                    <label class="form-check-label" for="KATO">
-                                                        <small> Сельские округа</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input class="KATOLevel" type="radio" name="KATO" value="Pastures" id="KATOLevel" onclick="Change()" checked="checked">
-                                                    <label class="form-check-label" for="KATO">
-                                                        <small> Пастбищные выделы</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50 ml-2">
-                                                    <input type="radio" id="withColor" class="PasturesType" name="Pastures" value="pastALAColor" onclick="Change()" disabled="disabled">
-                                                    <label class="form-check-label" for="KATO">
-                                                        <small> С окрасом</small>
-                                                    </label>
-                                                    <i class="material-icons" id="legend" value="Легенда" onclick="PasLagend()" disabled="disabled">info_outline</i>
-                                                </div>
-                                                <div class="form-check text-black-50 ml-2">
-                                                    <input type="radio" id="withoutColor" class="PasturesType" name="Pastures" value="pastALA" onclick="Change()" disabled="disabled">
-                                                    <label class="form-check-label" for="KATO">
-                                                        <small> Без окраса</small>
-                                                    </label>
-                                                </div>
-                                                <input id="opacity2" type="range" class="form-control-range" min="0" max="100" value="80" onchange="Opacity(2)" />
-                                                <div class="dropdown-divider"></div>
-
-                                                <div class="form-check  text-black-50">
-                                                    <input type="checkbox" class="Acreage form-check-input" name="Acreage" value="Acreage" onclick="Change()">
-                                                    <label class="form-check-label" for="KATO">
-                                                        Посевные площади
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskAll" onclick="Change()" checked="checked">
-                                                    <label class="form-check-label" for="AcreageLevel">
-                                                        <small> Все</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskWheat" onclick="Change()">
-                                                    <label class="form-check-label" for="AcreageLevel">
-                                                        <small> Пшеница</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskCorn" onclick="Change()">
-                                                    <label class="form-check-label" for="AcreageLevel">
-                                                        <small> Кукуруза</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskRice" onclick="Change()">
-                                                    <label class="form-check-label" for="AcreageLevel">
-                                                        <small> Рис</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskDeposit" onclick="Change()">
-                                                    <label class="form-check-label" for="AcreageLevel">
-                                                        <small> Залежь</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check text-black-50">
-                                                    <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskSteam" onclick="Change()">
-                                                    <label class="form-check-label" for="AcreageLevel">
-                                                        <small> Паровые поля</small>
-                                                    </label>
-                                                </div>
-                                                <input id="opacity3" type="range" class="form-control-range" min="0" max="100" value="80" onchange="Opacity(3)" />
-                                                <div class="dropdown-divider"></div>
-                                                <div class="form-check  text-black-50">
-                                                    <input type="checkbox" class="ALTD  form-check-input" name="ALTD" value="ALTD" onclick="Change()">
-                                                    <label class="form-check-label" for="hdrpol">
-                                                        <small>Среднемноголетние данные</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check  text-black-50">
-                                                    <input type="radio" class="ALTDLevel" name="ALTD" value="data1" onclick="Change()" checked="checked">
-                                                    <label class="form-check-label" for="hdrpol">
-                                                        <small>Деградированные земли</small>
-                                                    </label>
-                                                </div>
-                                                <div class="form-check  text-black-50">
-                                                    <input type="radio" class="ALTDLevel" name="ALTD" value="data2" onclick="Change()">
-                                                    <label class="form-check-label" for="hdrpol">
-                                                        <small>Засоленные земли</small>
-                                                    </label>
-                                                </div>
-                                                <input id="opacity4" type="range" class="form-control-range" min="0" max="100" value="80" onchange="Opacity(5)" />
-
+                                </div>
+                                <div class="card">
+                                    <button class="btn btn-light btn-sm" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"><i class="fa fa-chevron-down float-left"></i> Тематические слои</button>
+                                    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
+                                        <div class="card-body pt-1">
+                                            <div class="form-check ">
+                                                <input class="KATO form-check-input" type="checkbox" name="KATO" value="KATO" id="KATO" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="KATO">
+                                                    КАТО
+                                                </label>
                                             </div>
+                                            <div class="form-check text-black-50">
+                                                <input class="KATOLevel" type="radio" name="KATO" value="adm1pol" id="KATOLevel" onclick="Change()">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Области</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input class="KATOLevel" type="radio" name="KATO" value="adm2pol" id="KATOLevel" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Районы</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input class="KATOLevel" type="radio" name="KATO" value="adm3pol" id="KATOLevel" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Сельские округа</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input class="KATOLevel" type="radio" name="KATO" value="Pastures" id="KATOLevel" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Пастбищные выделы</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50 ml-2">
+                                                <input type="radio" id="withColor" class="PasturesType" name="Pastures" value="pastALAColor" onclick="Change()" disabled="disabled">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> С окрасом</small>
+                                                </label>
+                                                <i class="material-icons" id="legend" value="Легенда" onclick="PasLagend()" disabled="disabled">info_outline</i>
+                                            </div>
+                                            <div class="form-check text-black-50 ml-2">
+                                                <input type="radio" id="withoutColor" class="PasturesType" name="Pastures" value="pastALA" onclick="Change()" disabled="disabled">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Без окраса</small>
+                                                </label>
+                                            </div>
+                                            <input id="opacity2" type="range" class="form-control-range" min="0" max="100" value="80" onchange="Opacity(2)" />
+                                            <div class="dropdown-divider"></div>
+
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="Acreage form-check-input" name="Acreage" value="Acreage" onclick="Change()">
+                                                <label class="form-check-label" for="KATO">
+                                                    Посевные площади
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskAll" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Все</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskWheat" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Пшеница</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskCorn" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Кукуруза</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskRice" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Рис</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskDeposit" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Залежь</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskSteam" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Паровые поля</small>
+                                                </label>
+                                            </div>
+                                            <input id="opacity3" type="range" class="form-control-range" min="0" max="100" value="80" onchange="Opacity(3)" />
+                                            <div class="dropdown-divider"></div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="ALTD  form-check-input" name="ALTD" value="ALTD" onclick="Change()">
+                                                <label class="form-check-label" for="hdrpol">
+                                                    <small>Среднемноголетние данные</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="radio" class="ALTDLevel" name="ALTD" value="data1" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="hdrpol">
+                                                    <small>Деградированные земли</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="radio" class="ALTDLevel" name="ALTD" value="data2" onclick="Change()">
+                                                <label class="form-check-label" for="hdrpol">
+                                                    <small>Засоленные земли</small>
+                                                </label>
+                                            </div>
+                                            <input id="opacity4" type="range" class="form-control-range" min="0" max="100" value="80" onchange="Opacity(5)" />
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="dropdown-divider"></div>
-                            <button class="btn btn-outline-primary btn-sm btn-block" id="info1" value="Информация 1" onclick="ViewChart1()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Годовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i> Информация 1</button>
-                            <button class="btn btn-outline-primary btn-sm btn-block mb-2" id="info2" value="Информация 2" onclick="ViewChart2()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Межгодовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i> Информация 2</button>
-                            <div class="dropdown-divider"></div>
-                        </nav>
-                    </article>
-                </div>
-                <div id="map" class="map"></div>
-            </main>
-        </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button class="btn btn-outline-primary btn-sm btn-block" id="info1" value="Информация 1" onclick="ViewChart1()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Годовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i> Информация 1</button>
+                        <button class="btn btn-outline-primary btn-sm btn-block mb-2" id="info2" value="Информация 2" onclick="ViewChart2()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Межгодовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i> Информация 2</button>
+                        <div class="dropdown-divider"></div>
+                    </nav>
+                </article>
+            </div>
+            <div id="map" class="map"></div>
+        </main>
     </div>
-
-</body>
-
+</div>
 
 <div class="ui-dialog" id="dialog" title="Пастбище" hidden="hidden" style="width: 200px;">
-    <table class="table table-sm">
+    <table class="table table-hover table-sm">
         <thead class="thead-light">
         </thead>
         <tbody>
@@ -358,7 +353,7 @@
             </tr>
         </tbody>
     </table>
-    <table class="table table-sm">
+    <table class="table table-hover table-sm">
         <thead class="thead-light">
             <tr class="font-weight-bold">
                 <th scope="col">
@@ -386,21 +381,27 @@
                 <td class="align-middle" id="pas_korm_o"></td>
                 <td class="align-middle" id="pas_korm_z"></td>
             </tr>
-            <tr>
-                <th class="align-middle font-weight-bold" scope="row">Скотоемкость (овцы)</th>
-                <td id="pas_e"></td>
+        </tbody>
+    </table>
+    <table class="table table-hover table-sm">
+        <thead class="thead-light">
+            <tr class="font-weight-bold">
+                <th scope="col">
+                    Расчет скотоемкости
+                </th>
+                <th scope="col">Овцы</th>
+                <th scope="col">КРС</th>
+                <th scope="col">Лошади</th>
+                <th scope="col">Верблюды</th>
             </tr>
+        </thead>
+        <tbody>
             <tr>
-                <th class="align-middle font-weight-bold" scope="row">Скотоемкость (КРС)</th>
-                <td id="pas_e_krs"></td>
-            </tr>
-            <tr>
-                <th class="align-middle font-weight-bold" scope="row">Скотоемкость (лошади)</th>
-                <td id="pas_e_horses"></td>
-            </tr>
-            <tr>
-                <th class="align-middle font-weight-bold" scope="row">Скотоемкость (верблюды)</th>
-                <td id="pas_e_camels"></td>
+                <th class="align-middle font-weight-bold" scope="row">Скотоемкость</th>
+                <td class="align-middle" id="pas_e"></td>
+                <td class="align-middle" id="pas_e_krs"></td>
+                <td class="align-middle" id="pas_e_horses"></td>
+                <td class="align-middle" id="pas_e_camels"></td>
             </tr>
         </tbody>
     </table>
