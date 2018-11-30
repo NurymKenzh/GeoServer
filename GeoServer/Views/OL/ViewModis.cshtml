@@ -1207,10 +1207,38 @@
         }
         if ($('.ALTD:checked').val() === 'ALTD') {
             if ($('.ALTDLevel:checked').val() === 'data1') {
+                //map.getLayers().getArray()[15].setVisible(1);
+                // degrad
+                var Source_New = new ol.source.TileWMS({
+                    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                    params: {
+                        'LAYERS': 'GeoServer:degradrtr2018',
+                        'VERSION': '1.1.0',
+                        'FORMAT': 'image/png',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                });
+                var l = map.getLayers().getArray()[15];
+                l.setSource(Source_New);
                 map.getLayers().getArray()[15].setVisible(1);
             }
             else {
-                map.getLayers().getArray()[15].setVisible(0);
+                //map.getLayers().getArray()[15].setVisible(0);
+                // salt
+                var Source_New = new ol.source.TileWMS({
+                    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                    params: {
+                        'LAYERS': 'GeoServer:SALT201810',
+                        'VERSION': '1.1.0',
+                        'FORMAT': 'image/png',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                });
+                var l = map.getLayers().getArray()[15];
+                l.setSource(Source_New);
+                map.getLayers().getArray()[15].setVisible(1);
             }
         }
         else {
