@@ -9,13 +9,13 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
 
 <script src="~/lib/jquery/dist/jquery.js"></script>
-    <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
-    <script src="~/lib/jquery-ui/jquery-ui.js"></script>
+<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
 
 @*<script src="~/lib/jquery/dist/jquery.js"></script>
-<script src="~/lib/jquery-ui/jquery-ui.js"></script>
-<link href="~/lib/jquery-ui/themes/base/jquery-ui.css" rel="stylesheet" />
-<script src="~/lib/jquery-ui/jquery-ui.js"></script>*@
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script>
+    <link href="~/lib/jquery-ui/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script>*@
 
 <link href="~/lib/ol/ol.css" rel="stylesheet" />
 
@@ -104,24 +104,24 @@
                             </div>
                             @{
                                 List<SelectListItem> DataType = new List<SelectListItem>()
-                                                                                                                                                                            {
-                                                                                                                                                                                new SelectListItem() { Text="Снег", Value="snow"},
-                                                                                                                                                                                new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
-                                                                                                                                                                            };
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        new SelectListItem() { Text="Снег", Value="snow"},
+                                                                                                                                                                                                                        new SelectListItem() { Text="Вегетационные данные", Value="vegetation", Selected = true}
+                                                                                                                                                                                                                    };
                                 List<SelectListItem> State = new List<SelectListItem>()
-                                                                                                                                                                            {
-                                                                                                                                                                                new SelectListItem() { Text="Фактическое", Value="Fact"},
-                                                                                                                                                                                new SelectListItem() { Text="Аномальное", Value="Anomal"}
-                                                                                                                                                                            };
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        new SelectListItem() { Text="Фактическое", Value="Fact"},
+                                                                                                                                                                                                                        new SelectListItem() { Text="Аномальное", Value="Anomal"}
+                                                                                                                                                                                                                    };
                                 List<SelectListItem> Index = new List<SelectListItem>()
-                                                                                                                                                                            {
-                                                                                                                                                                                new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
-                                                                                                                                                                                new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
-                                                                                                                                                                            };
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
+                                                                                                                                                                                                                        new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
+                                                                                                                                                                                                                    };
                                 List<SelectListItem> IndexSnow = new List<SelectListItem>()
-                                                                                                                                                                            {
-                                                                                                                                                                                new SelectListItem() { Text="NDSI", Value="NDSI"}
-                                                                                                                                                                            };
+                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                        new SelectListItem() { Text="NDSI", Value="NDSI"}
+                                                                                                                                                                                                                    };
                             }
                             <label class="font-weight-normal mb-0">Тип данных</label>
                             <form class="form-inline">
@@ -134,7 +134,8 @@
                                     <small id="DataTypeLabel" class="text-primary">
                                         <label class="font-weight-normal ml-1 mr-sm-2">Вегетационные данные</label>
                                     </small>
-                                    <i class="material-icons btn-sm" id="legend" value="Легенда" onclick="NDVILegend()">info_outline</i>
+                                    <i class="material-icons btn-sm NoSnow btn btn-default" id="legendNDVI" value="Легенда" onclick="NDVILegend()">info_outline</i>
+                                    <i class="material-icons btn-sm Snow btn btn-default" id="legendSnow" value="Легенда" onclick="NDSILegend()">info_outline</i>
                                 </div>
                             </form>
                             <label class="font-weight-normal m-1 NoSnow">Состояние</label>
@@ -153,7 +154,8 @@
                             <label class="font-weight-normal m-1 Snow">Месяц</label>
                             <select name="MonthSnow" class="custom-select custom-select-sm Snow" id="MonthSnow" onchange="ChangeMonthSnow()"></select>
 
-                            <label class="font-weight-normal m-1">Декада</label>
+                            <label class="font-weight-normal m-1 Snow">Декада</label>
+                            <label class="font-weight-normal m-1 NoSnow">День</label>
                             <select name="Date" class="custom-select custom-select-sm NoSnow" id="Date" onchange="ChangeDate()"></select>
                             <select name="DaySnow" class="custom-select custom-select-sm Snow" id="DaySnow" onchange="ChangeDaySnow()"></select>
 
@@ -412,12 +414,18 @@
     <img src="~/images/ndvilegend.jpg" style="width: 220px;" />
 </div>
 
+<div id="ndsilegenddialog" title="Легенда" hidden="hidden" style="width: 200px;">
+    <img src="~/images/ndsilegend.jpg" style="width: 220px;" />
+</div>
+
 
 <script>
     $(document).ready(function () {
         $(".menu").click(function () {
             $("article").slideToggle("slow");
         });
+        $('#YearSnow option:last').attr("selected", "selected");
+        ChangeYearSnow();
     });
 </script>
 
@@ -609,6 +617,25 @@
     });
     Layer_CropMask.setOpacity(0.80);
     layers.push(Layer_CropMask);
+
+    // источник данных и слой snow1
+    var Source_NDSI1 = new ol.source.TileWMS({
+        //projection: 'EPSG:3857',
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:NDSI1',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_NDSI1 = new ol.layer.Tile({
+        source: Source_NDSI1,
+        extent: extents.Almaty,
+    });
+    Layer_NDSI1.setOpacity(0.80);
+    layers.push(Layer_NDSI1);
 
     // источник данных и слой hdrlin
     var Source_hdrlin = new ol.source.TileWMS({
@@ -808,24 +835,7 @@
     Layer_degradrtr2018.setOpacity(0.80);
     layers.push(Layer_degradrtr2018);
 
-    // источник данных и слой snow1
-    var Source_NDSI1 = new ol.source.TileWMS({
-        //projection: 'EPSG:3857',
-        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
-        params: {
-            'LAYERS': 'GeoServer:NDSI1',
-            'VERSION': '1.1.0',
-            'FORMAT': 'image/png',
-            'TILED': true
-        },
-        serverType: 'geoserver'
-    });
-    var Layer_NDSI1 = new ol.layer.Tile({
-        source: Source_NDSI1,
-        extent: extents.Almaty,
-    });
-    Layer_NDSI1.setOpacity(0.80);
-    layers.push(Layer_NDSI1);
+
     //// источник данных и слой snow2
     //var Source_NDSI2 = new ol.source.TileWMS({
     //    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
@@ -861,6 +871,7 @@
             extent: [7991617, 5172524, 9408704, 6016344]
         })
     });
+    //map.getLayers().setAt(4, Layer_NDSI1);
 
     function ChangeYearSnow() {
          $.ajax({
@@ -870,12 +881,50 @@
             success: function (data) {
                 var optionhtml = '';
                 $.each(data.months, function (i) {
+                    var text = "";
+                    if (data.months[i] == 1) {
+                        text = "январь";
+                    }
+                    else if (data.months[i] == 2) {
+                        text = "февраль";
+                    }
+                    else if (data.months[i] == 3) {
+                        text = "март";
+                    }
+                    else if (data.months[i] == 4) {
+                        text = "апрель";
+                    }
+                    else if (data.months[i] == 5) {
+                        text = "май";
+                    }
+                    else if (data.months[i] == 6) {
+                        text = "июнь";
+                    }
+                    else if (data.months[i] == 7) {
+                        text = "июль";
+                    }
+                    else if (data.months[i] == 8) {
+                        text = "август";
+                    }
+                    else if (data.months[i] == 9) {
+                        text = "сентябрь";
+                    }
+                    else if (data.months[i] == 10) {
+                        text = "октябрь";
+                    }
+                    else if (data.months[i] == 11) {
+                        text = "ноябрь";
+                    }
+                    else if (data.months[i] == 12) {
+                        text = "декабрь";
+                    }
                     optionhtml += '<option value="' + data.months[i] + '"' +
-                        '>' + data.months[i] +
+                        '>' + text +
                         '</option>';
                 });
                 $("#MonthSnow").empty();
                 $('#MonthSnow').append(optionhtml);
+                $('#MonthSnow option:last').attr("selected", "selected");
                 ChangeMonthSnow();
             },
             error: function () {
@@ -900,6 +949,7 @@
                 });
                  $("#DaySnow").empty();
                  $('#DaySnow').append(optionhtml);
+                 $('#DaySnow option:last').attr("selected", "selected");
                  ChangeDaySnow();
             },
             error: function () {
@@ -932,7 +982,7 @@
                 },
                 serverType: 'geoserver'
             });
-            var l = map.getLayers().getArray()[15];
+            var l = map.getLayers().getArray()[4];
             l.setSource(Source_New);
             l.setVisible(1);
         }
@@ -961,13 +1011,14 @@
 
         if ($('#DataType').val() === 'snow') {
             map.getLayers().getArray()[1].setVisible(0);
-            map.getLayers().getArray()[15].setVisible(1);
+            map.getLayers().getArray()[4].setVisible(1);
             $('.NoSnow').hide();
             $('.Snow').show();
-            ChangeYearSnow();
+            //ChangeYearSnow();
+            ChangeDaySnow();
         }
         else if ($('#DataType').val() === 'vegetation') {
-            map.getLayers().getArray()[15].setVisible(0);
+            map.getLayers().getArray()[4].setVisible(0);
             $('.NoSnow').show();
             $('.Snow').hide();
             if ($('#State').val() === 'Fact') {
@@ -1116,53 +1167,53 @@
         }
 
         if ($('.hdrlin:checked').val() === 'hdrlin') {
-            map.getLayers().getArray()[4].setVisible(1);
-        }
-        else {
-            map.getLayers().getArray()[4].setVisible(0);
-        }
-        if ($('.hdrpol:checked').val() === 'hdrpol') {
             map.getLayers().getArray()[5].setVisible(1);
         }
         else {
             map.getLayers().getArray()[5].setVisible(0);
         }
+        if ($('.hdrpol:checked').val() === 'hdrpol') {
+            map.getLayers().getArray()[6].setVisible(1);
+        }
+        else {
+            map.getLayers().getArray()[6].setVisible(0);
+        }
         if ($('.poppnt:checked').val() === 'poppnt') {
             if ($('.TopographyLabel:checked').val() === 'TopographyLabel') {
-                map.getLayers().getArray()[7].setVisible(1);
-                map.getLayers().getArray()[6].setVisible(0);
-                map.getLayers().getArray()[9].setVisible(1);
-                map.getLayers().getArray()[8].setVisible(0);
+                map.getLayers().getArray()[8].setVisible(1);
+                map.getLayers().getArray()[7].setVisible(0);
+                map.getLayers().getArray()[10].setVisible(1);
+                map.getLayers().getArray()[9].setVisible(0);
             }
             else {
-                map.getLayers().getArray()[7].setVisible(0);
-                map.getLayers().getArray()[6].setVisible(1);
-                map.getLayers().getArray()[9].setVisible(0);
-                map.getLayers().getArray()[8].setVisible(1);
+                map.getLayers().getArray()[8].setVisible(0);
+                map.getLayers().getArray()[7].setVisible(1);
+                map.getLayers().getArray()[10].setVisible(0);
+                map.getLayers().getArray()[9].setVisible(1);
             }
         }
         else {
-            map.getLayers().getArray()[7].setVisible(0);
-            map.getLayers().getArray()[6].setVisible(0);
-            map.getLayers().getArray()[9].setVisible(0);
             map.getLayers().getArray()[8].setVisible(0);
+            map.getLayers().getArray()[7].setVisible(0);
+            map.getLayers().getArray()[10].setVisible(0);
+            map.getLayers().getArray()[9].setVisible(0);
         }
         if ($('.rdslin:checked').val() === 'rdslin') {
-            map.getLayers().getArray()[10].setVisible(1);
+            map.getLayers().getArray()[11].setVisible(1);
         }
         else {
-            map.getLayers().getArray()[10].setVisible(0);
+            map.getLayers().getArray()[11].setVisible(0);
         }
         if ($('.ALTD:checked').val() === 'ALTD') {
             if ($('.ALTDLevel:checked').val() === 'data1') {
-                map.getLayers().getArray()[14].setVisible(1);
+                map.getLayers().getArray()[15].setVisible(1);
             }
             else {
-                map.getLayers().getArray()[14].setVisible(0);
+                map.getLayers().getArray()[15].setVisible(0);
             }
         }
         else {
-            map.getLayers().getArray()[14].setVisible(0);
+            map.getLayers().getArray()[15].setVisible(0);
         }
     }
 
@@ -1465,6 +1516,13 @@
         });
     }
 
+    function NDSILegend() {
+        $("#ndsilegenddialog").dialog({
+            width: 690,
+            height: 500
+        });
+    }
+
     function AnomalyLegend() {
         $("#anomlegenddialog").dialog({
             width: 690,
@@ -1508,13 +1566,16 @@
     function Opacity(l) {
         var o = '#opacity' + l.toString();
         layers[l].setOpacity($(o).val() / 100);
-        if (l == 4) {
-            layers[5].setOpacity($(o).val() / 100);
+        if (l == 5) {
             layers[6].setOpacity($(o).val() / 100);
             layers[7].setOpacity($(o).val() / 100);
             layers[8].setOpacity($(o).val() / 100);
             layers[9].setOpacity($(o).val() / 100);
             layers[10].setOpacity($(o).val() / 100);
+            layers[11].setOpacity($(o).val() / 100);
+        }
+        if (l == 1) {
+            layers[4].setOpacity($(o).val() / 100);
         }
     }
     $('#click').click(function () {
