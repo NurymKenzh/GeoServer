@@ -121,7 +121,7 @@
                                                                                                                                                                                                                                                         new SelectListItem() { Text="NDSI", Value="NDSI"}
                                                                                                                                                                                                                                                     };
                         }
-                        <label class="font-weight-normal mb-0">Тип данных</label>
+                        <label class="font-weight-normal mb-0">Режим просмотра</label>
                         <form class="form-inline">
                             <div class="form-group">
                                 @Html.DropDownList("DataType", (IEnumerable<SelectListItem>)DataType, htmlAttributes: new { @class = "form-control form-control-sm", @id = "DataType", @onchange = "Change()", @style = "display: none;" })
@@ -130,13 +130,13 @@
                                     <span class="slider round"></span>
                                 </label>
                                 <small id="DataTypeLabel" class="text-primary">
-                                    <label class="font-weight-normal ml-1 mr-sm-2">Вегетационные данные</label>
+                                    <label class="font-weight-normal ml-1 mr-sm-2">Растительность</label>
                                 </small>
                                 <i class="material-icons btn-sm NoSnow btn btn-default" id="legendNDVI" value="Легенда" onclick="NDVILegend()">info_outline</i>
                                 <i class="material-icons btn-sm Snow btn btn-default" id="legendSnow" value="Легенда" onclick="NDSILegend()">info_outline</i>
                             </div>
                         </form>
-                        <label class="font-weight-normal m-1 NoSnow">Состояние</label>
+                        <label class="font-weight-normal m-1 NoSnow">Тип данных</label>
                         @Html.DropDownList("State", (IEnumerable<SelectListItem>)State, htmlAttributes: new { @class = "form-control form-control-sm NoSnow", @id = "State", @onchange = "Change()" })
                         @*<i class="material-icons" id="legend" value="Легенда" onclick="AnomalyLegend()">info_outline</i>
                             <br />*@
@@ -319,8 +319,8 @@
                             </div>
                         </div>
                         <div class="dropdown-divider"></div>
-                        <button class="btn btn-outline-primary btn-sm btn-block" id="info1" value="Информация 1" onclick="ViewChart1()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Годовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i> Информация 1</button>
-                        <button class="btn btn-outline-primary btn-sm btn-block mb-2" id="info2" value="Информация 2" onclick="ViewChart2()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Межгодовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i> Информация 2</button>
+                        <button class="btn btn-outline-primary btn-sm btn-block" id="info1" value="Информация 1" onclick="ViewChart1()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Годовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i>Годовая изменчивость</button>
+                        <button class="btn btn-outline-primary btn-sm btn-block mb-2" id="info2" value="Информация 2" onclick="ViewChart2()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Межгодовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i>Межгодовая изменчивость</button>
                         <div class="dropdown-divider"></div>
                     </nav>
                 </article>
