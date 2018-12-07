@@ -75,6 +75,15 @@ namespace GeoServer.Controllers
             ViewBag.ModisProduct = ModisProduct;
             ViewBag.ModisDataSet = ModisDataSet;
             ViewBag.Value = 0;
+            ViewBag.ChartTitle = "Динамика за вегетационный период";
+            if(ModisDataSet.ToLower().Contains("ndvi"))
+            {
+                ViewBag.ChartTitle = "Динамика NDVI за вегетационный период";
+            }
+            if (ModisDataSet.ToLower().Contains("evi"))
+            {
+                ViewBag.ChartTitle = "Динамика EVI за вегетационный период";
+            }
             if (!string.IsNullOrEmpty(PastId))
             {
                 decimal? v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
@@ -92,21 +101,6 @@ namespace GeoServer.Controllers
                     z.ModisProduct == ModisProduct &&
                     z.DataSet == "250m16daysNDVI")?.Value;
                 v /= 10000;
-                decimal? vmax = _context.ZonalStatPast.Where(z => 
-                        z.Year == Year &&
-                        z.PastId == PastId &&
-                        z.ModisSource == ModisSource &&
-                        z.ModisProduct == ModisProduct &&
-                        z.DataSet == "250m16daysNDVI")
-                        .Max(z => z.Value),
-                    vmin = _context.ZonalStatPast.Where(z =>
-                        z.Year == Year &&
-                        z.PastId == PastId &&
-                        z.ModisSource == ModisSource &&
-                        z.ModisProduct == ModisProduct &&
-                        z.DataSet == "250m16daysNDVI")
-                        .Min(z => z.Value);
-                ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000)*10, 2);
 
                 ViewBag.Crop = "Плохое";
                 if (v > 0.15M)
@@ -136,6 +130,53 @@ namespace GeoServer.Controllers
 
             }
             Pasture pasture = _context.Pasture.FirstOrDefault(p => p.Id == pastId);
+
+            int daymin = 0,
+                daymax = 356;
+            if(Date>=337 || Date<=49)
+            {
+                daymin = 0;
+                daymax = 0;
+            }
+            if (Date >= 65 && Date <= 145)
+            {
+                daymin = 65;
+                daymax = 145;
+            }
+            if (Date >= 161 && Date <= 241)
+            {
+                daymin = 161;
+                daymax = 241;
+            }
+            if (Date >= 257 && Date <= 321)
+            {
+                daymin = 257;
+                daymax = 321;
+            }
+            decimal? vmax = _context.ZonalStatPast.Where(z => z.DayOfYear >= daymin &&
+                    z.DayOfYear <= daymax &&
+                    z.Year == Year &&
+                    z.PastId == PastId &&
+                    z.ModisSource == ModisSource &&
+                    z.ModisProduct == ModisProduct &&
+                    z.DataSet == "250m16daysNDVI")
+                    .DefaultIfEmpty()
+                    .Max(z => z.Value),
+                vmin = _context.ZonalStatPast.Where(z => z.DayOfYear >= daymin &&
+                    z.DayOfYear <= daymax &&
+                    z.Year == Year &&
+                    z.PastId == PastId &&
+                    z.ModisSource == ModisSource &&
+                    z.ModisProduct == ModisProduct &&
+                    z.DataSet == "250m16daysNDVI")
+                    .DefaultIfEmpty()
+                    .Min(z => z.Value);
+            ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000) * 10, 2);
+            if (pasture.otdely_id == 12)
+            {
+                ViewBag.Ur = 0;
+            }
+
             ViewBag.ClassId = pasture?.class_id;
             if(pasture!=null)
             {
@@ -246,6 +287,15 @@ namespace GeoServer.Controllers
             ViewBag.ModisDataSet = ModisDataSet;
             ViewBag.Value = 0;
             ViewBag.Ur = 0;
+            ViewBag.ChartTitle = "Динамика за вегетационный период";
+            if (ModisDataSet.ToLower().Contains("ndvi"))
+            {
+                ViewBag.ChartTitle = "Динамика NDVI за вегетационный период";
+            }
+            if (ModisDataSet.ToLower().Contains("evi"))
+            {
+                ViewBag.ChartTitle = "Динамика EVI за вегетационный период";
+            }
             if (!string.IsNullOrEmpty(PastId))
             {
                 decimal? v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
@@ -263,22 +313,7 @@ namespace GeoServer.Controllers
                     z.ModisProduct == ModisProduct &&
                     z.DataSet == "250m16daysNDVI")?.Value;
                 v /= 10000;
-                decimal? vmax = _context.ZonalStatPast.Where(z =>
-                        z.Year == Year_ &&
-                        z.PastId == PastId &&
-                        z.ModisSource == ModisSource &&
-                        z.ModisProduct == ModisProduct &&
-                        z.DataSet == "250m16daysNDVI")
-                        .Max(z => z.Value),
-                    vmin = _context.ZonalStatPast.Where(z =>
-                        z.Year == Year_ &&
-                        z.PastId == PastId &&
-                        z.ModisSource == ModisSource &&
-                        z.ModisProduct == ModisProduct &&
-                        z.DataSet == "250m16daysNDVI")
-                        .Min(z => z.Value);
-                ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000)*10, 2);
-
+               
                 ViewBag.Crop = "Плохое";
                 if (v > 0.15M)
                 {
@@ -307,6 +342,53 @@ namespace GeoServer.Controllers
 
             }
             Pasture pasture = _context.Pasture.FirstOrDefault(p => p.Id == pastId);
+
+            int daymin = 0,
+                daymax = 356;
+            if (Date >= 337 || Date <= 49)
+            {
+                daymin = 0;
+                daymax = 0;
+            }
+            if (Date >= 65 && Date <= 145)
+            {
+                daymin = 65;
+                daymax = 145;
+            }
+            if (Date >= 161 && Date <= 241)
+            {
+                daymin = 161;
+                daymax = 241;
+            }
+            if (Date >= 257 && Date <= 321)
+            {
+                daymin = 257;
+                daymax = 321;
+            }
+            decimal? vmax = _context.ZonalStatPast.Where(z => z.DayOfYear >= daymin &&
+                    z.DayOfYear <= daymax &&
+                    z.Year == Year_ &&
+                    z.PastId == PastId &&
+                    z.ModisSource == ModisSource &&
+                    z.ModisProduct == ModisProduct &&
+                    z.DataSet == "250m16daysNDVI")
+                    .DefaultIfEmpty()
+                    .Max(z => z.Value),
+                vmin = _context.ZonalStatPast.Where(z => z.DayOfYear >= daymin &&
+                    z.DayOfYear <= daymax &&
+                    z.Year == Year_ &&
+                    z.PastId == PastId &&
+                    z.ModisSource == ModisSource &&
+                    z.ModisProduct == ModisProduct &&
+                    z.DataSet == "250m16daysNDVI")
+                    .DefaultIfEmpty()
+                    .Min(z => z.Value);
+            ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000) * 10, 2);
+            if (pasture.otdely_id == 12)
+            {
+                ViewBag.Ur = 0;
+            }
+
             ViewBag.ClassId = pasture?.class_id;
             if (pasture != null)
             {
