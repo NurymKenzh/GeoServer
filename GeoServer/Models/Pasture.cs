@@ -75,7 +75,7 @@ namespace GeoServer.Models
             {
                 if(W_v + W_l + W_o!=0)
                 {
-                    return areaGa * 0.7M / (W_v + W_l + W_o);
+                    return areaGa * 0.6M / (W_v + W_l + W_o);
                 }
                 else
                 {
