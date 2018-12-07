@@ -49,6 +49,10 @@
                                 <p class="m-0">Отдел: @ViewBag.otdely_name</p>
                                 <p class="m-0">Подтип: @ViewBag.subtype_name</p>
                                 <p class="m-0">Группа: @ViewBag.group_name</p>
+                                <p class="m-0">Дата снимка: год - @ViewBag.Year_, день - @ViewBag.Date</p>
+                                <p class="m-0">Значение снимка: @ViewBag.Value</p>
+                                <p class="m-0">Урожайность: @ViewBag.Ur</p>
+                                <p class="m-0">Состояние растительности: @ViewBag.Crop</p>
                             }
                             @if (ViewBag.KATOType == "adm1pol")
                             {
@@ -81,7 +85,7 @@
             <div class="col-lg-9">
                 <div class="line-chart-example card border-secondary">
                     <div class="card-header d-flex border-secondary">
-                        <h3 class="h4">Диаграмма межгодовой изменчивости</h3>
+                        <h3 class="h4">@ViewBag.ChartTitle</h3>
                     </div>
                     <div class="card-body">
                         <canvas id="myChart" style="max-height: 600px;"></canvas>
