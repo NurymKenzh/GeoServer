@@ -83,7 +83,7 @@ namespace GeoServer.Controllers
                     z.ModisSource == ModisSource &&
                     z.ModisProduct == ModisProduct &&
                     z.DataSet == ModisDataSet)?.Value;
-                ViewBag.Value = Math.Round((decimal)v, 2);
+                ViewBag.Value = Math.Round((decimal)v/10000, 2);
 
                 v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
                     z.Year == Year &&
@@ -106,7 +106,7 @@ namespace GeoServer.Controllers
                         z.ModisProduct == ModisProduct &&
                         z.DataSet == "250m16daysNDVI")
                         .Min(z => z.Value);
-                ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000), 2);
+                ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000)*10, 2);
 
                 ViewBag.Crop = "Плохое";
                 if (v > 0.15M)
@@ -254,7 +254,7 @@ namespace GeoServer.Controllers
                     z.ModisSource == ModisSource &&
                     z.ModisProduct == ModisProduct &&
                     z.DataSet == ModisDataSet)?.Value;
-                ViewBag.Value = Math.Round((decimal)v, 2);
+                ViewBag.Value = Math.Round((decimal)v/10000, 2);
 
                 v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
                     z.Year == Year_ &&
@@ -277,7 +277,7 @@ namespace GeoServer.Controllers
                         z.ModisProduct == ModisProduct &&
                         z.DataSet == "250m16daysNDVI")
                         .Min(z => z.Value);
-                ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000), 2);
+                ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000)*10, 2);
 
                 ViewBag.Crop = "Плохое";
                 if (v > 0.15M)
