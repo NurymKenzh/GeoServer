@@ -61,6 +61,7 @@ namespace GeoServer.Controllers
             string KATO,
             string PastId,
             int Year,
+            int Date,
             string ModisSource,
             string ModisProduct,
             string ModisDataSet)
@@ -69,9 +70,62 @@ namespace GeoServer.Controllers
             ViewBag.KATO = KATO;
             ViewBag.PastId = PastId;
             ViewBag.SelectYear = Year;
+            ViewBag.Date = Date;
             ViewBag.ModisSource = ModisSource;
             ViewBag.ModisProduct = ModisProduct;
             ViewBag.ModisDataSet = ModisDataSet;
+            ViewBag.Value = 0;
+            if (!string.IsNullOrEmpty(PastId))
+            {
+                decimal? v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
+                    z.Year == Year &&
+                    z.PastId == PastId &&
+                    z.ModisSource == ModisSource &&
+                    z.ModisProduct == ModisProduct &&
+                    z.DataSet == ModisDataSet)?.Value;
+                ViewBag.Value = Math.Round((decimal)v, 2);
+
+                v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
+                    z.Year == Year &&
+                    z.PastId == PastId &&
+                    z.ModisSource == ModisSource &&
+                    z.ModisProduct == ModisProduct &&
+                    z.DataSet == "250m16daysNDVI")?.Value;
+                v /= 10000;
+                decimal? vmax = _context.ZonalStatPast.Where(z => 
+                        z.Year == Year &&
+                        z.PastId == PastId &&
+                        z.ModisSource == ModisSource &&
+                        z.ModisProduct == ModisProduct &&
+                        z.DataSet == "250m16daysNDVI")
+                        .Max(z => z.Value),
+                    vmin = _context.ZonalStatPast.Where(z =>
+                        z.Year == Year &&
+                        z.PastId == PastId &&
+                        z.ModisSource == ModisSource &&
+                        z.ModisProduct == ModisProduct &&
+                        z.DataSet == "250m16daysNDVI")
+                        .Min(z => z.Value);
+                ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000), 2);
+
+                ViewBag.Crop = "Плохое";
+                if (v > 0.15M)
+                {
+                    ViewBag.Crop = "Удовлетворительное";
+                }
+                if (v > 0.2M)
+                {
+                    ViewBag.Crop = "Среднее";
+                }
+                if (v > 0.25M)
+                {
+                    ViewBag.Crop = "Хорошее";
+                }
+                if (v > 0.3M)
+                {
+                    ViewBag.Crop = "Отличное";
+                }
+            }
             int pastId = 0;
             try
             {
@@ -176,6 +230,8 @@ namespace GeoServer.Controllers
             string KATOType,
             string KATO,
             string PastId,
+            int Year_,
+            int Date,
             string ModisSource,
             string ModisProduct,
             string ModisDataSet)
@@ -183,9 +239,64 @@ namespace GeoServer.Controllers
             ViewBag.KATOType = KATOType;
             ViewBag.KATO = KATO;
             ViewBag.PastId = PastId;
+            ViewBag.Year_ = Year_;
+            ViewBag.Date = Date;
             ViewBag.ModisSource = ModisSource;
             ViewBag.ModisProduct = ModisProduct;
             ViewBag.ModisDataSet = ModisDataSet;
+            ViewBag.Value = 0;
+            ViewBag.Ur = 0;
+            if (!string.IsNullOrEmpty(PastId))
+            {
+                decimal? v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
+                    z.Year == Year_ &&
+                    z.PastId == PastId &&
+                    z.ModisSource == ModisSource &&
+                    z.ModisProduct == ModisProduct &&
+                    z.DataSet == ModisDataSet)?.Value;
+                ViewBag.Value = Math.Round((decimal)v, 2);
+
+                v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
+                    z.Year == Year_ &&
+                    z.PastId == PastId &&
+                    z.ModisSource == ModisSource &&
+                    z.ModisProduct == ModisProduct &&
+                    z.DataSet == "250m16daysNDVI")?.Value;
+                v /= 10000;
+                decimal? vmax = _context.ZonalStatPast.Where(z =>
+                        z.Year == Year_ &&
+                        z.PastId == PastId &&
+                        z.ModisSource == ModisSource &&
+                        z.ModisProduct == ModisProduct &&
+                        z.DataSet == "250m16daysNDVI")
+                        .Max(z => z.Value),
+                    vmin = _context.ZonalStatPast.Where(z =>
+                        z.Year == Year_ &&
+                        z.PastId == PastId &&
+                        z.ModisSource == ModisSource &&
+                        z.ModisProduct == ModisProduct &&
+                        z.DataSet == "250m16daysNDVI")
+                        .Min(z => z.Value);
+                ViewBag.Ur = Math.Round((decimal)((vmin + (vmax - vmin) * 0.8M) / 10000), 2);
+
+                ViewBag.Crop = "Плохое";
+                if (v > 0.15M)
+                {
+                    ViewBag.Crop = "Удовлетворительное";
+                }
+                if (v > 0.2M)
+                {
+                    ViewBag.Crop = "Среднее";
+                }
+                if (v > 0.25M)
+                {
+                    ViewBag.Crop = "Хорошее";
+                }
+                if (v > 0.3M)
+                {
+                    ViewBag.Crop = "Отличное";
+                }
+            }
             int pastId = 0;
             try
             {
