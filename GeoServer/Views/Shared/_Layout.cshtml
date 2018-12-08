@@ -39,39 +39,65 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarsExample07">
-                <ul class="navbar-nav mr-auto">                    
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="dropdown07" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-info-circle"></i> Информация</a>
+                        <div class="dropdown-menu" aria-labelledby="dropdown07">
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="~/manual/User_manual_Pasture.pdf" target="_blank">Руководство пользователя</a>
+                            <a class="dropdown-item text-white" data-toggle="modal" data-target=".video_instruction">Видео инструкция</a>
+                        </div>
+                    </li>
                     @*<li class="nav-item active">
-                        <a class="nav-link" asp-controller="OL" asp-action="ViewModis">
-                            <i class="fa fa-map"></i>
-                            Карта
-                            <span class="sr-only">(current)</span>
-                        </a>
-                    </li>*@
-                    
+                <a class="nav-link" asp-controller="OL" asp-action="ViewModis">
+                    <i class="fa fa-map"></i>
+                    Карта
+                    <span class="sr-only">(current)</span>
+                </a>
+            </li>*@
+
                     @*<li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="About">
-                        <i class="fa fa-book"></i>
-                        @SharedLocalizer["About"]
-                        <span class="sr-only"></span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Information">
-                        <i class="fa fa-exclamation-circle"></i>
-                        @SharedLocalizer["Information"]
-                        <span class="sr-only"></span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Contact">
-                        <i class="fa fa-address-book"></i>
-                        @SharedLocalizer["Contact"]
-                        <span class="sr-only"></span>
-                    </a>
-                </li>*@
+                <a class="nav-link" asp-controller="Home" asp-action="About">
+                    <i class="fa fa-book"></i>
+                    @SharedLocalizer["About"]
+                    <span class="sr-only"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Home" asp-action="Information">
+                    <i class="fa fa-exclamation-circle"></i>
+                    @SharedLocalizer["Information"]
+                    <span class="sr-only"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Home" asp-action="Contact">
+                    <i class="fa fa-address-book"></i>
+                    @SharedLocalizer["Contact"]
+                    <span class="sr-only"></span>
+                </a>
+            </li>*@
                     @await Html.PartialAsync("_AdministratorPartial")
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
+                <div class="modal fade video_instruction" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalCenterTitle">Видео инструкция</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <video style="max-width: 100%;" controls>
+                                    <source src="~/manual/User_manual_Pasture.mp4" type="video/mp4">
+                                    Your browser does not support HTML5 video.
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         @{

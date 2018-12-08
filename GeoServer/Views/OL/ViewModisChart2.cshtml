@@ -49,10 +49,6 @@
                                 <p class="m-0">Отдел: @ViewBag.otdely_name</p>
                                 <p class="m-0">Подтип: @ViewBag.subtype_name</p>
                                 <p class="m-0">Группа: @ViewBag.group_name</p>
-                                <p class="m-0">Дата снимка: год - @ViewBag.Year_, день - @ViewBag.Date</p>
-                                <p class="m-0">Значение снимка: @ViewBag.Value</p>
-                                <p class="m-0">Урожайность: @ViewBag.Ur</p>
-                                <p class="m-0">Состояние растительности: @ViewBag.Crop</p>
                             }
                             @if (ViewBag.KATOType == "adm1pol")
                             {
@@ -94,6 +90,44 @@
                 </div>
             </div>
             <div class="col-lg-3">
+                <div class="card border-primary">
+                    <div class="card-header border-secondary ">
+                        <h3 class="h4">Информация по снимкам</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-justify">
+                            @if (ViewBag.KATOType == "pastALA")
+                            {
+                                <p class="m-0">Дата снимка: Год - @ViewBag.Year_, День - @ViewBag.Date</p>
+                                <p class="m-0">Значение индекса: @ViewBag.Value</p>
+                                <p class="m-0">Урожайность: @ViewBag.Ur (ц/га)</p>
+                                <p class="m-0">Состояние растительности: @ViewBag.Crop</p>
+                            }
+                            @if (ViewBag.KATOType == "adm1pol")
+                            {
+                                <h5 class="alert-heading">Дополнительная информация</h5>
+                                <p class="m-0">КАТО: @ViewBag.KATO</p>
+                                <smp class="p" all>Область: @ViewBag.KATOName</smp>
+                            }
+                            @if (ViewBag.KATOType == "adm2pol")
+                            {
+                                <h5 class="alert-heading">Дополнительная информация</h5>
+                                <p class="m-0">КАТО: @ViewBag.KATO</p>
+                                <p class="m-0">Область: @ViewBag.OblName</p>
+                                <p class="m-0">Район: @ViewBag.KATOName</p>
+                            }
+                            @if (ViewBag.KATOType == "adm3pol")
+                            {
+                                <h5 class="alert-heading">Дополнительная информация</h5>
+                                <p class="m-0">КАТО: @ViewBag.KATO</p>
+                                <p class="m-0">Область: @ViewBag.OblName</p>
+                                <p class="m-0">Район: @ViewBag.RayName</p>
+                                <p class="m-0">Сельский округ: @ViewBag.KATOName</p>
+                            }
+                        </div>
+                    </div>
+
+                </div>
                 <div class="line-chart-example card border-secondary">
                     <div class="card-header d-flex border-secondary">
                         <h3 class="h4">Конфигурировать:</h3>
@@ -103,8 +137,8 @@
                             <label class="control-label">Годы</label><br />
                             @*<select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" multiple="multiple"></select>*@
                             @Html.ListBox("Year", (IEnumerable<SelectListItem>)ViewBag.Year, htmlAttributes: new { @class = "form-control", SelectionMode = "Multiple", @id = "Year", AutoPostBack = "true" })<br />
-                            <input type="button" id="update" class="btn btn-outline-primary btn-block" value="Обновить" onclick="Update()" /><br />
-                            <input type="button" id="update" class="btn btn-outline-primary btn-block" value="Сохранить в Excel" onclick="SaveToExcel()" />
+                            <input type="button" id="update" class="btn btn-outline-primary btn-sm btn-block" value="Обновить" onclick="Update()" /><br />
+                            <input type="button" id="update" class="btn btn-outline-primary btn-sm btn-block" value="Сохранить в Excel" onclick="SaveToExcel()" />
                         </div>
                     </div>
                 </div>

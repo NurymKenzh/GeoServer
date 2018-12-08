@@ -40,19 +40,71 @@
             
         }
         <div class="project">
-            <div class="row bg-white has-shadow">
-                <div class="col alert alert-primary m-3 border-primary">
-                    <div class="project-title d-flex align-items-center">                        
+            <div class="row">
+                <div class="col-12 mt-3" >
+                    <div class="col alert alert-primary border-primary">
+                        <div class="project-title d-flex align-items-center">
+                            <div class="text-justify">
+                                @if (ViewBag.KATOType == "pastALA")
+                                {
+                                    <h5 class="alert-heading">Пастбищный выдел №(@(ViewBag.ClassId))</h5>
+                                    <p class="m-0">Класс: @ViewBag.class_name</p>
+                                    <p class="m-0">Отдел: @ViewBag.otdely_name</p>
+                                    <p class="m-0">Подтип: @ViewBag.subtype_name</p>
+                                    <p class="m-0">Группа: @ViewBag.group_name</p>
+                                    
+                                }
+                                @if (ViewBag.KATOType == "adm1pol")
+                                {
+                                    <h5 class="alert-heading">Дополнительная информация</h5>
+                                    <p class="m-0">КАТО: @ViewBag.KATO</p>
+                                    <smp class="p" all>Область: @ViewBag.KATOName</smp>
+                                }
+                                @if (ViewBag.KATOType == "adm2pol")
+                                {
+                                    <h5 class="alert-heading">Дополнительная информация</h5>
+                                    <p class="m-0">КАТО: @ViewBag.KATO</p>
+                                    <p class="m-0">Область: @ViewBag.OblName</p>
+                                    <p class="m-0">Район: @ViewBag.KATOName</p>
+                                }
+                                @if (ViewBag.KATOType == "adm3pol")
+                                {
+                                    <h5 class="alert-heading">Дополнительная информация</h5>
+                                    <p class="m-0">КАТО: @ViewBag.KATO</p>
+                                    <p class="m-0">Область: @ViewBag.OblName</p>
+                                    <p class="m-0">Район: @ViewBag.RayName</p>
+                                    <p class="m-0">Сельский округ: @ViewBag.KATOName</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="row">
+            <!-- Line Charts-->
+            <div class="col-lg-9">
+                <div class="line-chart-example card border-secondary ">
+                    <div class="card-header border-secondary ">
+                        <h3 class="h4">Диаграмма годовой изменчивости NDVI</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="myChart" style="max-height: 600px;" ></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card border-primary">
+                    <div class="card-header border-secondary ">
+                        <h3 class="h4">Информация по снимкам</h3>
+                    </div>
+                    <div class="card-body">
                         <div class="text-justify">
                             @if (ViewBag.KATOType == "pastALA")
                             {
-                                <h5 class="alert-heading">Пастбищный выдел №(@(ViewBag.ClassId))</h5>
-                                <p class="m-0">Класс: @ViewBag.class_name</p>
-                                <p class="m-0">Отдел: @ViewBag.otdely_name</p>
-                                <p class="m-0">Подтип: @ViewBag.subtype_name</p>
-                                <p class="m-0">Группа: @ViewBag.group_name</p>
-                                <p class="m-0">Дата снимка: год - @ViewBag.SelectYear, день - @ViewBag.Date</p>
-                                <p class="m-0">Значение снимка: @ViewBag.Value</p>
+                                <p class="m-0">Дата снимка: Год - @ViewBag.SelectYear, День - @ViewBag.Date</p>
+                                <p class="m-0">Значение индекса: @ViewBag.Value</p>
                                 <p class="m-0">Урожайность: @ViewBag.Ur</p>
                                 <p class="m-0">Состояние растительности: @ViewBag.Crop</p>
                             }
@@ -79,22 +131,8 @@
                             }
                         </div>
                     </div>
+
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <!-- Line Charts-->
-            <div class="col-lg-9">
-                <div class="line-chart-example card border-secondary ">
-                    <div class="card-header border-secondary ">
-                        <h3 class="h4">Диаграмма годовой изменчивости</h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="myChart" style="max-height: 600px;" ></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
                 <div class="line-chart-example card border-secondary ">
                     <div class="card-header border-secondary ">
                         <h3 class="h4">Конфигурировать:</h3>
@@ -102,14 +140,14 @@
                     <div class="card-body">
                         <div>
                             <label class="control-label">Начальный месяц</label><br />
-                            <select asp-items="ViewBag.Month" name="Month" class="form-control" id="Month"></select>
+                            <select asp-items="ViewBag.Month" name="Month" class="form-control form-control-sm" id="Month"></select>
                             <label class="control-label">Количество месяцев</label><br />
-                            <select asp-items="ViewBag.NumberOfMonth" name="NumberOfMonth" class="form-control" id="NumberOfMonth"></select>
+                            <select asp-items="ViewBag.NumberOfMonth" name="NumberOfMonth" class="form-control form-control-sm" id="NumberOfMonth"></select>
                             <label class="control-label">Год</label><br />
                             @*<select asp-items="ViewBag.Year" name="Year" class="form-control" id="Year" multiple="multiple"></select>*@
                             @Html.ListBox("Year", (IEnumerable<SelectListItem>)ViewBag.Year, htmlAttributes: new { @class = "form-control", SelectionMode = "Multiple", @id = "Year", AutoPostBack = "true" })<br />
-                            <input type="button" id="update" class="btn btn-outline-primary btn-block" value="Обновить" onclick="Update()" /><br />
-                            <input type="button" id="update" class="btn btn-outline-primary btn-block" value="Сохранить в Excel" onclick="SaveToExcel()" />
+                            <input type="button" id="update" class="btn btn-outline-primary btn-sm btn-block" value="Обновить" onclick="Update()" /><br />
+                            <input type="button" id="update" class="btn btn-outline-primary btn-sm btn-block" value="Сохранить в Excel" onclick="SaveToExcel()" />
                         </div>
                     </div>
                 </div>

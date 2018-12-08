@@ -32,13 +32,15 @@
                 <span class="sr-only">(current)</span>
             </a>
         </li>
-        <li class="nav-item">
+        @*<li class="nav-item">
             <a class="nav-link" asp-controller="Home" asp-action="Administrator">
                 <i class="fa fa-users"></i>
                 @SharedLocalizer["Administration"]
                 <span class="sr-only">(current)</span>
             </a>
-        </li>
+        </li>*@
+
+        
     }
     if (user.IsInRole("Moderator"))
     {
@@ -47,5 +49,5 @@
 }
 else
 {
-        
+
 }
