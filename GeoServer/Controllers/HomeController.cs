@@ -34,8 +34,8 @@ namespace GeoServer.Controllers
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
 
-            //return View();
-            return RedirectToAction("ViewModis", "OL", null);
+            return View();
+            //return RedirectToAction("ViewModis", "OL", null);
         }
 
         public IActionResult About()

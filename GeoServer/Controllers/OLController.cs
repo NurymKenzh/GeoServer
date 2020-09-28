@@ -1232,32 +1232,33 @@ namespace GeoServer.Controllers
 
         public int[] GetSnowYears()
         {
-            string path = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], "NDSI_Snow_Cover");
-            string[] files = Directory.GetFiles(path, "*.tif");
+            //string path = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], "NDSI_Snow_Cover");
+            //string[] files = Directory.GetFiles(path, "*.tif");
             List<int> r = new List<int>();
-            foreach (var file in files)
-            {
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                r.Add(GetSnowFileYear(fileName));
-            }
-            return r.Distinct().ToArray();
+            //foreach (var file in files)
+            //{
+            //    string fileName = Path.GetFileNameWithoutExtension(file);
+            //    r.Add(GetSnowFileYear(fileName));
+            //}
+            //return r.Distinct().ToArray();
+            return r.ToArray();
         }
 
         [HttpPost]
         public ActionResult GetSnowMonths(int Year)
         {
-            string path = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], "NDSI_Snow_Cover");
-            string[] files = Directory.GetFiles(path, "*.tif");
+            //string path = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], "NDSI_Snow_Cover");
+            //string[] files = Directory.GetFiles(path, "*.tif");
             List<int> r = new List<int>();
-            foreach (var file in files)
-            {
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                int year = GetSnowFileYear(fileName);
-                if (year == Year)
-                {
-                    r.Add(GetSnowFileMonth(fileName));
-                }
-            }
+            //foreach (var file in files)
+            //{
+            //    string fileName = Path.GetFileNameWithoutExtension(file);
+            //    int year = GetSnowFileYear(fileName);
+            //    if (year == Year)
+            //    {
+            //        r.Add(GetSnowFileMonth(fileName));
+            //    }
+            //}
             int[] months = r.Distinct().ToArray();
             return Json(new
             {
@@ -1268,19 +1269,19 @@ namespace GeoServer.Controllers
         [HttpPost]
         public ActionResult GetSnowDays(int Year, int Month)
         {
-            string path = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], "NDSI_Snow_Cover");
-            string[] files = Directory.GetFiles(path, "*.tif");
+            //string path = Path.Combine(Startup.Configuration["GeoServer:WorkspaceDir"], "NDSI_Snow_Cover");
+            //string[] files = Directory.GetFiles(path, "*.tif");
             List<int> r = new List<int>();
-            foreach (var file in files)
-            {
-                string fileName = Path.GetFileNameWithoutExtension(file);
-                int year = GetSnowFileYear(fileName),
-                    month = GetSnowFileMonth(fileName);
-                if (year == Year && month == Month)
-                {
-                    r.Add(GetSnowFileDay(fileName));
-                }
-            }
+            //foreach (var file in files)
+            //{
+            //    string fileName = Path.GetFileNameWithoutExtension(file);
+            //    int year = GetSnowFileYear(fileName),
+            //        month = GetSnowFileMonth(fileName);
+            //    if (year == Year && month == Month)
+            //    {
+            //        r.Add(GetSnowFileDay(fileName));
+            //    }
+            //}
             int[] days = r.Distinct().ToArray();
             return Json(new
             {
