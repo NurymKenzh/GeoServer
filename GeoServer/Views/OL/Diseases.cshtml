@@ -1,0 +1,645 @@
+﻿
+@{
+    ViewData["Title"] = "Карта";
+    Layout = "~/Views/Shared/_LayoutDiseases.cshtml";
+}
+
+@*<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+<link href="~/lib/ol/ol.css" rel="stylesheet" />
+<script src="~/lib/ol/ol.js"></script>
+@*jBox*@
+<link href="~/lib/vendor/jBox/dist/jBox.all.css" rel="stylesheet" />
+<script src="~/lib/vendor/jBox/dist/jBox.all.js"></script>
+
+
+<div class="container-fluid p-0">
+    <!-- Wrapper -->
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <!-- close sidebar menu -->
+            <div class="dismiss">
+                <i class="fa fa-arrow-left"></i>
+            </div>
+            <div class="logo">
+                <h3><a href="#">Меню</a></h3>
+            </div>
+            <div class="card-body p-2">
+                <form>
+                    <div class="form-group mb-0">
+                        <label class="m-0" for="cato1">Область</label>
+                        <select class="form-control form-control-sm" id="cato1">
+                            <option>Казахстан</option>
+                            <option>Акмолинская область</option>
+                            <option>Костанайская область</option>
+                            <option>3</option>
+                            <option>4</option>
+                        </select>
+                    </div>
+                </form>
+                <form>
+                    <label class="m-0" for="SourceProduct">Спутник</label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-control" id="SourceProduct">
+                            <option value="0">Terra</option>
+                            <option value="1">Aqua</option>
+                        </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <a href="#" target="_blank">
+                                    <i class="SomeInfo fa fa-info-circle" InfoTitle="Full Information"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- for Dataset -->
+                    <label class="m-0" for="DataSet">Dataset</label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-control" id="DataSet">
+                            <option value="NDVI">NDVI</option>
+                            <option value="SAVI">SAVI</option>
+                        </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <a href="#" id="LegendBtn" class="target-click">
+                                    <i class="SomeInfo fa fa-tag" InfoTitle="Legend"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    <input id="layerMODISOpacity" type="range" class="form-control-range" min="0" max="100" value="80" />
+                    <!-- Year -->
+                    <label class="m-0" for="Year_MOLT_MOD10">Год</label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-control" id="Year_MOLT_MOD10">
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                        </select>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <input type="checkbox" id="layerMODISShow" checked="checked">
+                            </div>
+                        </div>
+                    </div>
+                    <label class="m-0" for="DayOfYear_MOLT">Дата</label>
+                    <!-- Day -->
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <a href="#" target="_blank">
+                                    <i class="fa fa-chevron-left"></i>
+                                </a>
+                            </span>
+                        </div>
+                        <select class="custom-select" id="DayOfYear_MOLT" aria-describedby="DayHelpBlock">
+                            <option value="1">001:02/01 - 08/01</option>
+                            <option value="2">002:08/01 - 08/16</option>
+                        </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <a href="#" target="_blank">
+                                    <i class="fa fa-chevron-right"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <ul class="list-unstyled menu-elements">
+                <li class="">
+                    <a href="#TematicLayerSections" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="TematicLayerSections">
+                        <i class="fa fa-layer-group"></i>Тематические слои
+                    </a>
+                    <div id="TematicLayerSections" class="collapse show" aria-labelledby="headingOne" data-parent="#TematicLayerSections">
+                        <div class="card-body">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layerpasturepolShow" checked="checked">
+                                <label class="form-check-label" for="layerpasturepolShow">
+                                    Layer
+                                </label>
+                                <input id="layerpasturepolOpacity" type="range" class="form-control-range" min="0" max="100" value="50"/>
+                            </div>
+                            
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layerpopShow" checked="checked">
+                                <label class="form-check-label" for="layerpopShow">
+                                    popLayer
+                                </label>
+                                <input id="layerpopOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layeradmxpolShow">
+                                <label class="form-check-label" for="layeradmxpolShow">
+                                    admLayer
+                                </label>
+                                <input id="layeradmxpolOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#BaseLayerSections" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="BaseLayerSections">
+                        <i class="fa fa-globe-americas"></i>Базовые слои
+                    </a>
+                    <div id="BaseLayerSections" class="collapse show" aria-labelledby="headingOne" data-parent="#BaseLayerSections">
+                        <div class="card-body p-2">
+                            <div class="input-group input-group-sm">
+                                <select class="custom-select" id="layerBaseType" onchange="ChangeLayers()">
+                                    <option value="OSM">OpenStreetMap</option>
+                                    <option value="BingAerialWithLabels">Bing Aerial</option>
+                                    <option value="BingRoadStatic">Bing Road (static)</option>
+                                    <option value="BingRoadDynamic">Bing Road (dynamic)</option>
+                                    <option value="HERENormalDay">HERE Normal Day</option>
+                                    <option value="HERENormalDayTransit">HERE Normal Day Transit</option>
+                                    <option value="HERETerrainDay">HERE Terrain Day</option>
+                                    <option value="HEREHybridDay" selected>HERE Hybrid Day</option>
+                                    <option value="StamenWatercolor">Stamen Watercolor</option>
+                                    <option value="StamenTerrain">Stamen Terrain</option>
+                                    <option value="StamenToner">Stamen Toner</option>
+                                    <option value="ArcGIS">ArcGIS</option>
+                                    <option value="ThunderforestOpenCycleMap">Thunderforest OpenCycleMap</option>
+                                    <option value="ThunderforestTransport">Thunderforest Transport</option>
+                                    <option value="ThunderforestLandscape">Thunderforest Landscape</option>
+                                    <option value="ThunderforestOutdoors">Thunderforest Outdoors</option>
+                                    <option value="ThunderforestSpinalMap">Thunderforest Spinal Map</option>
+                                    <option value="ThunderforestPioneer">Thunderforest Pioneer</option>
+                                    <option value="ThunderforestMobileAtlas">Thunderforest Mobile Atlas</option>
+                                    <option value="ThunderforestNeighbourhood">Thunderforest Neighbourhood</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <input type="checkbox" id="layerBaseShow" checked="checked" onchange="ChangeLayers()">
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="layerBaseOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="to-top">
+                <a class="btn btn-primary btn-customized-3" href="#" role="button">
+                    <i class="fas fa-bar-chart"></i> Chart or Other
+                </a>
+            </div>
+
+            <div class="dark-light-buttons">
+                <a class="btn btn-primary btn-customized-4 btn-customized-dark" href="#" role="button">Dark</a>
+                <a class="btn btn-primary btn-customized-4 btn-customized-light" href="#" role="button">Light</a>
+            </div>
+        </nav>
+        <!-- End sidebar -->
+        <!-- Dark overlay -->
+        <div class="overlay"></div>
+        <!-- Content -->
+        <div class="content">
+            <!-- open sidebar menu -->
+            <a class="btn btn-primary btn-customized open-menu" href="#" role="button">
+                <i class="fas fa-align-left"></i> <span>Menu</span>
+            </a>
+            <!-- Map content -->
+            <div id="map" class="position-fixed col-md-12 col-lg-12 m-0 p-0 bg-light"></div>
+            <!-- Footer -->
+        </div>
+        <!-- End content -->
+    </div>
+    <!-- End wrapper -->
+</div>
+
+
+
+@* layers *@
+<script>
+    var geoserver_url = '@ViewBag.GeoServerUrl',
+        geoserver_MODIS_workspace_name = '@ViewBag.ModisWorkspace', //'MODIS',
+        geoserver_workspace_name = 'Pastures2019',
+        layerModisTemplate1 = '@ViewBag.ModisLayerTemplate1', //'A',
+        layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI = '@ViewBag.ModisLayerTemplate_MOLT_MOD13Q1006_B01_NDVI',
+        layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly = '@ViewBag.ModisLayerTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly',
+        layerModisTemplate_MOLA_MYD13Q1006_B01_NDVI = '@ViewBag.ModisLayerTemplate_MOLA_MYD13Q1006_B01_NDVI',
+        layerModisTemplate_MOLA_MYD13Q1006_B01_NDVI_Anomaly = '@ViewBag.ModisLayerTemplate_MOLA_MYD13Q1006_B01_NDVI_Anomaly';
+    var layerNDVI = layerModisTemplate1 + $('#Year_MOLT_MOD13Q1006').val() + $('#DayOfYear_MOLT_MOD13Q1006').val() + layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI,
+        layerAnomaly = layerModisTemplate1 + $('#Year_MOLT_MOD13Q1006').val() + $('#DayOfYear_MOLT_MOD13Q1006').val() + layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly;
+
+    var HEREappId = 'SLdBasp4s1oq2oUbVGxy';
+    var HEREappCode = 'D9-h9iVhjgUB_9eUlFETXA';
+
+    var Source_OSM = new ol.source.OSM();
+
+    Source_BingAerialWithLabels = new ol.source.BingMaps({
+        key: 'AmYNYRGlIrw_kppWvrIhfzY1v046b4Ft5nopz6Av94XDvTTo8xTkHCEaZ_zMwCOJ',
+        imagerySet: 'AerialWithLabels',
+    });
+
+    Source_BingRoadStatic = new ol.source.BingMaps({
+        key: 'AmYNYRGlIrw_kppWvrIhfzY1v046b4Ft5nopz6Av94XDvTTo8xTkHCEaZ_zMwCOJ',
+        imagerySet: 'Road',
+    });
+    Source_BingRoadDynamic = new ol.source.BingMaps({
+        key: 'AmYNYRGlIrw_kppWvrIhfzY1v046b4Ft5nopz6Av94XDvTTo8xTkHCEaZ_zMwCOJ',
+        imagerySet: 'RoadOnDemand',
+    });
+
+    var urlTpl = 'https://{1-4}.{base}.maps.cit.api.here.com' +
+        '/{type}/2.1/maptile/newest/{scheme}/{z}/{x}/{y}/256/png' +
+        '?app_id={app_id}&app_code={app_code}';
+    function HEREcreateUrl(tpl, HERElayerDesc) {
+        return tpl
+            .replace('{base}', HERElayerDesc.base)
+            .replace('{type}', HERElayerDesc.type)
+            .replace('{scheme}', HERElayerDesc.scheme)
+            .replace('{app_id}', HERElayerDesc.app_id)
+            .replace('{app_code}', HERElayerDesc.app_code);
+    };
+
+    var HERElayerDescNormalDay = {
+        base: 'base',
+        type: 'maptile',
+        scheme: 'normal.day',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HERENormalDay = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescNormalDay),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var HERElayerDescNormalDayTransit = {
+        base: 'base',
+        type: 'maptile',
+        scheme: 'normal.day.transit',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HERENormalDayTransit = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescNormalDayTransit),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var HERElayerDescTerrainDay = {
+        base: 'aerial',
+        type: 'maptile',
+        scheme: 'terrain.day',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HERETerrainDay = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescTerrainDay),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var HERElayerDescHybridDay = {
+        base: 'aerial',
+        type: 'maptile',
+        scheme: 'hybrid.day',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HEREHybridDay = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescHybridDay),
+        attributions: 'Разработка &copy; ' + '<a href="http://kazniizhik.kz/">КазНИИЖиК</a>' + ' & Map Tiles &copy; ' + new Date().getFullYear() + ' ' + '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var Source_StamenWatercolor = new ol.source.Stamen({
+        layer: 'watercolor'
+    });
+
+    var Source_StamenTerrain = new ol.source.Stamen({
+        layer: 'terrain'
+    });
+
+    var Source_StamenToner = new ol.source.Stamen({
+        layer: 'toner'
+    });
+
+    var Source_ArcGIS = new ol.source.XYZ({
+        attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+            'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+            'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+    });
+
+    var Source_ThunderforestOpenCycleMap = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestTransport = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/transport/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestLandscape = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestOutdoors = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestTransportDark = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestSpinalMap = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestPioneer = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/pioneer/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestMobileAtlas = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestNeighbourhood = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Layer_Base = new ol.layer.Tile({
+        source: Source_HEREHybridDay
+    });
+    Layer_Base.set('name', 'Base');
+    Layer_Base.setOpacity(1);
+</script>
+
+@* map *@
+<script>
+    // permalink
+    var zoom = 5;
+    var center = ol.proj.fromLonLat([66.902, 48.714]);
+    var rotation = 0;
+    if (window.location.hash !== '') {
+        // try to restore center, zoom-level and rotation from the URL
+        var hash = window.location.hash.replace('#map=', '');
+        var parts = hash.split('/');
+        if (parts.length === 4) {
+            zoom = parseInt(parts[0], 10);
+            center = [
+                parseFloat(parts[1]),
+                parseFloat(parts[2])
+            ];
+            rotation = parseFloat(parts[3]);
+        }
+    }
+
+    var map = new ol.Map({
+        target: 'map',
+        controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
+            new ol.control.ScaleLine()
+        ]),
+        layers: [
+            Layer_Base,
+            //Layer_NDVI,
+            //Layer_Anomaly,
+            //Layer_pasturepol,
+            //Layer_select_pasturepol,
+            //Layer_pasfarmpol,
+            //Layer_hdrlin,
+            //Layer_rdslin,
+            //Layer_adm1pol,
+            //Layer_adm2pol,
+            //Layer_adm3pol,
+            //Layer_poppol,
+            //Layer_poppnt,
+            //Layer_hdrpol
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([66.902, 48.714]),
+            zoom: 5,
+            minZoom: 5,
+            extent: [5028944.964937042, 4754994.655562972, 10214432.963802021, 7494497.74930296]
+        })
+    });
+
+    // permalink
+    var shouldUpdate = true;
+    var view = map.getView();
+    var updatePermalink = function () {
+        if (!shouldUpdate) {
+            // do not update the URL when the view was changed in the 'popstate' handler
+            shouldUpdate = true;
+            return;
+        }
+        var center = view.getCenter();
+        var hash = '#map=' +
+            view.getZoom() + '/' +
+            Math.round(center[0] * 100) / 100 + '/' +
+            Math.round(center[1] * 100) / 100 + '/' +
+            view.getRotation();
+        var state = {
+            zoom: view.getZoom(),
+            center: view.getCenter(),
+            rotation: view.getRotation()
+        };
+        window.history.pushState(state, 'map', hash);
+    };
+
+    map.on('moveend', updatePermalink);
+
+    window.addEventListener('popstate', function (event) {
+        if (event.state === null) {
+            return;
+        }
+        map.getView().setCenter(event.state.center);
+        map.getView().setZoom(event.state.zoom);
+        map.getView().setRotation(event.state.rotation);
+        shouldUpdate = false;
+    });
+
+    function ToHome() {
+        map.getView().fit([5028944.964937042, 4754994.655562972, 10214432.963802021, 7494497.74930296], map.getSize());
+
+        Layer_select_pasturepol.getSource().clear();
+        if (Layer_admXpol_Navigate.getSource()) {
+            Layer_admXpol_Navigate.getSource().clear();
+        }
+    };
+</script>
+
+<script>
+    function ChangeLayers() {
+        map.getLayers().forEach(function (layer) {
+            if (layer.get('name') == 'Base') {
+                layer.setVisible(document.getElementById("layerBaseShow").checked);
+                layer.setOpacity($('#layerBaseOpacity').val() / 100)
+                if ($('#layerBaseType').val() == 'OSM') {
+                    layer.setSource(Source_OSM);
+                }
+                else if ($('#layerBaseType').val() == 'BingAerialWithLabels') {
+                    layer.setSource(Source_BingAerialWithLabels);
+                }
+                else if ($('#layerBaseType').val() == 'BingRoadStatic') {
+                    layer.setSource(Source_BingRoadStatic);
+                }
+                else if ($('#layerBaseType').val() == 'BingRoadDynamic') {
+                    layer.setSource(Source_BingRoadDynamic);
+                }
+                else if ($('#layerBaseType').val() == 'HERENormalDay') {
+                    layer.setSource(Source_HERENormalDay);
+                }
+                else if ($('#layerBaseType').val() == 'HERENormalDayTransit') {
+                    layer.setSource(Source_HERENormalDayTransit);
+                }
+                else if ($('#layerBaseType').val() == 'HERETerrainDay') {
+                    layer.setSource(Source_HERETerrainDay);
+                }
+                else if ($('#layerBaseType').val() == 'HEREHybridDay') {
+                    layer.setSource(Source_HEREHybridDay);
+                }
+                else if ($('#layerBaseType').val() == 'StamenWatercolor') {
+                    layer.setSource(Source_StamenWatercolor);
+                }
+                else if ($('#layerBaseType').val() == 'StamenTerrain') {
+                    layer.setSource(Source_StamenTerrain);
+                }
+                else if ($('#layerBaseType').val() == 'StamenToner') {
+                    layer.setSource(Source_StamenToner);
+                }
+                else if ($('#layerBaseType').val() == 'ArcGIS') {
+                    layer.setSource(Source_ArcGIS);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestOpenCycleMap') {
+                    layer.setSource(Source_ThunderforestOpenCycleMap);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestTransport') {
+                    layer.setSource(Source_ThunderforestTransport);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestLandscape') {
+                    layer.setSource(Source_ThunderforestLandscape);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestOutdoors') {
+                    layer.setSource(Source_ThunderforestOutdoors);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestTransportDark') {
+                    layer.setSource(Source_ThunderforestTransportDark);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestSpinalMap') {
+                    layer.setSource(Source_ThunderforestSpinalMap);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestPioneer') {
+                    layer.setSource(Source_ThunderforestPioneer);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestMobileAtlas') {
+                    layer.setSource(Source_ThunderforestMobileAtlas);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestNeighbourhood') {
+                    layer.setSource(Source_ThunderforestNeighbourhood);
+                }
+            }
+        })
+    }
+</script>
+
+
+@* Menu *@
+<script>
+    jQuery(document).ready(function () {
+        /*
+            Sidebar
+        */
+        $('.dismiss, .overlay').on('click', function () {
+            $('.sidebar').removeClass('active');
+            $('.overlay').removeClass('active');
+        });
+
+        $('.open-menu').on('click', function (e) {
+            e.preventDefault();
+            $('.sidebar').addClass('active');
+            // close opened sub-menus
+            $('.collapse.show').toggleClass('show');
+            $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+        });
+        /* change sidebar style */
+        $('a.btn-customized-dark').on('click', function (e) {
+            e.preventDefault();
+            $('.sidebar').removeClass('light');
+        });
+        $('a.btn-customized-light').on('click', function (e) {
+            e.preventDefault();
+            $('.sidebar').addClass('light');
+        });
+    });
+</script>
+
+@*tooltips, modal windows*@
+<script>
+    $(document).ready(function () {
+        // Map Title
+        new jBox('Modal', {
+            id: 'modal-maptitle',
+            attach: '#MapTitleBtn',
+            width: 260,
+            blockScroll: false,
+            animation: 'flip',
+            closeButton: false,
+            position: {
+                x: 'right',
+                y: 'top'
+            },
+            offset: {
+                x: -10,
+                y: 70
+            },
+            content: '<div class="card-body text-white text-center p-0"><h4 class="card-title">Satellite</h5><p class="card-text mb-1">Dataset</p><p class="card-text">YYYY. JDay: DD/MM - DD/MM</p></div >',
+            overlay: false,
+            repositionOnOpen: false
+        }).open();
+        // Map Legend
+        new jBox('Modal', {
+            attach: '#LegendBtn',
+            id: 'modal-maptitle',
+            minWidth: 100,
+            zIndex: 'auto',
+            closeButton: true,
+            overlay: false,
+            reload: 'strict',
+            animation: 'flip',
+            adjustPosition: false,
+            closeButton: true,
+            position: {
+                x: 'right',
+                y: 'bottom'
+            },
+            offset: {
+                x: -10,
+                y: -20
+            },
+            onOpen: function () {
+                this.setContent('<div class="p-0"><img id="legend" class="card-img-top" src="/esnow/img/logo/ESnow.svg"></div>');
+            }
+        }).open();
+        // Tooltip below to the right
+        new jBox('Tooltip', {
+            theme: 'TooltipDark',
+            zIndex: 'auto',
+            attach: '.SomeInfo',
+            getTitle: 'InfoTitle',
+            position: {
+                x: 'right',
+                y: 'center'
+            },
+            outside: 'x' // Horizontal Tooltips need to change their outside position
+        });
+
+    });
+</script>

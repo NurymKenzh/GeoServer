@@ -5,7 +5,17 @@
     ViewData["Title"] = SharedLocalizer["HomePage"];
 }
 
-<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+<a class="btn btn-default" asp-controller="OL" asp-action="ViewModis">
+    Пастбищные ресурсы
+</a>
+<a class="btn btn-default" asp-controller="OL" asp-action="Irrigation">
+    Ирригация
+</a>
+<a class="btn btn-default" asp-controller="OL" asp-action="Diseases">
+    Болезни и вредители
+</a>
+
+@*<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
         <li data-target="#myCarousel" data-slide-to="1"></li>
@@ -66,9 +76,9 @@
         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
     </a>
-</div>
+</div>*@
 
-<div class="row">
+@*<div class="row">
     <div class="col-md-3">
         <h2>Application uses</h2>
         <ul>
@@ -106,4 +116,4 @@
             <li><a href="https://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
         </ul>
     </div>
-</div>
+</div>*@

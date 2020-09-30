@@ -56,6 +56,16 @@ namespace GeoServer.Controllers
             return View();
         }
 
+        public IActionResult Diseases()
+        {
+            return View();
+        }
+
+        public IActionResult Irrigation()
+        {
+            return View();
+        }
+
         public IActionResult ViewModisChart1(
             string KATOType,
             string KATO,
