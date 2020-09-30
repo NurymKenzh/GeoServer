@@ -1,0 +1,1654 @@
+﻿
+@{
+    ViewData["Title"] = "Карта";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>*@
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
+
+@*<script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script>
+    <link href="~/lib/jquery-ui/themes/base/jquery-ui.css" rel="stylesheet" />
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script>*@
+
+<link href="~/lib/ol/ol.css" rel="stylesheet" />
+
+<script src="~/lib/ol/ol.js"></script>
+
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 30px;
+        height: 17px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #2196F3;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 13px;
+            width: 13px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #00ff21;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #00ff21;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(13px);
+        -ms-transform: translateX(13px);
+        transform: translateX(13px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 17px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+</style>
+
+@*<script src="~/js/loadingoverlay.js"></script>*@
+
+
+
+@*<input type="button" name="Test" onclick="alert(map.getLayers().getArray()[15].getVisible());" />*@
+<div class="container-fluid">
+    <div class="row">
+        <main role="main" class="col-md-12 ml-sm-auto col-lg-12 p-0">
+            <div class="row justify-content-end mr-3">
+                <article>
+                    <nav class="col-10 col-md-auto bg-light sidebar">
+                        <div class="media">
+                            <div class="media-body text-info">
+                                <h6 class="mt-2 mb-2">ЭЛЕКТРОННЫЙ <br> АТЛАС <br>ПАСТБИЩНЫХ <br>РЕСУРСОВ</h6>
+                            </div>
+                            <img src="~/images/logoN.png" class="align-self-center ml-3" height="80" alt="">
+                        </div>
+                        @{
+                            List<SelectListItem> DataType = new List<SelectListItem>()
+                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="Снег", Value="snow"},
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="Растительность", Value="vegetation", Selected = true}
+                                                                                                                                                                                                                                                    };
+                            List<SelectListItem> State = new List<SelectListItem>()
+                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="Фактические снимки", Value="Fact"},
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="Расчет аномальных значений", Value="Anomal"}
+                                                                                                                                                                                                                                                    };
+                            List<SelectListItem> Index = new List<SelectListItem>()
+                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="NDVI", Value="250m16daysNDVI"},
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="EVI", Value="250m16daysEVI"}
+                                                                                                                                                                                                                                                    };
+                            List<SelectListItem> IndexSnow = new List<SelectListItem>()
+                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                        new SelectListItem() { Text="NDSI", Value="NDSI"}
+                                                                                                                                                                                                                                                    };
+                        }
+                        <label class="font-weight-normal mb-0">Режим просмотра</label>
+                        <form class="form-inline">
+                            <div class="form-group">
+                                @Html.DropDownList("DataType", (IEnumerable<SelectListItem>)DataType, htmlAttributes: new { @class = "form-control form-control-sm", @id = "DataType", @onchange = "Change()", @style = "display: none;" })
+                                <label class="switch m-1">
+                                    <input id="DataTypeSwitch" type="checkbox" name="DataTypeSwitch" checked="checked">@*onchange="Change()"*@
+                                    <span class="slider round"></span>
+                                </label>
+                                <small id="DataTypeLabel" class="text-primary">
+                                    <label class="font-weight-normal ml-1 mr-sm-2">Растительность</label>
+                                </small>
+                                <i class="material-icons btn-sm NoSnow btn btn-default" id="legendNDVI" value="Легенда" onclick="NDVILegend()">info_outline</i>
+                                <i class="material-icons btn-sm Snow btn btn-default" id="legendSnow" value="Легенда" onclick="NDSILegend()">info_outline</i>
+                            </div>
+                        </form>
+                        <label class="font-weight-normal m-1 NoSnow">Тип данных</label>
+                        @Html.DropDownList("State", (IEnumerable<SelectListItem>)State, htmlAttributes: new { @class = "form-control form-control-sm NoSnow", @id = "State", @onchange = "Change()" })
+                        @*<i class="material-icons" id="legend" value="Легенда" onclick="AnomalyLegend()">info_outline</i>
+                            <br />*@
+
+                        <label class="font-weight-normal m-1">Индекс</label>
+                        @Html.DropDownList("Index", (IEnumerable<SelectListItem>)Index, htmlAttributes: new { @class = "form-control form-control-sm NoSnow", @id = "Index", @onchange = "Change()" })
+                        @Html.DropDownList("Index", (IEnumerable<SelectListItem>)IndexSnow, htmlAttributes: new { @class = "form-control form-control-sm Snow", @id = "IndexSnow", @onchange = "ChangeSnowIndex()" })
+
+                        <label class="font-weight-normal m-1">Год</label>
+                        <select asp-items="ViewBag.Year" name="Year" class="custom-select custom-select-sm NoSnow" id="Year" onchange="ChangeYear()"></select>
+                        <select asp-items="ViewBag.YearSnow" name="YearSnow" class="custom-select custom-select-sm Snow" id="YearSnow" onchange="ChangeYearSnow()"></select>
+
+                        <label class="font-weight-normal m-1 Snow">Месяц</label>
+                        <select name="MonthSnow" class="custom-select custom-select-sm Snow" id="MonthSnow" onchange="ChangeMonthSnow()"></select>
+
+                        <label class="font-weight-normal m-1 Snow">Декада</label>
+                        <label class="font-weight-normal m-1 NoSnow">День</label>
+                        <select name="Date" class="custom-select custom-select-sm NoSnow" id="Date" onchange="ChangeDate()"></select>
+                        <select name="DaySnow" class="custom-select custom-select-sm Snow" id="DaySnow" onchange="ChangeDaySnow()"></select>
+
+                        <input id="opacity1" type="range" class="form-control-range m-1" min="0" max="100" value="100" onchange="Opacity(1)" />
+                        <div data-spy="scroll" style="overflow:scroll;overflow-x:hidden;height:300px;">
+                            <div class="tree" id="accordion">
+                                <div class="card">
+                                    <button class="btn btn-light btn-sm" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="fa fa-chevron-down float-left"></i>Топографические слои</button>
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body pt-1">
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="TopographyLabel form-check-input" name="TopographyLabel" value="TopographyLabel" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="TopographyLabel">
+                                                    <small> Подписи</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="poppnt" name="poppnt" value="poppnt" onclick="Change()">
+                                                <label class="form-check-label" for="poppnt">
+                                                    <small>Населенные пункты</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="rdslin" name="rdslin" value="rdslin" onclick="Change()">
+                                                <label class="form-check-label" for="rdslin">
+                                                    <small>Дороги</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="hdrlin" name="hdrlin" value="hdrlin" onclick="Change()">
+                                                <label class="form-check-label" for="hdrlin">
+                                                    <small>Реки</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="hdrpol" name="hdrpol" value="hdrpol" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="hdrpol">
+                                                    <small>Озера</small>
+                                                </label>
+                                            </div>
+                                            <input id="opacity4" type="range" class="form-control-range" min="0" max="100" value="70" onchange="Opacity(4)" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <button class="btn btn-light btn-sm" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"><i class="fa fa-chevron-down float-left"></i> Тематические слои</button>
+                                    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
+                                        <div class="card-body pt-1">
+                                            <div class="form-check ">
+                                                <input class="KATO form-check-input" type="checkbox" name="KATO" value="KATO" id="KATO" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="KATO">
+                                                    КАТО
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input class="KATOLevel" type="radio" name="KATO" value="adm1pol" id="KATOLevel" onclick="Change()">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Области</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input class="KATOLevel" type="radio" name="KATO" value="adm2pol" id="KATOLevel" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Районы</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input class="KATOLevel" type="radio" name="KATO" value="adm3pol" id="KATOLevel" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Сельские округа</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input class="KATOLevel" type="radio" name="KATO" value="Pastures" id="KATOLevel" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Пастбищные выделы</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50 ml-2">
+                                                <input type="radio" id="withColor" class="PasturesType" name="Pastures" value="pastALAColor" onclick="Change()" disabled="disabled">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> С окрасом</small>
+                                                </label>
+                                                <i class="material-icons" id="legend" value="Легенда" onclick="PasLagend()" disabled="disabled">info_outline</i>
+                                            </div>
+                                            <div class="form-check text-black-50 ml-2">
+                                                <input type="radio" id="withoutColor" class="PasturesType" name="Pastures" value="pastALA" onclick="Change()" disabled="disabled">
+                                                <label class="form-check-label" for="KATO">
+                                                    <small> Без окраса</small>
+                                                </label>
+                                            </div>
+                                            <input id="opacity2" type="range" class="form-control-range" min="0" max="100" value="80" onchange="Opacity(2)" />
+                                            <div class="dropdown-divider"></div>
+
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="Acreage form-check-input" name="Acreage" value="Acreage" onclick="Change()">
+                                                <label class="form-check-label" for="KATO">
+                                                    Посевные площади
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskAll" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Все</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskWheat" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Пшеница</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskCorn" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Кукуруза</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskRice" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Рис</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskDeposit" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Залежь</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check text-black-50">
+                                                <input type="radio" class="AcreageLevel" name="Acreage" value="CropMaskSteam" onclick="Change()">
+                                                <label class="form-check-label" for="AcreageLevel">
+                                                    <small> Паровые поля</small>
+                                                </label>
+                                            </div>
+                                            <input id="opacity3" type="range" class="form-control-range" min="0" max="100" value="80" onchange="Opacity(3)" />
+                                            <div class="dropdown-divider"></div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="checkbox" class="ALTD  form-check-input" name="ALTD" value="ALTD" onclick="Change()">
+                                                <label class="form-check-label" for="hdrpol">
+                                                    <small>Среднемноголетние данные</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="radio" class="ALTDLevel" name="ALTD" value="data1" onclick="Change()" checked="checked">
+                                                <label class="form-check-label" for="hdrpol">
+                                                    <small>Деградированные земли</small>
+                                                </label>
+                                            </div>
+                                            <div class="form-check  text-black-50">
+                                                <input type="radio" class="ALTDLevel" name="ALTD" value="data2" onclick="Change()">
+                                                <label class="form-check-label" for="hdrpol">
+                                                    <small>Засоленные земли</small>
+                                                </label>
+                                            </div>
+                                            <input id="opacity4" type="range" class="form-control-range" min="0" max="100" value="80" onchange="Opacity(5)" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <button class="btn btn-outline-primary btn-sm btn-block" id="info1" value="Информация 1" onclick="ViewChart1()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Годовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i>Динамика изменчивости</button>
+                        <button class="btn btn-outline-primary btn-sm btn-block mb-2" id="info2" value="Информация 2" onclick="ViewChart2()" disabled="disabled" data-toggle="tooltip" data-placement="top" title="Для построение диаграммы Межгодовой изменчивости сначало выберите объект на карте (Область, Район, с/о или Пастбища)"><i class="fa  fa-bar-chart"></i>Многолетняя изменчивость</button>
+                        <div class="dropdown-divider"></div>
+                    </nav>
+                </article>
+            </div>
+            <div id="map" class="map"></div>
+        </main>
+    </div>
+</div>
+
+<div class="ui-dialog" id="dialog" title="Пастбище" hidden="hidden" style="width: 200px;">
+    <table class="table table-hover table-sm">
+        <thead class="thead-light">
+        </thead>
+        <tbody>
+            <tr>
+                <th class="align-middle font-weight-bold" scope="row">Класс</th>
+                <td id="pas_class_id"></td>
+            </tr>
+            <tr>
+                <th class="align-middle font-weight-bold" scope="row">Отдел</th>
+                <td id="pas_otdely_id"></td>
+            </tr>
+            <tr>
+                <th class="align-middle  font-weight-bold" scope="row">Подтип</th>
+                <td id="pas_subtype_id"></td>
+            </tr>
+            <tr>
+                <th class="align-middle font-weight-bold" scope="row">Группа</th>
+                <td id="pas_group_id"></td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-hover table-sm">
+        <thead class="thead-light">
+            <tr class="font-weight-bold">
+                <th scope="col">
+                    Содержание
+                    продуктивности
+                </th>
+                <th scope="col">Весна</th>
+                <th scope="col">Лето</th>
+                <th scope="col">Осень</th>
+                <th scope="col">Зима</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th class="align-middle font-weight-bold" scope="row">Урожайность (ц/га)</th>
+                <td class="align-middle" id="pas_ur_v"></td>
+                <td class="align-middle" id="pas_ur_l"></td>
+                <td class="align-middle" id="pas_ur_o"></td>
+                <td class="align-middle" id="pas_ur_z"></td>
+            </tr>
+            <tr>
+                <th class="align-middle font-weight-bold" scope="row">Кормовая единица (ц/га)</th>
+                <td class="align-middle" id="pas_korm_v"></td>
+                <td class="align-middle" id="pas_korm_l"></td>
+                <td class="align-middle" id="pas_korm_o"></td>
+                <td class="align-middle" id="pas_korm_z"></td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-hover table-sm">
+        <thead class="thead-light">
+            <tr class="font-weight-bold">
+                <th scope="col">
+                    Перерасчет для разных видов скота (или)
+                </th>
+                <th scope="col">Овцы</th>
+                <th scope="col">КРС</th>
+                <th scope="col">Лошади</th>
+                <th scope="col">Верблюды</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th class="align-middle font-weight-bold" scope="row">Скотоемкость</th>
+                <td class="align-middle" id="pas_e"></td>
+                <td class="align-middle" id="pas_e_krs"></td>
+                <td class="align-middle" id="pas_e_horses"></td>
+                <td class="align-middle" id="pas_e_camels"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="paslegenddialog" title="Легенда" hidden="hidden" style="width: auto;">
+    <img src="~/images/pastlegend.jpg" style="width: 500px;" />
+</div>
+
+<div id="ndvilegenddialog" title="Легенда" hidden="hidden" style="width: 200px;">
+    <img src="~/images/ndvilegend.jpg" style="width: 220px;" />
+</div>
+
+<div id="ndsilegenddialog" title="Легенда" hidden="hidden" style="width: 200px;">
+    <img src="~/images/ndsilegend.jpg" style="width: 220px;" />
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $(".menu").click(function () {
+            $("article").slideToggle("slow");
+        });
+        $('#YearSnow option:last').attr("selected", "selected");
+        ChangeYearSnow();
+    });
+</script>
+
+<script type="text/javascript">
+    //$("#fullscreen").LoadingOverlay("show");
+
+    //function transform(extent) {
+    //    return ol.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+    //}
+    var extents = {
+        Almaty: [7991617, 5172524, 9408704, 6016344],
+        //Argentina: transform([-73.41544, -55.25, -53.62835, -21.83231]),
+        //Nigeria: transform([2.6917, 4.24059, 14.57718, 13.86592]),
+        //Sweden: transform([11.02737, 55.36174, 23.90338, 69.10625])
+    };
+
+    //var overlay = new TileLayer({
+    //    extent: extents.India,
+    //    source: new TileJSON({
+    //        url: 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
+    //        crossOrigin: 'anonymous'
+    //    })
+    //});
+
+    var layers = [];
+    layers.push(new ol.layer.Tile({
+        source: new ol.source.OSM()
+    }));
+    layers[0].set('name', 'OSM');
+
+    var geoserverPort = '8080',
+        geoserverAddress = '@ViewBag.GeoserverAddress';//window.location.hostname;
+
+    var Source_Modis = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:No',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_Modis = new ol.layer.Tile({
+        source: Source_Modis,
+        extent: extents.Almaty,
+    });
+    Layer_Modis.setOpacity(0.80);
+    layers.push(Layer_Modis);
+
+    var Source_KATO = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:no',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_KATO = new ol.layer.Tile({
+        source: Source_KATO,
+        extent: extents.Almaty,
+    });
+    Layer_KATO.setOpacity(0.80);
+    layers.push(Layer_KATO);
+
+    // источник данных и слой pasturepol
+    var Source_pasturepol = new ol.source.ImageWMS({
+        url: 'http://' + geoserverAddress + ':8080/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:pastALA',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            //'TILED': false
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_pasturepol =
+        new ol.layer.Image({
+            source: Source_pasturepol,
+            extent: extents.Almaty,
+        });
+
+    // векторный слой пастбищ (не отображается на карте)
+    var Layer_pasturepol_v = new ol.layer.Vector();
+    // векторный слой областей (не отображается на карте)
+    var Layer_adm1pol_v = new ol.layer.Vector();
+    // векторный слой районов (не отображается на карте)
+    var Layer_adm2pol_v = new ol.layer.Vector();
+    // векторный слой сельских округов (не отображается на карте)
+    var Layer_adm3pol_v = new ol.layer.Vector();
+    // векторный слой пастбищ
+    var url_pasturepol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:pastALA&outputFormat=text/javascript&format_options=callback:getJson";
+    $.ajax({
+        jsonp: false,
+        jsonpCallback: 'getJson',
+        type: 'GET',
+        url: url_pasturepol_v,
+        async: false,
+        dataType: 'jsonp',
+        success: function (data_pasturepol_v) {
+            Layer_pasturepol_v = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    features: (new ol.format.GeoJSON()).readFeatures(data_pasturepol_v, {
+                        featureProjection: 'EPSG:3857'
+                    })
+                }),
+                extent: extents.Almaty,
+            });
+            // векторный слой областей
+            var url_adm1pol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:adm1pol&outputFormat=text/javascript&format_options=callback:getJson";
+            $.ajax({
+                jsonp: false,
+                jsonpCallback: 'getJson',
+                type: 'GET',
+                url: url_adm1pol_v,
+                async: false,
+                dataType: 'jsonp',
+                success: function (data_adm1pol_v) {
+                    Layer_adm1pol_v = new ol.layer.Vector({
+                        source: new ol.source.Vector({
+                            features: (new ol.format.GeoJSON()).readFeatures(data_adm1pol_v, {
+                                featureProjection: 'EPSG:3857'
+                            })
+                        }),
+                        extent: extents.Almaty,
+                    });
+                    // векторный слой районов
+                    var url_adm2pol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:adm2pol&outputFormat=text/javascript&format_options=callback:getJson";
+                    $.ajax({
+                        jsonp: false,
+                        jsonpCallback: 'getJson',
+                        type: 'GET',
+                        url: url_adm2pol_v,
+                        async: false,
+                        dataType: 'jsonp',
+                        success: function (data_adm2pol_v) {
+                            Layer_adm2pol_v = new ol.layer.Vector({
+                                source: new ol.source.Vector({
+                                    features: (new ol.format.GeoJSON()).readFeatures(data_adm2pol_v, {
+                                        featureProjection: 'EPSG:3857'
+                                    })
+                                }),
+                                extent: extents.Almaty,
+                            });
+                            // векторный слой сельских округов
+                            var url_adm3pol_v = "http://" + geoserverAddress + ":8080/geoserver/GeoServer/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GeoServer:adm3pol&outputFormat=text/javascript&format_options=callback:getJson";
+                            $.ajax({
+                                jsonp: false,
+                                jsonpCallback: 'getJson',
+                                type: 'GET',
+                                url: url_adm3pol_v,
+                                async: false,
+                                dataType: 'jsonp',
+                                success: function (data_adm3pol_v) {
+                                    Layer_adm3pol_v = new ol.layer.Vector({
+                                        source: new ol.source.Vector({
+                                            features: (new ol.format.GeoJSON()).readFeatures(data_adm3pol_v, {
+                                                featureProjection: 'EPSG:3857'
+                                            })
+                                        }),
+                                        extent: extents.Almaty,
+                                    });
+                                    //$("#fullscreen").LoadingOverlay("hide");
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    // источник данных и слой CropMask
+    var Source_CropMask = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:no',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_CropMask = new ol.layer.Tile({
+        source: Source_CropMask,
+        extent: extents.Almaty,
+    });
+    Layer_CropMask.setOpacity(0.80);
+    layers.push(Layer_CropMask);
+
+    // источник данных и слой snow1
+    var Source_NDSI1 = new ol.source.TileWMS({
+        //projection: 'EPSG:3857',
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:NDSI1',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_NDSI1 = new ol.layer.Tile({
+        source: Source_NDSI1,
+        extent: extents.Almaty,
+    });
+    Layer_NDSI1.setOpacity(0.80);
+    layers.push(Layer_NDSI1);
+
+    // источник данных и слой hdrlin
+    var Source_hdrlin = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:hdrlin',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_hdrlin = new ol.layer.Tile({
+        source: Source_hdrlin,
+        extent: extents.Almaty,
+    });
+    Layer_hdrlin.setOpacity(0.80);
+    layers.push(Layer_hdrlin);
+
+    // источник данных и слой hdrpol
+    var Source_hdrpol = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:hdrpol',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_hdrpol = new ol.layer.Tile({
+        source: Source_hdrpol,
+        extent: extents.Almaty,
+    });
+    Layer_hdrpol.setOpacity(0.80);
+    layers.push(Layer_hdrpol);
+
+    // источник данных и слой poppnt
+    var Source_poppnt = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:poppnt',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_poppnt = new ol.layer.Tile({
+        source: Source_poppnt,
+        extent: extents.Almaty,
+    });
+    Layer_poppnt.setOpacity(0.80);
+    layers.push(Layer_poppnt);
+
+    // источник данных и слой poppntl
+    var Source_poppntl = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:poppntl',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_poppntl = new ol.layer.Tile({
+        source: Source_poppntl,
+        extent: extents.Almaty,
+    });
+    Layer_poppntl.setOpacity(0.80);
+    layers.push(Layer_poppntl);
+
+    // источник данных и слой poppol
+    var Source_poppol = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:poppol',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_poppol = new ol.layer.Tile({
+        source: Source_poppol,
+        extent: extents.Almaty,
+    });
+    Layer_poppol.setOpacity(0.80);
+    layers.push(Layer_poppol);
+
+    // источник данных и слой poppoll
+    var Source_poppoll = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:poppoll',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_poppoll = new ol.layer.Tile({
+        source: Source_poppoll,
+        extent: extents.Almaty,
+    });
+    Layer_poppoll.setOpacity(0.80);
+    layers.push(Layer_poppoll);
+
+    // источник данных и слой rdslin
+    var Source_rdslin = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:rdslin',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_rdslin = new ol.layer.Tile({
+        source: Source_rdslin,
+        extent: extents.Almaty,
+    });
+    Layer_rdslin.setOpacity(0.80);
+    layers.push(Layer_rdslin);
+
+    // векторный слой выбранных пастбищ
+    var Source_select_pasturepol = new ol.source.Vector({});
+    var Layer_select_pasturepol = new ol.layer.Vector({
+        source: Source_select_pasturepol,
+        extent: extents.Almaty,
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: [0, 0, 255, 1]
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                width: 2
+            })
+        })
+    });
+    // N
+    layers.push(Layer_select_pasturepol);
+
+    // источник данных и слой adm0lin
+    var Source_adm0lin = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:adm0lin',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm0lin = new ol.layer.Tile({
+        source: Source_adm0lin,
+        extent: extents.Almaty,
+    });
+    Layer_adm0lin.setOpacity(0.80);
+    layers.push(Layer_adm0lin);
+
+    // источник данных и слой adm1lin
+    var Source_adm1lin = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:adm1lin',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm1lin = new ol.layer.Tile({
+        source: Source_adm1lin,
+        extent: extents.Almaty,
+    });
+    Layer_adm1lin.setOpacity(0.80);
+    layers.push(Layer_adm1lin);
+
+    // источник данных и слой degradrtr2018
+    var Source_degradrtr2018 = new ol.source.TileWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+        params: {
+            'LAYERS': 'GeoServer:degradrtr2018',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png',
+            'TILED': true
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_degradrtr2018 = new ol.layer.Tile({
+        source: Source_degradrtr2018,
+        extent: extents.Almaty,
+    });
+    Layer_degradrtr2018.setOpacity(0.80);
+    layers.push(Layer_degradrtr2018);
+
+
+    //// источник данных и слой snow2
+    //var Source_NDSI2 = new ol.source.TileWMS({
+    //    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+    //    params: {
+    //        'LAYERS': 'GeoServer:NDSI2',
+    //        'VERSION': '1.1.0',
+    //        'FORMAT': 'image/png',
+    //        'TILED': true
+    //    },
+    //    serverType: 'geoserver'
+    //});
+    //var Layer_NDSI2 = new ol.layer.Tile({
+    //    source: Source_NDSI2,
+    //    extent: extents.Almaty,
+    //});
+    //Layer_NDSI2.setOpacity(0.80);
+    //layers.push(Layer_NDSI2);
+
+    var source = new ol.source.Vector();
+    var layer = new ol.layer.Vector({
+        source: source,
+        extent: extents.Almaty,
+    });
+
+    var map = new ol.Map({
+        target: 'map',
+        layers: layers,
+        view: new ol.View({
+            //projection: 'EPSG:3857',
+            center: ol.proj.fromLonLat([78.5, 45]),
+            zoom: 8,
+            minZoom: 8,
+            extent: [7991617, 5172524, 9408704, 6016344]
+        })
+    });
+    //map.getLayers().setAt(4, Layer_NDSI1);
+
+    function ChangeYearSnow() {
+         $.ajax({
+            url: '@Url.Action("GetSnowMonths")',
+             data: { Year: $('#YearSnow').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data.months, function (i) {
+                    var text = "";
+                    if (data.months[i] == 1) {
+                        text = "январь";
+                    }
+                    else if (data.months[i] == 2) {
+                        text = "февраль";
+                    }
+                    else if (data.months[i] == 3) {
+                        text = "март";
+                    }
+                    else if (data.months[i] == 4) {
+                        text = "апрель";
+                    }
+                    else if (data.months[i] == 5) {
+                        text = "май";
+                    }
+                    else if (data.months[i] == 6) {
+                        text = "июнь";
+                    }
+                    else if (data.months[i] == 7) {
+                        text = "июль";
+                    }
+                    else if (data.months[i] == 8) {
+                        text = "август";
+                    }
+                    else if (data.months[i] == 9) {
+                        text = "сентябрь";
+                    }
+                    else if (data.months[i] == 10) {
+                        text = "октябрь";
+                    }
+                    else if (data.months[i] == 11) {
+                        text = "ноябрь";
+                    }
+                    else if (data.months[i] == 12) {
+                        text = "декабрь";
+                    }
+                    optionhtml += '<option value="' + data.months[i] + '"' +
+                        '>' + text +
+                        '</option>';
+                });
+                $("#MonthSnow").empty();
+                $('#MonthSnow').append(optionhtml);
+                $('#MonthSnow option:last').attr("selected", "selected");
+                ChangeMonthSnow();
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function ChangeMonthSnow() {
+         $.ajax({
+            url: '@Url.Action("GetSnowDays")',
+             data: {
+                 Year: $('#YearSnow').val(),
+                 Month: $('#MonthSnow').val()
+             },
+            type: 'POST',
+             success: function (data) {
+                var optionhtml = '';
+                $.each(data.days, function (i) {
+                    optionhtml += '<option value="' + data.days[i] + '"' +
+                        '>' + data.days[i] +
+                        '</option>';
+                });
+                 $("#DaySnow").empty();
+                 $('#DaySnow').append(optionhtml);
+                 $('#DaySnow option:last').attr("selected", "selected");
+                 ChangeDaySnow();
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function ChangeDaySnow() {
+        if ($('#DataType').val() === 'snow') {
+            var layer_NDSI1 = "NDSI" + $('#YearSnow').val().toString() + "_";
+            var month = $('#MonthSnow').val().toString();
+            if (month.length == 1) {
+                month = "0" + month;
+            }
+            layer_NDSI1 += month + "_";
+            var day = $('#DaySnow').val().toString();
+            //if (day.length == 1) {
+            //    day = "0" + day;
+            //}
+            layer_NDSI1 += day;
+            //alert(layer_NDSI1);
+            var Source_New = new ol.source.TileWMS({
+                //projection: 'EPSG:3857',
+                url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                params: {
+                    'LAYERS': 'GeoServer:' + layer_NDSI1,
+                    'VERSION': '1.1.0',
+                    'FORMAT': 'image/png',
+                    'TILED': true
+                },
+                serverType: 'geoserver'
+            });
+            var l = map.getLayers().getArray()[4];
+            l.setSource(Source_New);
+            l.setVisible(1);
+        }
+    }
+
+    ChangeYearSnow();
+
+    function Change() {
+        //if ($('input:checkbox[name="DataTypeSwitch"]:checked')) {
+        //    alert(0);
+        //}
+        //$('input[name="DataTypeSwitch"]:checked').each(function () {
+        //    console.log(this.value);
+        //});
+
+        var year = $('#Year').val();
+        var day = $('#Date').val();
+        if (day != null) {
+            if (day.length < 3) day = '0' + day;
+            if (day.length < 3) day = '0' + day;
+        }
+        var layer_Modis = '';
+
+        map.getLayers().getArray()[1].setVisible(1);
+        Layer_adm1lin.setVisible(false);
+
+        if ($('#DataType').val() === 'snow') {
+            map.getLayers().getArray()[1].setVisible(0);
+            map.getLayers().getArray()[4].setVisible(1);
+            $('.NoSnow').hide();
+            $('.Snow').show();
+            //ChangeYearSnow();
+            ChangeDaySnow();
+        }
+        else if ($('#DataType').val() === 'vegetation') {
+            map.getLayers().getArray()[4].setVisible(0);
+            $('.NoSnow').show();
+            $('.Snow').hide();
+            if ($('#State').val() === 'Fact') {
+                layer_Modis = "MOLT";
+                layer_Modis += '_' + "MOD13Q1";
+                layer_Modis += '_A' + [year, day].join('');
+                layer_Modis += '_' + $("#Index").val();
+                var Source_New = new ol.source.TileWMS({
+                    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                    params: {
+                        'LAYERS': 'GeoServer:' + layer_Modis,
+                        'VERSION': '1.1.0',
+                        'FORMAT': 'image/png',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                });
+                var l = map.getLayers().getArray()[1];
+                l.setSource(Source_New);
+            }
+            else if ($('#State').val() === 'Anomal') {
+                layer_Modis = "MOLT";
+                layer_Modis += '_' + "MOD13Q1";
+                layer_Modis += '_A' + [year, day].join('');
+                layer_Modis += '_' + $("#Index").val();
+                layer_Modis += '_' + "AN";
+                var Source_New = new ol.source.TileWMS({
+                    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                    params: {
+                        'LAYERS': 'GeoServer:' + layer_Modis,
+                        'VERSION': '1.1.0',
+                        'FORMAT': 'image/png',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                });
+                var l = map.getLayers().getArray()[1];
+                l.setSource(Source_New);
+            }
+        }
+
+        if ($('.KATO:checked').val() === 'KATO') {
+            var withoutColor = document.getElementById("withoutColor");
+            var withColor = document.getElementById("withColor");
+            var legend = document.getElementById("legend");
+            var KATOLayer = 'adm2pol';
+            if ($('.KATOLevel:checked').val() === 'adm1pol') {
+                KATOLayer = 'adm1pol';
+                Layer_adm1lin.setVisible(true);
+            }
+            if ($('.KATOLevel:checked').val() === 'adm3pol') {
+                KATOLayer = 'adm3pol';
+            }
+            if ($('.KATOLevel:checked').val() === 'Pastures') {
+                withoutColor.disabled = false;
+                if (withColor.checked) {
+                    withoutColor.checked = false;
+                }
+                else {
+                    withoutColor.checked = true;
+                }
+                withColor.disabled = false;
+                legend.disabled = false;
+                $('#legend').addClass('btn btn-default');
+                KATOLayer = 'pastALA';
+                if ($('.PasturesType:checked').val() === 'pastALAColor') {
+                    withoutColor.checked = false;
+                    withColor.checked = true;
+                    KATOLayer = 'pastALAColor';
+                }
+            }
+            else {
+                withoutColor.disabled = true;
+                if (withoutColor.checked) {
+                    withoutColor.checked = false;
+                }
+                else {
+                    withColor.checked = false;
+                }
+                withColor.disabled = true;
+                legend.disabled = true;
+                $('#legend').removeClass('btn btn-default');
+            }
+            var Source_New = new ol.source.TileWMS({
+                url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                params: {
+                    'LAYERS': 'GeoServer:' + KATOLayer,
+                    'VERSION': '1.1.0',
+                    'FORMAT': 'image/png',
+                    'TILED': true
+                },
+                serverType: 'geoserver'
+            });
+            var l = map.getLayers().getArray()[2];
+            l.setSource(Source_New);
+            map.getLayers().getArray()[2].setVisible(1);
+        }
+        else {
+            map.getLayers().getArray()[2].setVisible(0);
+
+            document.getElementById("withoutColor").disabled = true;
+            if (document.getElementById("withoutColor").checked) {
+                document.getElementById("withoutColor").checked = false;
+            }
+            else {
+                document.getElementById("withColor").checked = false;
+            }
+            document.getElementById("withColor").disabled = true;
+            document.getElementById("legend").disabled = true;
+            $('#legend').removeClass('btn btn-default');
+        }
+
+        if ($('.Acreage:checked').val() === 'Acreage') {
+            var AcreageLayer = 'CropMaskAll';
+            if ($('.AcreageLevel:checked').val() === 'CropMaskWheat') {
+                AcreageLayer = 'CropMaskWheat';
+            }
+            if ($('.AcreageLevel:checked').val() === 'CropMaskCorn') {
+                AcreageLayer = 'CropMaskCorn';
+            }
+            if ($('.AcreageLevel:checked').val() === 'CropMaskRice') {
+                AcreageLayer = 'CropMaskRice';
+            }
+            if ($('.AcreageLevel:checked').val() === 'CropMaskDeposit') {
+                AcreageLayer = 'CropMaskDeposit';
+            }
+            if ($('.AcreageLevel:checked').val() === 'CropMaskSteam') {
+                AcreageLayer = 'CropMaskSteam';
+            }
+            var Source_New = new ol.source.TileWMS({
+                url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                params: {
+                    'LAYERS': 'GeoServer:' + AcreageLayer,
+                    'VERSION': '1.1.0',
+                    'FORMAT': 'image/png',
+                    'TILED': true
+                },
+                serverType: 'geoserver'
+            });
+            var l = map.getLayers().getArray()[3];
+            l.setSource(Source_New);
+            map.getLayers().getArray()[3].setVisible(1);
+        }
+        else {
+            map.getLayers().getArray()[3].setVisible(0);
+        }
+
+        if ($('.hdrlin:checked').val() === 'hdrlin') {
+            map.getLayers().getArray()[5].setVisible(1);
+        }
+        else {
+            map.getLayers().getArray()[5].setVisible(0);
+        }
+        if ($('.hdrpol:checked').val() === 'hdrpol') {
+            map.getLayers().getArray()[6].setVisible(1);
+        }
+        else {
+            map.getLayers().getArray()[6].setVisible(0);
+        }
+        if ($('.poppnt:checked').val() === 'poppnt') {
+            if ($('.TopographyLabel:checked').val() === 'TopographyLabel') {
+                map.getLayers().getArray()[8].setVisible(1);
+                map.getLayers().getArray()[7].setVisible(0);
+                map.getLayers().getArray()[10].setVisible(1);
+                map.getLayers().getArray()[9].setVisible(0);
+            }
+            else {
+                map.getLayers().getArray()[8].setVisible(0);
+                map.getLayers().getArray()[7].setVisible(1);
+                map.getLayers().getArray()[10].setVisible(0);
+                map.getLayers().getArray()[9].setVisible(1);
+            }
+        }
+        else {
+            map.getLayers().getArray()[8].setVisible(0);
+            map.getLayers().getArray()[7].setVisible(0);
+            map.getLayers().getArray()[10].setVisible(0);
+            map.getLayers().getArray()[9].setVisible(0);
+        }
+        if ($('.rdslin:checked').val() === 'rdslin') {
+            map.getLayers().getArray()[11].setVisible(1);
+        }
+        else {
+            map.getLayers().getArray()[11].setVisible(0);
+        }
+        if ($('.ALTD:checked').val() === 'ALTD') {
+            if ($('.ALTDLevel:checked').val() === 'data1') {
+                //map.getLayers().getArray()[15].setVisible(1);
+                // degrad
+                var Source_New = new ol.source.TileWMS({
+                    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                    params: {
+                        'LAYERS': 'GeoServer:degradrtr2018',
+                        'VERSION': '1.1.0',
+                        'FORMAT': 'image/png',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                });
+                var l = map.getLayers().getArray()[15];
+                l.setSource(Source_New);
+                map.getLayers().getArray()[15].setVisible(1);
+            }
+            else {
+                //map.getLayers().getArray()[15].setVisible(0);
+                // salt
+                var Source_New = new ol.source.TileWMS({
+                    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+                    params: {
+                        'LAYERS': 'GeoServer:SALT201810',
+                        'VERSION': '1.1.0',
+                        'FORMAT': 'image/png',
+                        'TILED': true
+                    },
+                    serverType: 'geoserver'
+                });
+                var l = map.getLayers().getArray()[15];
+                l.setSource(Source_New);
+                map.getLayers().getArray()[15].setVisible(1);
+            }
+        }
+        else {
+            map.getLayers().getArray()[15].setVisible(0);
+        }
+    }
+
+    Change();
+</script>
+
+<script>
+    function ChangeModisSource() {
+        $.ajax({
+            url: '@Url.Action("GetModisProductByModisSource", "GDAL")',
+            data: { ModisSource: $('#ModisSource').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    optionhtml += '<option value="' + data[i]['name'] + '"' +
+                        (data[i]['name'] == $('#ModisProduct').val() ? 'selected' : '') +
+                        '>' + data[i]['name'] +
+                        '</option>';
+                });
+                $("#ModisProduct").empty();
+                $('#ModisProduct').append(optionhtml);
+                ChangeModisProduct();
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeModisProduct() {
+        $.ajax({
+            url: '@Url.Action("GetModisDataSets", "GDAL")',
+            data: { ModisProduct: $('#ModisProduct').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    optionhtml += '<option value="' + data[i]['name'] + '"' +
+                        (data[i]['indexName'] == $('#File').val() ? 'selected' : '') +
+                        '>' + data[i]['indexName'] +
+                        '</option>';
+                });
+                $("#ModisDataSet").empty();
+                $('#ModisDataSet').append(optionhtml);
+                ChangeModis();
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeYear() {
+        $.ajax({
+            url: '@Url.Action("GetYearDates")',
+            data: { Year: $('#Year').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data.dates, function (i) {
+                    optionhtml += '<option value="' + data.dates[i]['value'] + '"' +
+                        (data.dates[i]['selected'] == true ? 'selected' : '') +
+                        '>' + data.dates[i]['text'] +
+                        '</option>';
+                });
+                $("#Date").empty();
+                $('#Date').append(optionhtml);
+                Change();
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeModisDataSet() {
+        ChangeModis();
+    };
+
+    function ChangeDate() {
+        Change();
+    };
+
+    function ChangeModis() {
+        //var d = new Date($('#Date').val());
+
+        //var start = new Date(d.getFullYear(), 0, 0);
+        //var diff = d - start;
+        //var oneDay = 1000 * 60 * 60 * 24;
+        //var day = Math.floor(diff / oneDay).toString();
+
+        //var year = d.getFullYear();
+
+        var year = $('#Year').val();
+        var day = $('#Date').val();
+
+        if (day.length < 3) day = '0' + day;
+        if (day.length < 3) day = '0' + day;
+
+        var layer_Modis = $('#ModisSource').val();
+        layer_Modis += '_' + $('#ModisProduct').val();
+        layer_Modis += '_A' + [year, day].join('');
+        layer_Modis += '_' + $("#ModisDataSet").val();
+
+        var Source_New = new ol.source.TileWMS({
+            url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+            params: {
+                'LAYERS': 'GeoServer:' + layer_Modis,
+                'VERSION': '1.1.0',
+                'FORMAT': 'image/png',
+                'TILED': true
+            },
+            serverType: 'geoserver'
+        });
+        var l = map.getLayers().getArray()[1];
+        l.setSource(Source_New);
+    }
+
+    function ChangeKATOType() {
+        var Source_New = new ol.source.TileWMS({
+            url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/GeoServer/wms?',
+            params: {
+                'LAYERS': 'GeoServer:' + $("#KATOType").val(),
+                'VERSION': '1.1.0',
+                'FORMAT': 'image/png',
+                'TILED': true
+            },
+            serverType: 'geoserver'
+        });
+        var l = map.getLayers().getArray()[2];
+        l.setSource(Source_New);
+    }
+
+    $(document).ready(function () {
+        ChangeYear();
+    });
+</script>
+
+<script src="~/lib/chart.js/Chart.js"></script>
+
+<script>
+    //Source_select_pasturepol.clear();
+
+    var myLineChart = null;
+    map.on('singleclick', function (evt) {
+
+        document.getElementById("info1").disabled = false;
+        $('#info1').addClass('btn btn-default');
+        document.getElementById("info2").disabled = false;
+        $('#info2').addClass('btn btn-default');
+        Source_select_pasturepol.clear();
+        var viewResolution = (map.getView().getResolution());
+        var url = layers[2].getSource().getGetFeatureInfoUrl(
+            evt.coordinate, viewResolution, 'EPSG:3857',
+            {
+                'INFO_FORMAT': 'text/javascript'
+                //'FEATURE_COUNT': '10000'
+            });
+        if ($('.KATO:checked').val() === 'KATO') {
+            if (url) {
+                var parser = new ol.format.GeoJSON();
+                $.ajax({
+                    jsonp: false,
+                    jsonpCallback: 'getJson',
+                    type: 'GET',
+                    url: url + "&format_options=callback:getJson",
+                    async: false,
+                    dataType: 'jsonp',
+                    //jsonpCallback: 'parseResponse',
+                    error: function (xhr, status, error) {
+
+                    }
+                }).then(function (response) {
+                    var result = parser.readFeatures(response);
+                    if (result.length > 0) {
+                        // chart
+                        //if ($("#KATOType").val() !== 'pastALA') {
+                        var KATOLayer = 'adm2pol';
+
+                        if ($('.KATOLevel:checked').val() === 'adm1pol') {
+                            KATOLayer = 'adm1pol';
+
+                            var polyFeature = new ol.Feature({
+                                geometry: new ol.geom.MultiPolygon(response.features[0].geometry.coordinates)
+                            });
+                            Source_select_pasturepol.addFeature(polyFeature);
+                        }
+                        if ($('.KATOLevel:checked').val() === 'adm2pol') {
+                            KATOLayer = 'adm2pol';
+
+                            var polyFeature = new ol.Feature({
+                                geometry: new ol.geom.MultiPolygon(response.features[0].geometry.coordinates)
+                            });
+                            Source_select_pasturepol.addFeature(polyFeature);
+                        }
+                        if ($('.KATOLevel:checked').val() === 'adm3pol') {
+                            KATOLayer = 'adm3pol';
+
+                            var polyFeature = new ol.Feature({
+                                geometry: new ol.geom.MultiPolygon(response.features[0].geometry.coordinates)
+                            });
+                            Source_select_pasturepol.addFeature(polyFeature);
+                        }
+                        if ($('.KATOLevel:checked').val() === 'Pastures') {
+                            KATOLayer = 'pastALA';
+
+                            // работа с пастбищем в виде вектора (выделение пастбища)
+                            var polyFeature = new ol.Feature({
+                                geometry: new ol.geom.MultiPolygon(response.features[0].geometry.coordinates)
+                            });
+                            Source_select_pasturepol.addFeature(polyFeature);
+                        }
+                        @*if ($('.KATO:checked').val() === 'KATO') {
+
+                            var url = '@Url.Action("ViewModisChart")' +
+                                '?KATOType=' + KATOLayer +
+                                '&PastId=' + result[0].get('id') +
+                                '&KATO=' + result[0].get('kato_te') +
+                                "&Year=" + $('#Year').val() +
+                                "&ModisSource=" + "MOLT" +
+                                "&ModisProduct=" + "MOD13Q1" +
+                                "&ModisDataSet=" + $("#Index").val();
+                            window.open(url, "MsgWindow", "width=500,height=400");
+                        }*@
+                        document.cookie = KATOLayer + "." + result[0].get('id') + "." + result[0].get('kato_te');
+                        // pastures info
+                        //if ($("#KATOType").val() === 'pastALA') {
+                        //if ($('.KATO:checked').val() === 'KATO') {
+
+                        //}
+                        //if (($('.Pastures:checked').val() === 'Pastures') && ($('.PasturesType:checked').val() === 'pastALAColor')) {
+                        if ($('.KATOLevel:checked').val() === 'Pastures') {
+                            $.ajax({
+                                url: '@Url.Action("GetPasInfo")',
+                                data: {
+                                    pid: result[0].get('id'),
+                                    class_id: result[0].get('class_id'),
+                                    otdely_id: result[0].get('otdely_id'),
+                                    subtype_id: result[0].get('subtype_id'),
+                                    group_id: result[0].get('group_id'),
+                                    recom_id: result[0].get('recom_id')
+                                },
+                                type: 'POST',
+                                success: function (data) {
+                                    $('#pas_class_id').html(data.class_name);
+                                    $('#pas_otdely_id').html(data.otdely_name);
+                                    $('#pas_subtype_id').html(data.subtype_name);
+                                    $('#pas_group_id').html(data.group_name);
+                                    $('#pas_recom_id').html(data.recom_name);
+
+                                    $('#pas_ur_v').html(result[0].get('ur_v'));
+                                    $('#pas_ur_l').html(result[0].get('ur_l'));
+                                    $('#pas_ur_o').html(result[0].get('ur_o'));
+                                    $('#pas_ur_z').html(result[0].get('ur_z'));
+                                    $('#pas_korm_v').html(result[0].get('korm_v'));
+                                    $('#pas_korm_l').html(result[0].get('korm_l'));
+                                    $('#pas_korm_o').html(result[0].get('korm_o'));
+                                    $('#pas_korm_z').html(result[0].get('korm_z'));
+
+                                    //alert(result[0].get('e'));
+                                    $('#pas_e').html(data.e);
+                                    $('#pas_e_krs').html(data.e_krs);
+                                    $('#pas_e_horses').html(data.e_horses);
+                                    $('#pas_e_camels').html(data.e_camels);
+
+                                    $("#dialog").dialog({
+                                        width: 700,
+                                        height: 500
+                                    });
+                                },
+                                error: function () {
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+        else {
+            document.getElementById("info1").disabled = true;
+            $('#info1').removeClass('btn btn-default');
+            document.getElementById("info2").disabled = true;
+            $('#info2').removeClass('btn btn-default');
+        }
+    });
+
+
+</script>
+
+<script>
+    function PasLagend() {
+        $("#paslegenddialog").dialog({
+            width: 690,
+            height: 500
+        });
+    }
+
+    function NDVILegend() {
+        $("#ndvilegenddialog").dialog({
+            width: 690,
+            height: 500
+        });
+    }
+
+    function NDSILegend() {
+        $("#ndsilegenddialog").dialog({
+            width: 690,
+            height: 500
+        });
+    }
+
+    function AnomalyLegend() {
+        $("#anomlegenddialog").dialog({
+            width: 690,
+            height: 500
+        });
+    }
+</script>
+
+<script>
+    function ViewChart1() {
+        var params = document.cookie.split('.');
+        params[2] = params[2].substr(0, params[2].indexOf(";"));
+        var url = '@Url.Action("ViewModisChart1")' +
+            '?KATOType=' + params[0] +
+            '&PastId=' + params[1] +
+            '&KATO=' + params[2] +
+            "&Year=" + $('#Year').val() +
+            "&Date=" + $('#Date').val() +
+            "&ModisSource=" + "MOLT" +
+            "&ModisProduct=" + "MOD13Q1" +
+            "&ModisDataSet=" + $("#Index").val();
+        //window.open(url, "MsgWindow", "width=600,height=400");
+        window.open(url, '_blank');
+    }
+
+    function ViewChart2() {
+        var params = document.cookie.split('.');
+        params[2] = params[2].substr(0, params[2].indexOf(";"));
+        var url = '@Url.Action("ViewModisChart2")' +
+            '?KATOType=' + params[0] +
+            '&PastId=' + params[1] +
+            '&KATO=' + params[2] +
+            "&Year_=" + $('#Year').val() +
+            "&Date=" + $('#Date').val() +
+            "&ModisSource=" + "MOLT" +
+            "&ModisProduct=" + "MOD13Q1" +
+            "&ModisDataSet=" + $("#Index").val();
+        //window.open(url, "MsgWindow", "width=600,height=400");
+        window.open(url, '_blank');
+    }
+</script>
+
+<script>
+    function Opacity(l) {
+        var o = '#opacity' + l.toString();
+        layers[l].setOpacity($(o).val() / 100);
+        if (l == 5) {
+            layers[6].setOpacity($(o).val() / 100);
+            layers[7].setOpacity($(o).val() / 100);
+            layers[8].setOpacity($(o).val() / 100);
+            layers[9].setOpacity($(o).val() / 100);
+            layers[10].setOpacity($(o).val() / 100);
+            layers[11].setOpacity($(o).val() / 100);
+        }
+        if (l == 1) {
+            layers[4].setOpacity($(o).val() / 100);
+        }
+    }
+    $('#click').click(function () {
+        //$("#sidepanel").animate({ width: 'toggle' }, 500);
+        //var f = $('#map').width() / $('#map').parent().width() * 100;
+        //if (f > 79 && f < 81) {
+        //    $('#map').animate({ width: '100%' }, 500);
+        //    $('#click').text('<<');
+        //}
+        //else {
+        //    $('#map').animate({ width: '80%' }, 500);
+        //    $('#click').text('>>');
+        //}
+        $("#sidepanel").toggle();
+        var f = $('#map').width() / $('#map').parent().width() * 100;
+        if (f > 79 && f < 81) {
+            $('#map').width('100%');
+            $('#click').text('<<');
+        }
+        else {
+            $('#map').width('80%');
+            $('#click').text('>>');
+        }
+
+        map.updateSize();
+    });
+
+    var switchStatus = false;
+    $("#DataTypeSwitch").on('change', function () {
+        if ($(this).is(':checked')) {
+            switchStatus = $(this).is(':checked');
+            //alert(switchStatus);// To verify
+            $('#DataTypeLabel').text('Вегетационные данные');
+            $('#DataType').val('vegetation');
+        }
+        else {
+            switchStatus = $(this).is(':checked');
+            //alert(switchStatus);// To verify
+            $('#DataTypeLabel').text('Снег');
+            $('#DataType').val('snow');
+        }
+        Change();
+    });
+</script>
