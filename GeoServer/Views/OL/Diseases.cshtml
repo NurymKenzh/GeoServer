@@ -597,6 +597,25 @@
                     $('#disease').append($('<option />').val(this.code).text(this.name));
                 });
                 ChangeDisease();
+
+                if ($('#area').val() == 'kz') {
+                    map.getView().fit([5028944.964937042, 4754994.655562972, 10214432.963802021, 7494497.74930296], map.getSize());
+                }
+                else if ($('#area').val() == 'AB11') {
+                    map.getView().fit([7250207.9, 6373808.4, 8291379.4, 7189861.7], map.getSize());
+                }
+                else if ($('#area').val() == 'AB39') {
+                    map.getView().fit([6021884.8, 6105932.3, 8236524.6, 7336439.8], map.getSize());
+                }
+                else if ($('#area').val() == 'AB55') {
+                    map.getView().fit([7750146.8, 6428384.8, 9278457.9, 7277551.4], map.getSize());
+                }
+                else if ($('#area').val() == 'AB59') {
+                    map.getView().fit([7215381.3, 6822370.2, 8369133.2, 7463422.7], map.getSize());
+                }
+                else if ($('#area').val() == 'NK') {
+                    map.getView().fit([7828946.3, 6696477.0, 7938667.7, 6757440.8], map.getSize());
+                }
             },
             error: function () {
             }
