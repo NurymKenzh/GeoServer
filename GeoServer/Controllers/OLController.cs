@@ -19,6 +19,12 @@ namespace GeoServer.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IHostingEnvironment _hostingEnvironment;
 
+        public class Layer
+        {
+            public string Code;
+            public string Name;
+        }
+
         public OLController(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
         {
             _context = context;
@@ -58,11 +64,13 @@ namespace GeoServer.Controllers
 
         public IActionResult Diseases()
         {
+            ViewBag.GeoserverAddress = $"{Startup.Configuration["GeoServer:Address"]}:{Startup.Configuration["GeoServer:Port"]}";
             return View();
         }
 
         public IActionResult Irrigation()
         {
+            ViewBag.GeoserverAddress = $"{Startup.Configuration["GeoServer:Address"]}:{Startup.Configuration["GeoServer:Port"]}";
             return View();
         }
 
@@ -1296,6 +1304,120 @@ namespace GeoServer.Controllers
             return Json(new
             {
                 days
+            });
+        }
+
+        public async Task<IActionResult> GetAreaLayers(
+            string Area)
+        {
+            List<Layer> layers = new List<Layer>();
+            string geoserverDir = Startup.Configuration["DiseasesGeoServerDir"].ToString();
+            foreach (string file in Directory.EnumerateFiles(geoserverDir, $"*.tif", SearchOption.TopDirectoryOnly))
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                if (Area == "kz" && fileName.Split('_').Count() <= 2)
+                {
+                    string layerName = fileName;
+                    if (layerName == "morocco_nesting")
+                    {
+                        layerName = "Условия зимовки кубышек мароккской саранчи";
+                    }
+                    if (layerName == "Prus_nesting")
+                    {
+                        layerName = "Условия зимовки кубышек итальянского пруса";
+                    }
+                    layers.Add(new Layer(){
+                        Code = fileName, 
+                        Name = layerName
+                    });
+                }
+                else if (fileName.Contains(Area))
+                {
+                    string layerName = fileName.Split('_')[0];
+                    if (layerName == "ETA")
+                    {
+                        layerName = "Уровень эвапотранспирации, по данным TERRA\\MODIS";
+                    }
+                    if (layerName == "RustRisk")
+                    {
+                        layerName = "Вероятность поражения посевов зерновых культур бурой ржавчиной";
+                    }
+                    if (layerName == "SD")
+                    {
+                        layerName = "Поражение посевов грибными заболеваниями, по данным TERRA\\MODIS";
+                    }
+                    if (layerName == "SeptRisk")
+                    {
+                        layerName = "Вероятность поражения посевов зерновых культур грибными заболеваниями";
+                    }
+                    if (layerName == "VSDI")
+                    {
+                        layerName = "Содержание влаги в растениях, по данным TERRA\\MODIS";
+                    }
+                    if(layers.Count(l => l.Code == fileName.Split('_')[0]) == 0)
+                    {
+                        layers.Add(new Layer()
+                        {
+                            Code = fileName.Split('_')[0],
+                            Name = layerName
+                        });
+                    }
+                }
+            }
+
+            return Json(new
+            {
+                layers
+            });
+        }
+
+        public async Task<IActionResult> GetLayerYear(
+            string Layer)
+        {
+            int[] years = { 2020 };
+            if (Layer == "kz")
+            {
+                years = new int[0];
+            }
+
+            return Json(new
+            {
+                years
+            });
+        }
+
+        public async Task<IActionResult> GetLayerYearDates(
+            string Area,
+            string Layer,
+            string Year)
+        {
+            List<Layer> dates = new List<Layer>();
+            string geoserverDir = Startup.Configuration["DiseasesGeoServerDir"].ToString();
+            if (Area == "kz")
+            {
+                
+            }
+            else
+            {
+                foreach (string file in Directory.EnumerateFiles(geoserverDir, $"{Layer}_{Area}_{Year}*.tif", SearchOption.TopDirectoryOnly))
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(file),
+                        code = fileName.Split('_')[2].Substring(4, 4),
+                        name = $"{code.Substring(0, 2)}.{code.Substring(2, 2)}";
+                    if (dates.Count(l => l.Code == code) == 0)
+                    {
+                        dates.Add(new Layer()
+                        {
+                            Code = code,
+                            Name = name
+                        });
+                    }
+                }
+            }
+
+            return Json(new
+            {
+                dates
             });
         }
     }

@@ -34,81 +34,50 @@
             <div class="card-body p-2">
                 <form>
                     <div class="form-group mb-0">
-                        <label class="m-0" for="cato1">Область</label>
-                        <select class="form-control form-control-sm" id="cato1">
-                            <option>Казахстан</option>
-                            <option>Акмолинская область</option>
-                            <option>Костанайская область</option>
-                            <option>3</option>
-                            <option>4</option>
+                        <label class="m-0" for="area">Область</label>
+                        <select class="form-control form-control-sm" id="area" onchange="ChangeArea()">
+                            <optgroup label="Страна">
+                                <option value="kz">Казахстан</option>
+                            </optgroup>
+                            <optgroup label="Области">
+                                <option value="AB11">Акмолинская область</option>
+                                <option value="AB39">Костанайская область</option>
+                                <option value="AB55">Павлодарская область</option>
+                                <option value="AB59">Северо-Казахстанская область</option>
+                            </optgroup>
+                            <optgroup label="Хозяйства">
+                                <option value="NK">Новокубанка</option>
+                            </optgroup>
                         </select>
                     </div>
                 </form>
                 <form>
-                    <label class="m-0" for="SourceProduct">Спутник</label>
+                    <label class="m-0" for="disease">Болезни и вредители</label>
                     <div class="input-group input-group-sm">
-                        <select class="form-control" id="SourceProduct">
-                            <option value="0">Terra</option>
-                            <option value="1">Aqua</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <a href="#" target="_blank">
-                                    <i class="SomeInfo fa fa-info-circle" InfoTitle="Full Information"></i>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                    <!-- for Dataset -->
-                    <label class="m-0" for="DataSet">Dataset</label>
-                    <div class="input-group input-group-sm">
-                        <select class="form-control" id="DataSet">
-                            <option value="NDVI">NDVI</option>
-                            <option value="SAVI">SAVI</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <a href="#" id="LegendBtn" class="target-click">
-                                    <i class="SomeInfo fa fa-tag" InfoTitle="Legend"></i>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                    <input id="layerMODISOpacity" type="range" class="form-control-range" min="0" max="100" value="80" />
-                    <!-- Year -->
-                    <label class="m-0" for="Year_MOLT_MOD10">Год</label>
-                    <div class="input-group input-group-sm">
-                        <select class="form-control" id="Year_MOLT_MOD10">
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
+                        <select class="form-control" id="disease" onchange="ChangeDisease()">
+                            <option value="morocco_nesting">Условия зимовки кубышек мароккской саранчи</option>
+                            <option value="Prus_nesting">Условия зимовки кубышек итальянского пруса</option>
                         </select>
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <input type="checkbox" id="layerMODISShow" checked="checked">
+                                <input type="checkbox" id="layerdiseaseShow" checked="checked" oninput="ChangeLayers()">
                             </div>
                         </div>
+                        <input id="layerdiseaseOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                     </div>
-                    <label class="m-0" for="DayOfYear_MOLT">Дата</label>
+                    <label class="m-0" for="year">Год</label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-control" id="year" onchange="ChangeYear()">
+                            <option value="2020">2020</option>
+                        </select>
+                    </div>
+                    <label class="m-0" for="date">Дата</label>
                     <!-- Day -->
                     <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <a href="#" target="_blank">
-                                    <i class="fa fa-chevron-left"></i>
-                                </a>
-                            </span>
-                        </div>
-                        <select class="custom-select" id="DayOfYear_MOLT" aria-describedby="DayHelpBlock">
+                        <select class="custom-select" id="date" aria-describedby="DayHelpBlock" onchange="ChangeDate()">
                             <option value="1">001:02/01 - 08/01</option>
                             <option value="2">002:08/01 - 08/16</option>
                         </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <a href="#" target="_blank">
-                                    <i class="fa fa-chevron-right"></i>
-                                </a>
-                            </span>
-                        </div>
                     </div>
                 </form>
             </div>
@@ -121,26 +90,25 @@
                     <div id="TematicLayerSections" class="collapse show" aria-labelledby="headingOne" data-parent="#TematicLayerSections">
                         <div class="card-body">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layerpasturepolShow" checked="checked">
-                                <label class="form-check-label" for="layerpasturepolShow">
-                                    Layer
+                                <input class="form-check-input" type="checkbox" id="layeradm1polShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layeradm1polShow">
+                                    Области
                                 </label>
-                                <input id="layerpasturepolOpacity" type="range" class="form-control-range" min="0" max="100" value="50"/>
-                            </div>
-                            
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layerpopShow" checked="checked">
-                                <label class="form-check-label" for="layerpopShow">
-                                    popLayer
-                                </label>
-                                <input id="layerpopOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                                <input id="layeradm1polOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layeradmxpolShow">
-                                <label class="form-check-label" for="layeradmxpolShow">
-                                    admLayer
+                                <input class="form-check-input" type="checkbox" id="layeradm2polShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layeradm2polShow">
+                                    Районы
                                 </label>
-                                <input id="layeradmxpolOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                                <input id="layeradm2polOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layernovokubankaShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layernovokubankaShow">
+                                    Хозяйства
+                                </label>
+                                <input id="layernovokubankaOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                             </div>
                         </div>
                     </div>
@@ -203,10 +171,10 @@
         <div class="content">
             <!-- open sidebar menu -->
             <a class="btn btn-primary btn-customized open-menu" href="#" role="button">
-                <i class="fas fa-align-left"></i> <span>Menu</span>
+                <i class="fas fa-align-left"></i> <span>Меню</span>
             </a>
             <!-- Map content -->
-            <div id="map" class="position-fixed col-md-12 col-lg-12 m-0 p-0 bg-light"></div>
+            <div id="map" class="position-fixed col-md-12 col-lg-12 m-0 p-0 bg-light" style="height: 94vh;"></div>
             <!-- Footer -->
         </div>
         <!-- End content -->
@@ -214,21 +182,8 @@
     <!-- End wrapper -->
 </div>
 
-
-
-@* layers *@
+@* base layers *@
 <script>
-    var geoserver_url = '@ViewBag.GeoServerUrl',
-        geoserver_MODIS_workspace_name = '@ViewBag.ModisWorkspace', //'MODIS',
-        geoserver_workspace_name = 'Pastures2019',
-        layerModisTemplate1 = '@ViewBag.ModisLayerTemplate1', //'A',
-        layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI = '@ViewBag.ModisLayerTemplate_MOLT_MOD13Q1006_B01_NDVI',
-        layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly = '@ViewBag.ModisLayerTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly',
-        layerModisTemplate_MOLA_MYD13Q1006_B01_NDVI = '@ViewBag.ModisLayerTemplate_MOLA_MYD13Q1006_B01_NDVI',
-        layerModisTemplate_MOLA_MYD13Q1006_B01_NDVI_Anomaly = '@ViewBag.ModisLayerTemplate_MOLA_MYD13Q1006_B01_NDVI_Anomaly';
-    var layerNDVI = layerModisTemplate1 + $('#Year_MOLT_MOD13Q1006').val() + $('#DayOfYear_MOLT_MOD13Q1006').val() + layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI,
-        layerAnomaly = layerModisTemplate1 + $('#Year_MOLT_MOD13Q1006').val() + $('#DayOfYear_MOLT_MOD13Q1006').val() + layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly;
-
     var HEREappId = 'SLdBasp4s1oq2oUbVGxy';
     var HEREappCode = 'D9-h9iVhjgUB_9eUlFETXA';
 
@@ -380,6 +335,84 @@
     });
     Layer_Base.set('name', 'Base');
     Layer_Base.setOpacity(1);
+
+    var layers = [];
+    layers.push(Layer_Base);
+</script>
+
+@* layers *@
+<script>
+    var geoserver_url = '@ViewBag.GeoserverAddress';
+
+    var Source_disease = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:morocco_nesting',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_disease = new ol.layer.Tile({
+        source: Source_disease
+    });
+    Layer_disease.set('name', 'disease');
+    layers.push(Layer_disease);
+
+    var Source_adm1pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:adm1pol20201005',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm1pol = new ol.layer.Tile({
+        source: Source_adm1pol
+    });
+    Layer_adm1pol.set('name', 'adm1pol');
+    layers.push(Layer_adm1pol);
+
+    var Source_adm2pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:adm2pol20201005',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm2pol = new ol.layer.Tile({
+        source: Source_adm2pol
+    });
+    Layer_adm2pol.set('name', 'adm2pol');
+    layers.push(Layer_adm2pol);
+
+    var Source_novokubanka = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:novokubanka',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_novokubanka = new ol.layer.Tile({
+        source: Source_novokubanka
+    });
+    Layer_novokubanka.set('name', 'novokubanka');
+    layers.push(Layer_novokubanka);
+
+    var Source_novokubanka = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:novokubanka',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_novokubanka = new ol.layer.Tile({
+        source: Source_novokubanka
+    });
+    Layer_novokubanka.set('name', 'novokubanka');
+    layers.push(Layer_novokubanka);
 </script>
 
 @* map *@
@@ -407,22 +440,7 @@
         controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
             new ol.control.ScaleLine()
         ]),
-        layers: [
-            Layer_Base,
-            //Layer_NDVI,
-            //Layer_Anomaly,
-            //Layer_pasturepol,
-            //Layer_select_pasturepol,
-            //Layer_pasfarmpol,
-            //Layer_hdrlin,
-            //Layer_rdslin,
-            //Layer_adm1pol,
-            //Layer_adm2pol,
-            //Layer_adm3pol,
-            //Layer_poppol,
-            //Layer_poppnt,
-            //Layer_hdrpol
-        ],
+        layers: layers,
         view: new ol.View({
             center: ol.proj.fromLonLat([66.902, 48.714]),
             zoom: 5,
@@ -476,6 +494,7 @@
     };
 </script>
 
+@* ChangeLayers, ChangeArea, ChangeDisease *@
 <script>
     function ChangeLayers() {
         map.getLayers().forEach(function (layer) {
@@ -546,10 +565,114 @@
                     layer.setSource(Source_ThunderforestNeighbourhood);
                 }
             }
+            if (layer.get('name') == 'disease') {
+                layer.setVisible(document.getElementById("layerdiseaseShow").checked);
+                layer.setOpacity($('#layerdiseaseOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'adm1pol') {
+                layer.setVisible(document.getElementById("layeradm1polShow").checked);
+                layer.setOpacity($('#layeradm1polOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'adm2pol') {
+                layer.setVisible(document.getElementById("layeradm2polShow").checked);
+                layer.setOpacity($('#layeradm2polOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'novokubanka') {
+                layer.setVisible(document.getElementById("layernovokubankaShow").checked);
+                layer.setOpacity($('#layernovokubankaOpacity').val() / 100);
+            }
         })
     }
-</script>
 
+    function ChangeArea() {
+        $.ajax({
+            url: '@Url.Action("GetAreaLayers")',
+            data: {
+                Area: $('#area').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                $('#disease').empty();
+                $.each(data.layers, function () {
+                    $('#disease').append($('<option />').val(this.code).text(this.name));
+                });
+                ChangeDisease();
+            },
+            error: function () {
+            }
+        })
+    }
+
+    function ChangeDisease() {
+        $.ajax({
+            url: '@Url.Action("GetLayerYear")',
+            data: {
+                Layer: $('#disease').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                $('#year').empty();
+                $.each(data.years, function () {
+                    $('#year').append($('<option />').val(this).text(this));
+                });
+                $('#year option:last').attr('selected', 'selected');
+                ChangeYear();
+            },
+            error: function () {
+            }
+        })
+    }
+
+    function ChangeYear() {
+        $.ajax({
+            url: '@Url.Action("GetLayerYearDates")',
+            data: {
+                Area: $('#area').val(),
+                Layer: $('#disease').val(),
+                Year: $('#year').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                $('#date').empty();
+                $.each(data.dates, function () {
+                    $('#date').append($('<option />').val(this.code).text(this.name));
+                });
+                $('#date option:last').attr('selected', 'selected');
+                ChangeDate();
+            },
+            error: function () {
+            }
+        })
+    }
+
+    function ChangeDate() {
+        var layerName = "";
+        if ($('#area').val() == 'kz') {
+            layerName = $('#disease').val();
+        }
+        else {
+            layerName = $('#disease').val() + '_' +
+                $('#area').val() + '_' +
+                $('#year').val() + $('#date').val();
+        }
+        var Source_disease_new = new ol.source.TileWMS({
+            url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+            params: {
+                'FORMAT': 'image/png',
+                "LAYERS": 'Diseases:' + layerName,
+            },
+            serverType: 'geoserver'
+        });
+        Layer_disease.setSource(Source_disease_new);
+        $('#infoTitle').text($('#area option:selected').text());
+        $('#infoText').text($('#disease option:selected').text());
+        var date = '';
+        if ($('#date option:selected').text() != '') {
+            date = $('#year option:selected').text() + '.' + $('#date option:selected').text();
+        }
+        $('#infoDate').text(date);
+    }
+</script>
 
 @* Menu *@
 <script>
@@ -584,11 +707,12 @@
 @*tooltips, modal windows*@
 <script>
     $(document).ready(function () {
+        ChangeArea();
         // Map Title
         new jBox('Modal', {
             id: 'modal-maptitle',
             attach: '#MapTitleBtn',
-            width: 260,
+            width: 350,
             blockScroll: false,
             animation: 'flip',
             closeButton: false,
@@ -600,7 +724,7 @@
                 x: -10,
                 y: 70
             },
-            content: '<div class="card-body text-white text-center p-0"><h4 class="card-title">Satellite</h5><p class="card-text mb-1">Dataset</p><p class="card-text">YYYY. JDay: DD/MM - DD/MM</p></div >',
+            content: '<div class="card-body text-white text-center p-0"><h4 class="card-title" id="infoTitle">Satellite</h5><p class="card-text mb-1" id="infoText">Dataset</p><p class="card-text" id="infoDate">YYYY. JDay: DD/MM - DD/MM</p></div >',
             overlay: false,
             repositionOnOpen: false
         }).open();
