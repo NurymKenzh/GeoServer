@@ -116,6 +116,19 @@
                     <div id="TematicLayerSections" class="collapse show" aria-labelledby="headingOne" data-parent="#TematicLayerSections">
                         <div class="card-body">
                             <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layernovokubankaShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layernovokubankaShow">
+                                    Посевные поля
+                                </label>
+                                <input id="layernovokubankaOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                                <label class="form-check-label" for="layernovokubankaShow">
+                                    Хозяйства
+                                </label>
+                                <select class="custom-select">
+                                    <option>Новокубанка</option>
+                                </select>
+                            </div>
+                            <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="layeradm1polShow" checked="checked" onchange="ChangeLayers()">
                                 <label class="form-check-label" for="layeradm1polShow">
                                     Области
@@ -129,13 +142,13 @@
                                 </label>
                                 <input id="layeradm2polOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                             </div>
-                            <div class="form-check">
+                            @*<div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="layernovokubankaShow" checked="checked" onchange="ChangeLayers()">
                                 <label class="form-check-label" for="layernovokubankaShow">
                                     Хозяйства
                                 </label>
                                 <input id="layernovokubankaOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-                            </div>
+                            </div>*@
                         </div>
                     </div>
                 </li>
@@ -412,19 +425,19 @@
     Layer_adm2pol.set('name', 'adm2pol');
     layers.push(Layer_adm2pol);
 
-    var Source_novokubanka = new ol.source.TileWMS({
+    var Source_msk11pol = new ol.source.TileWMS({
         url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
         params: {
-            'LAYERS': 'Diseases:novokubanka',
+            'LAYERS': 'Diseases:msk11pol_4326',
             'FORMAT': 'image/png',
         },
         serverType: 'geoserver'
     });
-    var Layer_novokubanka = new ol.layer.Tile({
-        source: Source_novokubanka
+    var Layer_msk11pol = new ol.layer.Tile({
+        source: Source_msk11pol
     });
-    Layer_novokubanka.set('name', 'novokubanka');
-    layers.push(Layer_novokubanka);
+    Layer_msk11pol.set('name', 'mskpol');
+    layers.push(Layer_msk11pol);
 
     var Source_novokubanka = new ol.source.TileWMS({
         url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
@@ -604,6 +617,10 @@
                 layer.setOpacity($('#layeradm2polOpacity').val() / 100);
             }
             if (layer.get('name') == 'novokubanka') {
+                layer.setVisible(document.getElementById("layernovokubankaShow").checked);
+                layer.setOpacity($('#layernovokubankaOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'mskpol') {
                 layer.setVisible(document.getElementById("layernovokubankaShow").checked);
                 layer.setOpacity($('#layernovokubankaOpacity').val() / 100);
             }
