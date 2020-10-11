@@ -31,10 +31,26 @@
             <div class="logo">
                 <h3><a href="#">Меню</a></h3>
             </div>
-            <div class="card-body p-2">
+            <div class="card-body p-2">                
                 <form>
+                    <label class="m-0" for="scenario">
+                        Сценарий
+                    </label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-control" id="scenario">
+                            <option>Модели</option>
+                            <option>Риски</option>
+                        </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <a href="#">
+                                    <i class="SomeInfo fa fa-tag"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
                     <div class="form-group mb-0">
-                        <label class="m-0" for="area">Область</label>
+                        <label class="m-0" for="area">КАТО</label>
                         <select class="form-control form-control-sm" id="area" onchange="ChangeArea()">
                             <optgroup label="Страна">
                                 <option value="kz">Казахстан</option>
@@ -59,9 +75,11 @@
                             <option value="Prus_nesting">Условия зимовки кубышек итальянского пруса</option>
                         </select>
                         <div class="input-group-append">
-                            <div class="input-group-text">
-                                <input type="checkbox" id="layerdiseaseShow" checked="checked" oninput="ChangeLayers()">
-                            </div>
+                            <span class="input-group-text">
+                                <a href="#">
+                                    <i class="SomeInfo fa fa-info-circle"></i>
+                                </a>
+                            </span>
                         </div>
                         <input id="layerdiseaseOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                     </div>
@@ -70,7 +88,15 @@
                         <select class="form-control" id="year" onchange="ChangeYear()">
                             <option value="2020">2020</option>
                         </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <a href="#" target="_blank">
+                                    <input type="checkbox" id="layerdiseaseShow" checked="checked" oninput="ChangeLayers()">
+                                </a>
+                            </span>
+                        </div>
                     </div>
+
                     <label class="m-0" for="date">Дата</label>
                     <!-- Day -->
                     <div class="input-group input-group-sm">
@@ -768,7 +794,7 @@
                 y: -20
             },
             onOpen: function () {
-                this.setContent('<div class="p-0"><img id="legend" class="card-img-top" src="/esnow/img/logo/ESnow.svg"></div>');
+                this.setContent('<div class="p-0"><img id="legend" class="card-img-top" src="C:\Users\Kaisar\source\repos\GeoServer\GeoServer\wwwroot\images\ETA-Modis.svg></div>');
             }
         }).open();
         // Tooltip below to the right
@@ -777,11 +803,8 @@
             zIndex: 'auto',
             attach: '.SomeInfo',
             getTitle: 'InfoTitle',
-            position: {
-                x: 'right',
-                y: 'center'
-            },
-            outside: 'x' // Horizontal Tooltips need to change their outside position
+            content: '<div class="p-0"><p class="text-justify" style="width: 25rem;">Эвапотранспирация – физиологическое явление, связанное с поддержанием растением оптимальной температуры за счет испарения влаги с поверхности листа. Превышение оптимальных температур приводит к замедлению биохимических процессов в растительной клетке, разрушению (денатурации) белковых молекул и клеточных органелл и, в итоге, к увяданию растения. Пространственное распределение относительных значений эвапотранспирации предоставляет пользователю информацию о проблемных участках на отдельных полях или полях целиком, поскольку одной из причин снижения уровня эвапотранспирации является поражение листовых пластинок растений грибными заболеваниями.</p></div>',
+            pointer: 'left:15',
         });
 
     });

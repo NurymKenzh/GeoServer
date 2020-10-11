@@ -248,7 +248,7 @@ article {
     .sidebar .logo a {
         display: inline-block;
         width: 182px;
-        height: 50px;
+        height: 45px;
         background: url(/images/logoDizi.png) left top no-repeat;
         border: 0;
         text-indent: -999999px;
@@ -654,5 +654,5 @@ a.btn-customized-4 {
 .ol-zoom {
     left: unset !important;
     right: 10px !important;
-    top: 150px !important;
+    top: 180px !important;
 }
