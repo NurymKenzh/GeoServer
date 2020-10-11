@@ -40,25 +40,26 @@
             <div class="collapse navbar-collapse" id="navbarsExample07">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Главная <span class="sr-only">(current)</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
+                    @*<li class="nav-item">
+                        <a class="nav-link" href="~/manual/User_manual_Pasture.pdf" target="_blank">Руководство пользователя</a>
+                    </li>*@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Dropdown
+                            <i class="fa fa-info-circle"></i>
+                            Информация
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            <a class="dropdown-item" href="~/manual/User_manual_Pasture.pdf" target="_blank">Руководство пользователя</a>
+                            <a class="dropdown-item text-white" data-toggle="modal" data-target=".video_instruction">Видео инструкция</a>
+                            @*<div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>*@
                         </div>
                     </li>
-                    <li class="nav-item">
+                    @*<li class="nav-item">
                         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li>
+                    </li>*@
                 </ul>
                 @await Html.PartialAsync("_LoginPartial")
                 <div class="modal fade video_instruction" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -81,6 +82,7 @@
                 </div>
             </div>
         </div>
+        <div class="float-right mr-5"><button class="menu btn btn-outline-light btn-sm"><i class="fa fa-bars"></i> Меню</button></div>
     </nav>
     @RenderBody()
     <!-- FOOTER -->
