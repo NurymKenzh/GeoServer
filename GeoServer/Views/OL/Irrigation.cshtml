@@ -11,7 +11,7 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
 <script src="~/lib/jquery-ui/jquery-ui.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+
 <link href="~/lib/ol/ol.css" rel="stylesheet" />
 <script src="~/lib/ol/ol.js"></script>
 @*jBox*@
@@ -63,8 +63,8 @@
                     <label class="m-0" for="DataSet">Dataset</label>
                     <div class="input-group input-group-sm">
                         <select class="form-control" id="DataSet">
+                            <option value="MNDVI">Орошаемые территории</option>
                             <option value="NDVI">NDVI</option>
-                            <option value="SAVI">SAVI</option>
                         </select>
                         <div class="input-group-append">
                             <span class="input-group-text">
@@ -87,29 +87,7 @@
                                 <input type="checkbox" id="layerMODISShow" checked="checked">
                             </div>
                         </div>
-                    </div>
-                    <label class="m-0" for="DayOfYear_MOLT">Дата</label>
-                    <!-- Day -->
-                    <div class="input-group input-group-sm">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <a href="#" target="_blank">
-                                    <i class="fa fa-chevron-left"></i>
-                                </a>
-                            </span>
-                        </div>
-                        <select class="custom-select" id="DayOfYear_MOLT" aria-describedby="DayHelpBlock">
-                            <option value="1">001:02/01 - 08/01</option>
-                            <option value="2">002:08/01 - 08/16</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <a href="#" target="_blank">
-                                    <i class="fa fa-chevron-right"></i>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
+                    </div>                    
                 </form>
             </div>
 
