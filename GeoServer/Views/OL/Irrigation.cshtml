@@ -36,16 +36,15 @@
                     <div class="form-group mb-0">
                         <label class="m-0" for="cato1">Область</label>
                         <select class="form-control form-control-sm" id="cato1">
-                            <option>Казахстан</option>
-                            <option>Акмолинская область</option>
-                            <option>Костанайская область</option>
-                            <option>3</option>
-                            <option>4</option>
+                            <option value="AB11">Акмолинская область</option>
+                            <option value="AB39">Костанайская область</option>
+                            <option value="AB55">Павлодарская область</option>
+                            <option value="AB59">Северо-Казахстанская область</option>
                         </select>
                     </div>
                 </form>
                 <form>
-                    <label class="m-0" for="SourceProduct">Спутник</label>
+                    @*<label class="m-0" for="SourceProduct">Спутник</label>
                     <div class="input-group input-group-sm">
                         <select class="form-control" id="SourceProduct">
                             <option value="0">Terra</option>
@@ -58,9 +57,9 @@
                                 </a>
                             </span>
                         </div>
-                    </div>
+                    </div>*@
                     <!-- for Dataset -->
-                    <label class="m-0" for="DataSet">Dataset</label>
+                    @*<label class="m-0" for="DataSet">Dataset</label>
                     <div class="input-group input-group-sm">
                         <select class="form-control" id="DataSet">
                             <option value="MNDVI">Орошаемые территории</option>
@@ -74,20 +73,16 @@
                             </span>
                         </div>
                     </div>
-                    <input id="layerMODISOpacity" type="range" class="form-control-range" min="0" max="100" value="80" />
+                    <input id="layerMODISOpacity" type="range" class="form-control-range" min="0" max="100" value="80" />*@
                     <!-- Year -->
-                    <label class="m-0" for="Year_MOLT_MOD10">Год</label>
+                    <label class="m-0" for="year">Год</label>
                     <div class="input-group input-group-sm">
-                        <select class="form-control" id="Year_MOLT_MOD10">
+                        <select class="form-control" id="year" onchange="ChangeLayers()">
+                            <option value="2018">2018</option>
                             <option value="2019">2019</option>
-                            <option value="2020">2020</option>
+                            <option value="2020" selected>2020</option>
                         </select>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <input type="checkbox" id="layerMODISShow" checked="checked">
-                            </div>
-                        </div>
-                    </div>                    
+                    </div>
                 </form>
             </div>
 
@@ -99,26 +94,53 @@
                     <div id="TematicLayerSections" class="collapse show" aria-labelledby="headingOne" data-parent="#TematicLayerSections">
                         <div class="card-body">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layerpasturepolShow" checked="checked">
-                                <label class="form-check-label" for="layerpasturepolShow">
-                                    Layer
+                                <input class="form-check-input" type="checkbox" id="layerwateringShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layerwateringShow">
+                                    Орошаемые территории
                                 </label>
-                                <input id="layerpasturepolOpacity" type="range" class="form-control-range" min="0" max="100" value="50"/>
+                                <input id="layerwateringOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                             </div>
-                            
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layerpopShow" checked="checked">
+                                <input class="form-check-input" type="checkbox" id="layermskpolShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layermskpolShow">
+                                    Посевные поля
+                                </label>
+                                <input id="layermskpolOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layerpopShow" checked="checked" onchange="ChangeLayers()">
                                 <label class="form-check-label" for="layerpopShow">
-                                    popLayer
+                                    Населенные пункты
                                 </label>
-                                <input id="layerpopOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                                <input id="layerpopOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layeradmxpolShow">
-                                <label class="form-check-label" for="layeradmxpolShow">
-                                    admLayer
+                                <input class="form-check-input" type="checkbox" id="layeradm1polShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layeradm1polShow">
+                                    Области
                                 </label>
-                                <input id="layeradmxpolOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                                <input id="layeradm1polOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layeradm2polShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layeradm2polShow">
+                                    Районы
+                                </label>
+                                <input id="layeradm2polOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layerhdrShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layerhdrShow">
+                                    Реки, озера
+                                </label>
+                                <input id="layerhdrOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layerrdsShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layerrdsShow">
+                                    Дороги
+                                </label>
+                                <input id="layerrdsOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                             </div>
                         </div>
                     </div>
@@ -192,21 +214,8 @@
     <!-- End wrapper -->
 </div>
 
-
-
-@* layers *@
+@* base layers *@
 <script>
-    var geoserver_url = '@ViewBag.GeoServerUrl',
-        geoserver_MODIS_workspace_name = '@ViewBag.ModisWorkspace', //'MODIS',
-        geoserver_workspace_name = 'Pastures2019',
-        layerModisTemplate1 = '@ViewBag.ModisLayerTemplate1', //'A',
-        layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI = '@ViewBag.ModisLayerTemplate_MOLT_MOD13Q1006_B01_NDVI',
-        layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly = '@ViewBag.ModisLayerTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly',
-        layerModisTemplate_MOLA_MYD13Q1006_B01_NDVI = '@ViewBag.ModisLayerTemplate_MOLA_MYD13Q1006_B01_NDVI',
-        layerModisTemplate_MOLA_MYD13Q1006_B01_NDVI_Anomaly = '@ViewBag.ModisLayerTemplate_MOLA_MYD13Q1006_B01_NDVI_Anomaly';
-    var layerNDVI = layerModisTemplate1 + $('#Year_MOLT_MOD13Q1006').val() + $('#DayOfYear_MOLT_MOD13Q1006').val() + layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI,
-        layerAnomaly = layerModisTemplate1 + $('#Year_MOLT_MOD13Q1006').val() + $('#DayOfYear_MOLT_MOD13Q1006').val() + layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly;
-
     var HEREappId = 'SLdBasp4s1oq2oUbVGxy';
     var HEREappCode = 'D9-h9iVhjgUB_9eUlFETXA';
 
@@ -358,6 +367,196 @@
     });
     Layer_Base.set('name', 'Base');
     Layer_Base.setOpacity(1);
+
+    var layers = [];
+    layers.push(Layer_Base);
+</script>
+
+@* layers *@
+<script>
+    var geoserver_url = '@ViewBag.GeoserverAddress';
+
+    var Source_msk11pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk11pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk11pol = new ol.layer.Tile({
+        source: Source_msk11pol
+    });
+    Layer_msk11pol.set('name', 'mskpol');
+    layers.push(Layer_msk11pol);
+
+    var Source_msk39pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk39pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk39pol = new ol.layer.Tile({
+        source: Source_msk39pol
+    });
+    Layer_msk39pol.set('name', 'mskpol');
+    layers.push(Layer_msk39pol);
+
+    var Source_msk55pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk55pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk55pol = new ol.layer.Tile({
+        source: Source_msk55pol
+    });
+    Layer_msk55pol.set('name', 'mskpol');
+    layers.push(Layer_msk55pol);
+
+    var Source_msk59pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk59pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk59pol = new ol.layer.Tile({
+        source: Source_msk59pol
+    });
+    Layer_msk59pol.set('name', 'mskpol');
+    layers.push(Layer_msk59pol);
+
+    var Source_watering112018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112018 = new ol.layer.Tile({ source: Source_watering112018 }); Layer_watering112018.set('name', 'watering'); Layer_watering112018.set('year', '2018'); Layer_watering112018.setVisible(false); layers.push(Layer_watering112018);
+    var Source_watering112019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112019 = new ol.layer.Tile({ source: Source_watering112019 }); Layer_watering112019.set('name', 'watering'); Layer_watering112019.set('year', '2019'); Layer_watering112019.setVisible(false); layers.push(Layer_watering112019);
+    var Source_watering112020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112020 = new ol.layer.Tile({ source: Source_watering112020 }); Layer_watering112020.set('name', 'watering'); Layer_watering112020.set('year', '2020'); Layer_watering112020.setVisible(true); layers.push(Layer_watering112020);
+    var Source_watering152018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB15_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering152018 = new ol.layer.Tile({ source: Source_watering152018 }); Layer_watering152018.set('name', 'watering'); Layer_watering152018.set('year', '2018'); Layer_watering152018.setVisible(false); layers.push(Layer_watering152018);
+    var Source_watering152019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB15_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering152019 = new ol.layer.Tile({ source: Source_watering152019 }); Layer_watering152019.set('name', 'watering'); Layer_watering152019.set('year', '2019'); Layer_watering152019.setVisible(false); layers.push(Layer_watering152019);
+    var Source_watering152020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB15_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering152020 = new ol.layer.Tile({ source: Source_watering152020 }); Layer_watering152020.set('name', 'watering'); Layer_watering152020.set('year', '2020'); Layer_watering152020.setVisible(true); layers.push(Layer_watering152020);
+    var Source_watering192018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB19_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering192018 = new ol.layer.Tile({ source: Source_watering192018 }); Layer_watering192018.set('name', 'watering'); Layer_watering192018.set('year', '2018'); Layer_watering192018.setVisible(false); layers.push(Layer_watering192018);
+    var Source_watering192019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB19_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering192019 = new ol.layer.Tile({ source: Source_watering192019 }); Layer_watering192019.set('name', 'watering'); Layer_watering192019.set('year', '2019'); Layer_watering192019.setVisible(false); layers.push(Layer_watering192019);
+    var Source_watering192020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB19_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering192020 = new ol.layer.Tile({ source: Source_watering192020 }); Layer_watering192020.set('name', 'watering'); Layer_watering192020.set('year', '2020'); Layer_watering192020.setVisible(true); layers.push(Layer_watering192020);
+    var Source_watering272018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB27_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering272018 = new ol.layer.Tile({ source: Source_watering272018 }); Layer_watering272018.set('name', 'watering'); Layer_watering272018.set('year', '2018'); Layer_watering272018.setVisible(false); layers.push(Layer_watering272018);
+    var Source_watering272019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB27_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering272019 = new ol.layer.Tile({ source: Source_watering272019 }); Layer_watering272019.set('name', 'watering'); Layer_watering272019.set('year', '2019'); Layer_watering272019.setVisible(false); layers.push(Layer_watering272019);
+    var Source_watering272020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB27_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering272020 = new ol.layer.Tile({ source: Source_watering272020 }); Layer_watering272020.set('name', 'watering'); Layer_watering272020.set('year', '2020'); Layer_watering272020.setVisible(true); layers.push(Layer_watering272020);
+    var Source_watering392018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB39_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering392018 = new ol.layer.Tile({ source: Source_watering392018 }); Layer_watering392018.set('name', 'watering'); Layer_watering392018.set('year', '2018'); Layer_watering392018.setVisible(false); layers.push(Layer_watering392018);
+    var Source_watering392019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB39_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering392019 = new ol.layer.Tile({ source: Source_watering392019 }); Layer_watering392019.set('name', 'watering'); Layer_watering392019.set('year', '2019'); Layer_watering392019.setVisible(false); layers.push(Layer_watering392019);
+    var Source_watering392020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB39_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering392020 = new ol.layer.Tile({ source: Source_watering392020 }); Layer_watering392020.set('name', 'watering'); Layer_watering392020.set('year', '2020'); Layer_watering392020.setVisible(true); layers.push(Layer_watering392020);
+    var Source_watering432018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB43_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering432018 = new ol.layer.Tile({ source: Source_watering432018 }); Layer_watering432018.set('name', 'watering'); Layer_watering432018.set('year', '2018'); Layer_watering432018.setVisible(false); layers.push(Layer_watering432018);
+    var Source_watering432019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB43_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering432019 = new ol.layer.Tile({ source: Source_watering432019 }); Layer_watering432019.set('name', 'watering'); Layer_watering432019.set('year', '2019'); Layer_watering432019.setVisible(false); layers.push(Layer_watering432019);
+    var Source_watering432020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB43_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering432020 = new ol.layer.Tile({ source: Source_watering432020 }); Layer_watering432020.set('name', 'watering'); Layer_watering432020.set('year', '2020'); Layer_watering432020.setVisible(true); layers.push(Layer_watering432020);
+    var Source_watering552018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB55_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering552018 = new ol.layer.Tile({ source: Source_watering552018 }); Layer_watering552018.set('name', 'watering'); Layer_watering552018.set('year', '2018'); Layer_watering552018.setVisible(false); layers.push(Layer_watering552018);
+    var Source_watering552019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB55_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering552019 = new ol.layer.Tile({ source: Source_watering552019 }); Layer_watering552019.set('name', 'watering'); Layer_watering552019.set('year', '2019'); Layer_watering552019.setVisible(false); layers.push(Layer_watering552019);
+    var Source_watering552020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB55_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering552020 = new ol.layer.Tile({ source: Source_watering552020 }); Layer_watering552020.set('name', 'watering'); Layer_watering552020.set('year', '2020'); Layer_watering552020.setVisible(true); layers.push(Layer_watering552020);
+    var Source_watering592018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB59_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering592018 = new ol.layer.Tile({ source: Source_watering592018 }); Layer_watering592018.set('name', 'watering'); Layer_watering592018.set('year', '2018'); Layer_watering592018.setVisible(false); layers.push(Layer_watering592018);
+    var Source_watering592019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB59_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering592019 = new ol.layer.Tile({ source: Source_watering592019 }); Layer_watering592019.set('name', 'watering'); Layer_watering592019.set('year', '2019'); Layer_watering592019.setVisible(false); layers.push(Layer_watering592019);
+    var Source_watering592020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB59_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering592020 = new ol.layer.Tile({ source: Source_watering592020 }); Layer_watering592020.set('name', 'watering'); Layer_watering592020.set('year', '2020'); Layer_watering592020.setVisible(true); layers.push(Layer_watering592020);
+    var Source_watering612018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB61_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering612018 = new ol.layer.Tile({ source: Source_watering612018 }); Layer_watering612018.set('name', 'watering'); Layer_watering612018.set('year', '2018'); Layer_watering612018.setVisible(false); layers.push(Layer_watering612018);
+    var Source_watering612019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB61_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering612019 = new ol.layer.Tile({ source: Source_watering612019 }); Layer_watering612019.set('name', 'watering'); Layer_watering612019.set('year', '2019'); Layer_watering612019.setVisible(false); layers.push(Layer_watering612019);
+    var Source_watering612020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB61_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering612020 = new ol.layer.Tile({ source: Source_watering612020 }); Layer_watering612020.set('name', 'watering'); Layer_watering612020.set('year', '2020'); Layer_watering612020.setVisible(true); layers.push(Layer_watering612020);
+
+    var Source_hdrlin = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:hdrlin',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_hdrlin = new ol.layer.Tile({
+        source: Source_hdrlin
+    });
+    Layer_hdrlin.set('name', 'hdr');
+    layers.push(Layer_hdrlin);
+
+    var Source_hdrpol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:hdrpol',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_hdrpol = new ol.layer.Tile({
+        source: Source_hdrpol
+    });
+    Layer_hdrpol.set('name', 'hdr');
+    layers.push(Layer_hdrpol);
+
+    var Source_poppnt = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:poppnt',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_poppnt = new ol.layer.Tile({
+        source: Source_poppnt
+    });
+    Layer_poppnt.set('name', 'pop');
+    layers.push(Layer_poppnt);
+
+    var Source_poppol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:poppol',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_poppol = new ol.layer.Tile({
+        source: Source_poppol
+    });
+    Layer_poppol.set('name', 'pop');
+    layers.push(Layer_poppol);
+
+    var Source_rdslin = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:rdslin',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_rdslin = new ol.layer.Tile({
+        source: Source_rdslin
+    });
+    Layer_rdslin.set('name', 'rds');
+    layers.push(Layer_rdslin);
+
+    var Source_adm1pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:adm1pol20201005',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm1pol = new ol.layer.Tile({
+        source: Source_adm1pol
+    });
+    Layer_adm1pol.set('name', 'adm1pol');
+    layers.push(Layer_adm1pol);
+
+    var Source_adm2pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:adm2pol20201005',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm2pol = new ol.layer.Tile({
+        source: Source_adm2pol
+    });
+    Layer_adm2pol.set('name', 'adm2pol');
+    layers.push(Layer_adm2pol);
 </script>
 
 @* map *@
@@ -385,22 +584,7 @@
         controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
             new ol.control.ScaleLine()
         ]),
-        layers: [
-            Layer_Base,
-            //Layer_NDVI,
-            //Layer_Anomaly,
-            //Layer_pasturepol,
-            //Layer_select_pasturepol,
-            //Layer_pasfarmpol,
-            //Layer_hdrlin,
-            //Layer_rdslin,
-            //Layer_adm1pol,
-            //Layer_adm2pol,
-            //Layer_adm3pol,
-            //Layer_poppol,
-            //Layer_poppnt,
-            //Layer_hdrpol
-        ],
+        layers: layers,
         view: new ol.View({
             center: ol.proj.fromLonLat([66.902, 48.714]),
             zoom: 5,
@@ -523,6 +707,39 @@
                 else if ($('#layerBaseType').val() == 'ThunderforestNeighbourhood') {
                     layer.setSource(Source_ThunderforestNeighbourhood);
                 }
+            }
+            if (layer.get('name') == 'adm1pol') {
+                layer.setVisible(document.getElementById("layeradm1polShow").checked);
+                layer.setOpacity($('#layeradm1polOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'adm2pol') {
+                layer.setVisible(document.getElementById("layeradm2polShow").checked);
+                layer.setOpacity($('#layeradm2polOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'mskpol') {
+                layer.setVisible(document.getElementById("layermskpolShow").checked);
+                layer.setOpacity($('#layermskpolOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'watering') {
+                if (layer.get('year') == $('#year').val()) {
+                    layer.setVisible(document.getElementById("layerwateringShow").checked);
+                }
+                else {
+                    layer.setVisible(false);
+                }
+                layer.setOpacity($('#layerwateringOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'hdr') {
+                layer.setVisible(document.getElementById("layerhdrShow").checked);
+                layer.setOpacity($('#layerhdrOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'pop') {
+                layer.setVisible(document.getElementById("layerpopShow").checked);
+                layer.setOpacity($('#layerpopOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'rds') {
+                layer.setVisible(document.getElementById("layerrdsShow").checked);
+                layer.setOpacity($('#layerrdsOpacity').val() / 100);
             }
         })
     }
