@@ -223,7 +223,7 @@
         <div class="content">
             <!-- open sidebar menu -->
             <a class="btn btn-primary btn-customized open-menu" href="#" role="button">
-                <i class="fas fa-align-left"></i> <span>Menu</span>
+                <i class="fas fa-align-left"></i> <span>Меню</span>
             </a>
             <!-- Map content -->
             <div id="map" class="position-fixed col-md-12 col-lg-12 m-0 p-0 bg-light"></div>
@@ -817,6 +817,7 @@
                 Layer_admXpol_Navigate.setSource(new_source);
                 map.getView().fit(Layer_admXpol_Navigate.getSource().getExtent());
 
+                ChangeInfo();
                 if (layer == 1) {
                     var ab = features[0].get('kato_te').toString().substr(0, 2);
                     filter = "kato_te%20LIKE%20%27" + ab + "%25%27";
@@ -838,11 +839,19 @@
                             for (var i = 0; i < features_adm2pol.length; i++) {
                                 $('#cato2').append($("<option />").val(features_adm2pol[i].get('kato_te')).text(features_adm2pol[i].get('name_adm2')));
                             }
+                            ChangeInfo();
                         }
                     })
                 }
             }
         });
+        ChangeInfo();
+    }
+
+    function ChangeInfo(){
+        $('#infoTitle').text($('#cato1 option:selected').text());
+        $('#infoText').text($('#cato2 option:selected').text());
+        $('#infoDate').text($('#year option:selected').text());
     }
 </script>
 
@@ -895,7 +904,7 @@
                 x: -10,
                 y: 70
             },
-            content: '<div class="card-body text-white text-center p-0"><h4 class="card-title">Satellite</h5><p class="card-text mb-1">Dataset</p><p class="card-text">YYYY. JDay: DD/MM - DD/MM</p></div >',
+            content: '<div class="card-body text-white text-center p-0"><h4 class="card-title" id="infoTitle">Satellite</h5><p class="card-text mb-1" id="infoText">Dataset</p><p class="card-text" id="infoDate">YYYY. JDay: DD/MM - DD/MM</p></div >',
             overlay: false,
             repositionOnOpen: false
         }).open();
@@ -935,5 +944,6 @@
             },
             outside: 'x' // Horizontal Tooltips need to change their outside position
         });
+        ChangeInfo();
     });
 </script>
