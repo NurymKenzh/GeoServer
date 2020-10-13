@@ -35,45 +35,65 @@
                 <form>
                     <div class="form-group mb-0">
                         <label class="m-0" for="cato1">Область</label>
-                        <select class="form-control form-control-sm" id="cato1">
-                            <option value="AB11">Акмолинская область</option>
-                            <option value="AB39">Костанайская область</option>
-                            <option value="AB55">Павлодарская область</option>
-                            <option value="AB59">Северо-Казахстанская область</option>
+                        <select class="form-control form-control-sm" id="cato1" onchange="NavigateToCATO(this.value, 1)">
+                            <option value=""></option>
+                            <option value="110000000">Акмолинская область</option>
+                            <option value="150000000">Актюбинская область</option>
+                            <option value="190000000">Алматинская область</option>
+                            <option value="230000000">Атырауская область</option>
+                            <option value="630000000">Восточно-Казахстанская область</option>
+                            <option value="750000000">г. Алматы</option>
+                            <option value="710000000">г. Нур-Султан</option>
+                            <option value="790000000">г.Шымкент</option>
+                            <option value="310000000">Жамбылская область</option>
+                            <option value="270000000">Западно-Казахстанская область</option>
+                            <option value="350000000">Карагандинская область</option>
+                            <option value="390000000">Костанайская область</option>
+                            <option value="430000000">Кызылординская область</option>
+                            <option value="470000000">Мангистауская область</option>
+                            <option value="550000000">Павлодарская область</option>
+                            <option value="590000000">Северо-Казахстанская область</option>
+                            <option value="610000000">Туркестанская область</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label class="m-0" for="cato2">Район</label>
+                        <select class="form-control form-control-sm" id="cato2" onchange="NavigateToCATO(this.value, 2)">
+                            <option value=""></option>
                         </select>
                     </div>
                 </form>
                 <form>
                     @*<label class="m-0" for="SourceProduct">Спутник</label>
-                    <div class="input-group input-group-sm">
-                        <select class="form-control" id="SourceProduct">
-                            <option value="0">Terra</option>
-                            <option value="1">Aqua</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <a href="#" target="_blank">
-                                    <i class="SomeInfo fa fa-info-circle" InfoTitle="Full Information"></i>
-                                </a>
-                            </span>
-                        </div>
-                    </div>*@
+                        <div class="input-group input-group-sm">
+                            <select class="form-control" id="SourceProduct">
+                                <option value="0">Terra</option>
+                                <option value="1">Aqua</option>
+                            </select>
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <a href="#" target="_blank">
+                                        <i class="SomeInfo fa fa-info-circle" InfoTitle="Full Information"></i>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>*@
                     <!-- for Dataset -->
                     @*<label class="m-0" for="DataSet">Dataset</label>
-                    <div class="input-group input-group-sm">
-                        <select class="form-control" id="DataSet">
-                            <option value="MNDVI">Орошаемые территории</option>
-                            <option value="NDVI">NDVI</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <a href="#" id="LegendBtn" class="target-click">
-                                    <i class="SomeInfo fa fa-tag" InfoTitle="Legend"></i>
-                                </a>
-                            </span>
+                        <div class="input-group input-group-sm">
+                            <select class="form-control" id="DataSet">
+                                <option value="MNDVI">Орошаемые территории</option>
+                                <option value="NDVI">NDVI</option>
+                            </select>
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <a href="#" id="LegendBtn" class="target-click">
+                                        <i class="SomeInfo fa fa-tag" InfoTitle="Legend"></i>
+                                    </a>
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    <input id="layerMODISOpacity" type="range" class="form-control-range" min="0" max="100" value="80" />*@
+                        <input id="layerMODISOpacity" type="range" class="form-control-range" min="0" max="100" value="80" />*@
                     <!-- Year -->
                     <label class="m-0" for="year">Год</label>
                     <div class="input-group input-group-sm">
@@ -557,6 +577,20 @@
     });
     Layer_adm2pol.set('name', 'adm2pol');
     layers.push(Layer_adm2pol);
+
+    var Layer_admXpol_Navigate = new ol.layer.Vector({
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: 'transparent'
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                width: 4
+            })
+        })
+    });
+    Layer_admXpol_Navigate.set('name', 'admxpolnavigate');
+    layers.push(Layer_admXpol_Navigate);
 </script>
 
 @* map *@
@@ -638,6 +672,7 @@
     };
 </script>
 
+@* ChangeLayers *@
 <script>
     function ChangeLayers() {
         map.getLayers().forEach(function (layer) {
@@ -745,6 +780,71 @@
     }
 </script>
 
+@* NavigateToCATO *@
+<script>
+    function NavigateToCATO(te, layer) {
+        if (Layer_admXpol_Navigate.getSource() != null) {
+            Layer_admXpol_Navigate.getSource().clear();
+        }
+        if (te == '') {
+            Layer_admXpol_Navigate.getSource().clear();
+            return;
+        }
+        var filter = "kato_te = '" + te + "'";
+        var filterParams = {
+            'FILTER': null,
+            'CQL_FILTER': null,
+            'FEATUREID': null
+        };
+        if (filter.replace(/^\s\s*/, '').replace(/\s\s*$/, '') != "") {
+            filterParams["CQL_FILTER"] = filter;
+        }
+        url_admXpol_Navigate = "http://" + geoserver_url + "/geoserver/" + "Diseases/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Diseases:adm" + layer.toString() + "pol20201005&CQL_FILTER=" + filter + "&outputFormat=text/javascript&format_options=callback:getJson";
+        $.ajax({
+            jsonp: false,
+            jsonpCallback: 'getJson',
+            type: 'GET',
+            url: url_admXpol_Navigate,
+            async: false,
+            dataType: 'jsonp',
+            success: function (data_admXpol_Navigate) {
+                var features = (new ol.format.GeoJSON()).readFeatures(data_admXpol_Navigate, {
+                    featureProjection: 'EPSG:3857'
+                }),
+                new_source = new ol.source.Vector({
+                    features: features
+                });
+                Layer_admXpol_Navigate.setSource(new_source);
+                map.getView().fit(Layer_admXpol_Navigate.getSource().getExtent());
+
+                if (layer == 1) {
+                    var ab = features[0].get('kato_te').toString().substr(0, 2);
+                    filter = "kato_te%20LIKE%20%27" + ab + "%25%27";
+                    layer = 2;
+                    url_admXpol_Navigate = "http://" + geoserver_url + "/geoserver/" + "Diseases/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Diseases:adm" + layer.toString() + "pol20201005&CQL_FILTER=" + filter + "&outputFormat=text/javascript&format_options=callback:getJson";
+                    $.ajax({
+                        jsonp: false,
+                        jsonpCallback: 'getJson',
+                        type: 'GET',
+                        url: url_admXpol_Navigate,
+                        async: false,
+                        dataType: 'jsonp',
+                        success: function (data_adm2pol) {
+                            var features_adm2pol = (new ol.format.GeoJSON()).readFeatures(data_adm2pol, {
+                                featureProjection: 'EPSG:3857'
+                            });
+                            $('#cato2').empty();
+                            $('#cato2').append($("<option />"));
+                            for (var i = 0; i < features_adm2pol.length; i++) {
+                                $('#cato2').append($("<option />").val(features_adm2pol[i].get('kato_te')).text(features_adm2pol[i].get('name_adm2')));
+                            }
+                        }
+                    })
+                }
+            }
+        });
+    }
+</script>
 
 @* Menu *@
 <script>
@@ -835,6 +935,5 @@
             },
             outside: 'x' // Horizontal Tooltips need to change their outside position
         });
-
     });
 </script>
