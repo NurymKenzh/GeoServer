@@ -11,7 +11,6 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
 <script src="~/lib/jquery-ui/jquery-ui.js"></script>
-
 <link href="~/lib/ol/ol.css" rel="stylesheet" />
 <script src="~/lib/ol/ol.js"></script>
 @*jBox*@
@@ -31,25 +30,39 @@
             <div class="logo">
                 <h3><a href="#">Меню</a></h3>
             </div>
-            <div class="card-body p-2">
-                <form>
-                    <div class="form-group mb-0">
-                        <label class="m-0" for="cato1">Область</label>
-                        <select class="form-control form-control-sm" id="cato1">
-                            <option>Казахстан</option>
-                            <option>Акмолинская область</option>
-                            <option>Костанайская область</option>
-                            <option>3</option>
-                            <option>4</option>
-                        </select>
+            <ul class="list-unstyled menu-elements m-0">
+                <li>
+                    <a href="#FindKATOSections" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="FindKATOSections">
+                        <i class="fa fa-search"></i>Поиск
+                    </a>
+                    <div id="FindKATOSections" class="collapse show" aria-labelledby="headingOne" data-parent="#FindKATOSections">
+                        <div class="card-body p-2">
+                            <form>
+                                <div class="form-group mb-0">
+                                    <select class="form-control form-control-sm" id="area" onchange="ChangeArea()">
+                                        <optgroup label="Страна">
+                                            <option value="kz">Казахстан</option>
+                                        </optgroup>
+                                        <optgroup label="Области">
+                                            <option value="AB11">Акмолинская область</option>
+                                            <option value="AB39">Костанайская область</option>
+                                            <option value="AB55">Павлодарская область</option>
+                                            <option value="AB59">Северо-Казахстанская область</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </form>
+                </li>
+            </ul>
+            <div class="card-body p-2">                
                 <form>
                     <label class="m-0" for="SourceProduct">Спутник</label>
                     <div class="input-group input-group-sm">
                         <select class="form-control" id="SourceProduct">
-                            <option value="0">Terra</option>
-                            <option value="1">Aqua</option>
+                            <option value="0">Sentinel-2</option>
+                            <option value="1">Landsat</option>
                         </select>
                         <div class="input-group-append">
                             <span class="input-group-text">
@@ -87,7 +100,7 @@
                                 <input type="checkbox" id="layerMODISShow" checked="checked">
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                 </form>
             </div>
 
@@ -103,22 +116,22 @@
                                 <label class="form-check-label" for="layerpasturepolShow">
                                     Layer
                                 </label>
-                                <input id="layerpasturepolOpacity" type="range" class="form-control-range" min="0" max="100" value="50"/>
+                                <input id="layerpasturepolOpacity" type="range" class="form-control-range" min="0" max="100" value="50" />
                             </div>
-                            
+
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="layerpopShow" checked="checked">
                                 <label class="form-check-label" for="layerpopShow">
                                     popLayer
                                 </label>
-                                <input id="layerpopOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                                <input id="layerpopOpacity" type="range" class="form-control-range" min="0" max="100" value="100" />
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="layeradmxpolShow">
                                 <label class="form-check-label" for="layeradmxpolShow">
                                     admLayer
                                 </label>
-                                <input id="layeradmxpolOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                                <input id="layeradmxpolOpacity" type="range" class="form-control-range" min="0" max="100" value="100" />
                             </div>
                         </div>
                     </div>

@@ -248,14 +248,14 @@ article {
     .sidebar .logo a {
         display: inline-block;
         width: 182px;
-        height: 45px;
+        height: 35px;
         background: url(/images/logoDizi.png) left top no-repeat;
         border: 0;
         text-indent: -999999px;
     }
 
 .sidebar ul.menu-elements {
-    padding: 10px 0;
+    padding: 0px 0;
     border-bottom: 1px solid #4a89dc;
     transition: all .3s;
 }
