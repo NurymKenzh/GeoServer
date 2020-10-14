@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Карта";
     Layout = "~/Views/Shared/_LayoutIrrigation.cshtml";
 }
@@ -11,6 +10,7 @@
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
 <script src="~/lib/jquery-ui/jquery-ui.js"></script>
+
 <link href="~/lib/ol/ol.css" rel="stylesheet" />
 <script src="~/lib/ol/ol.js"></script>
 @*jBox*@
@@ -30,19 +30,49 @@
             <div class="logo">
                 <h3><a href="#">Меню</a></h3>
             </div>
-            <div class="card-body p-2">
-                <form>
-                    <div class="form-group mb-0">
-                        <label class="m-0" for="cato1">Область</label>
-                        <select class="form-control form-control-sm" id="cato1">
-                            <option>Казахстан</option>
-                            <option>Акмолинская область</option>
-                            <option>Костанайская область</option>
-                            <option>3</option>
-                            <option>4</option>
-                        </select>
+            <ul class="list-unstyled menu-elements m-0">                
+                <li>
+                    <a href="#FilterKatoSections" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="FilterKatoSections">
+                        <i class="fa fa-filter"></i>Поиск по КАТО
+                    </a>
+                    <div id="FilterKatoSections" class="collapse show" aria-labelledby="headingOne" data-parent="#FilterKatoSections">
+                        <div class="card-body p-2">
+                            <form>
+                                <div class="form-group mb-0">
+                                    <label class="m-0" for="cato1">Область</label>
+                                    <select class="form-control form-control-sm" id="cato1" onchange="NavigateToCATO(this.value, 1)">
+                                        <option value="">Казахстан</option>
+                                        <option value="110000000">Акмолинская область</option>
+                                        <option value="150000000">Актюбинская область</option>
+                                        <option value="190000000">Алматинская область</option>
+                                        <option value="230000000">Атырауская область</option>
+                                        <option value="630000000">Восточно-Казахстанская область</option>
+                                        <option value="750000000">г. Алматы</option>
+                                        <option value="710000000">г. Нур-Султан</option>
+                                        <option value="790000000">г.Шымкент</option>
+                                        <option value="310000000">Жамбылская область</option>
+                                        <option value="270000000">Западно-Казахстанская область</option>
+                                        <option value="350000000">Карагандинская область</option>
+                                        <option value="390000000">Костанайская область</option>
+                                        <option value="430000000">Кызылординская область</option>
+                                        <option value="470000000">Мангистауская область</option>
+                                        <option value="550000000">Павлодарская область</option>
+                                        <option value="590000000">Северо-Казахстанская область</option>
+                                        <option value="610000000">Туркестанская область</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-0">
+                                    <label class="m-0" for="cato2">Район</label>
+                                    <select class="form-control form-control-sm" id="cato2" onchange="NavigateToCATO(this.value, 2)">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </form>
+                </li>
+            </ul>
+            <div class="card-body p-2">                
                 <form>
                     <label class="m-0" for="SourceProduct">Спутник</label>
                     <div class="input-group input-group-sm">
@@ -75,21 +105,16 @@
                     </div>
                     <input id="layerMODISOpacity" type="range" class="form-control-range" min="0" max="100" value="80" />
                     <!-- Year -->
-                    <label class="m-0" for="Year_MOLT_MOD10">Год</label>
+                    <label class="m-0" for="year">Год</label>
                     <div class="input-group input-group-sm">
-                        <select class="form-control" id="Year_MOLT_MOD10">
+                        <select class="form-control" id="year" onchange="ChangeLayers()">
+                            <option value="2018">2018</option>
                             <option value="2019">2019</option>
-                            <option value="2020">2020</option>
+                            <option value="2020" selected>2020</option>
                         </select>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <input type="checkbox" id="layerMODISShow" checked="checked">
-                            </div>
-                        </div>
-                    </div>                    
+                    </div>
                 </form>
             </div>
-
             <ul class="list-unstyled menu-elements">
                 <li class="">
                     <a href="#TematicLayerSections" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="TematicLayerSections">
@@ -98,26 +123,53 @@
                     <div id="TematicLayerSections" class="collapse show" aria-labelledby="headingOne" data-parent="#TematicLayerSections">
                         <div class="card-body">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layerpasturepolShow" checked="checked">
-                                <label class="form-check-label" for="layerpasturepolShow">
-                                    Layer
+                                <input class="form-check-input" type="checkbox" id="layerwateringShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layerwateringShow">
+                                    Орошаемые территории
                                 </label>
-                                <input id="layerpasturepolOpacity" type="range" class="form-control-range" min="0" max="100" value="50"/>
+                                <input id="layerwateringOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                             </div>
-                            
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layerpopShow" checked="checked">
+                                <input class="form-check-input" type="checkbox" id="layermskpolShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layermskpolShow">
+                                    Посевные поля
+                                </label>
+                                <input id="layermskpolOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layerpopShow" checked="checked" onchange="ChangeLayers()">
                                 <label class="form-check-label" for="layerpopShow">
-                                    popLayer
+                                    Населенные пункты
                                 </label>
-                                <input id="layerpopOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                                <input id="layerpopOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layeradmxpolShow">
-                                <label class="form-check-label" for="layeradmxpolShow">
-                                    admLayer
+                                <input class="form-check-input" type="checkbox" id="layeradm1polShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layeradm1polShow">
+                                    Области
                                 </label>
-                                <input id="layeradmxpolOpacity" type="range" class="form-control-range" min="0" max="100" value="100"/>
+                                <input id="layeradm1polOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layeradm2polShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layeradm2polShow">
+                                    Районы
+                                </label>
+                                <input id="layeradm2polOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layerhdrShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layerhdrShow">
+                                    Реки, озера
+                                </label>
+                                <input id="layerhdrOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="layerrdsShow" checked="checked" onchange="ChangeLayers()">
+                                <label class="form-check-label" for="layerrdsShow">
+                                    Дороги
+                                </label>
+                                <input id="layerrdsOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                             </div>
                         </div>
                     </div>
@@ -180,7 +232,7 @@
         <div class="content">
             <!-- open sidebar menu -->
             <a class="btn btn-primary btn-customized open-menu" href="#" role="button">
-                <i class="fas fa-align-left"></i> <span>Menu</span>
+                <i class="fas fa-align-left"></i> <span>Меню</span>
             </a>
             <!-- Map content -->
             <div id="map" class="position-fixed col-md-12 col-lg-12 m-0 p-0 bg-light"></div>
@@ -191,31 +243,15 @@
     <!-- End wrapper -->
 </div>
 
-
-
-@* layers *@
+@* base layers *@
 <script>
-    var geoserver_url = '@ViewBag.GeoServerUrl',
-        geoserver_MODIS_workspace_name = '@ViewBag.ModisWorkspace', //'MODIS',
-        geoserver_workspace_name = 'Pastures2019',
-        layerModisTemplate1 = '@ViewBag.ModisLayerTemplate1', //'A',
-        layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI = '@ViewBag.ModisLayerTemplate_MOLT_MOD13Q1006_B01_NDVI',
-        layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly = '@ViewBag.ModisLayerTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly',
-        layerModisTemplate_MOLA_MYD13Q1006_B01_NDVI = '@ViewBag.ModisLayerTemplate_MOLA_MYD13Q1006_B01_NDVI',
-        layerModisTemplate_MOLA_MYD13Q1006_B01_NDVI_Anomaly = '@ViewBag.ModisLayerTemplate_MOLA_MYD13Q1006_B01_NDVI_Anomaly';
-    var layerNDVI = layerModisTemplate1 + $('#Year_MOLT_MOD13Q1006').val() + $('#DayOfYear_MOLT_MOD13Q1006').val() + layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI,
-        layerAnomaly = layerModisTemplate1 + $('#Year_MOLT_MOD13Q1006').val() + $('#DayOfYear_MOLT_MOD13Q1006').val() + layerModisTemplate_MOLT_MOD13Q1006_B01_NDVI_Anomaly;
-
     var HEREappId = 'SLdBasp4s1oq2oUbVGxy';
     var HEREappCode = 'D9-h9iVhjgUB_9eUlFETXA';
-
     var Source_OSM = new ol.source.OSM();
-
     Source_BingAerialWithLabels = new ol.source.BingMaps({
         key: 'AmYNYRGlIrw_kppWvrIhfzY1v046b4Ft5nopz6Av94XDvTTo8xTkHCEaZ_zMwCOJ',
         imagerySet: 'AerialWithLabels',
     });
-
     Source_BingRoadStatic = new ol.source.BingMaps({
         key: 'AmYNYRGlIrw_kppWvrIhfzY1v046b4Ft5nopz6Av94XDvTTo8xTkHCEaZ_zMwCOJ',
         imagerySet: 'Road',
@@ -224,7 +260,6 @@
         key: 'AmYNYRGlIrw_kppWvrIhfzY1v046b4Ft5nopz6Av94XDvTTo8xTkHCEaZ_zMwCOJ',
         imagerySet: 'RoadOnDemand',
     });
-
     var urlTpl = 'https://{1-4}.{base}.maps.cit.api.here.com' +
         '/{type}/2.1/maptile/newest/{scheme}/{z}/{x}/{y}/256/png' +
         '?app_id={app_id}&app_code={app_code}';
@@ -236,7 +271,6 @@
             .replace('{app_id}', HERElayerDesc.app_id)
             .replace('{app_code}', HERElayerDesc.app_code);
     };
-
     var HERElayerDescNormalDay = {
         base: 'base',
         type: 'maptile',
@@ -249,7 +283,6 @@
         attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
             '<a href="http://developer.here.com">HERE</a>'
     });
-
     var HERElayerDescNormalDayTransit = {
         base: 'base',
         type: 'maptile',
@@ -262,7 +295,6 @@
         attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
             '<a href="http://developer.here.com">HERE</a>'
     });
-
     var HERElayerDescTerrainDay = {
         base: 'aerial',
         type: 'maptile',
@@ -275,7 +307,6 @@
         attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
             '<a href="http://developer.here.com">HERE</a>'
     });
-
     var HERElayerDescHybridDay = {
         base: 'aerial',
         type: 'maptile',
@@ -287,76 +318,252 @@
         url: HEREcreateUrl(urlTpl, HERElayerDescHybridDay),
         attributions: 'Разработка &copy; ' + '<a href="http://kazniizhik.kz/">КазНИИЖиК</a>' + ' & Map Tiles &copy; ' + new Date().getFullYear() + ' ' + '<a href="http://developer.here.com">HERE</a>'
     });
-
     var Source_StamenWatercolor = new ol.source.Stamen({
         layer: 'watercolor'
     });
-
     var Source_StamenTerrain = new ol.source.Stamen({
         layer: 'terrain'
     });
-
     var Source_StamenToner = new ol.source.Stamen({
         layer: 'toner'
     });
-
     var Source_ArcGIS = new ol.source.XYZ({
         attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
             'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
         url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
             'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
     });
-
     var Source_ThunderforestOpenCycleMap = new ol.source.XYZ({
         url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
-
     var Source_ThunderforestTransport = new ol.source.XYZ({
         url: 'https://{a-c}.tile.thunderforest.com/transport/{z}/{x}/{y}.png' +
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
-
     var Source_ThunderforestLandscape = new ol.source.XYZ({
         url: 'https://{a-c}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png' +
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
-
     var Source_ThunderforestOutdoors = new ol.source.XYZ({
         url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png' +
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
-
     var Source_ThunderforestTransportDark = new ol.source.XYZ({
         url: 'https://{a-c}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png' +
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
-
     var Source_ThunderforestSpinalMap = new ol.source.XYZ({
         url: 'https://{a-c}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png' +
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
-
     var Source_ThunderforestPioneer = new ol.source.XYZ({
         url: 'https://{a-c}.tile.thunderforest.com/pioneer/{z}/{x}/{y}.png' +
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
-
     var Source_ThunderforestMobileAtlas = new ol.source.XYZ({
         url: 'https://{a-c}.tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png' +
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
-
     var Source_ThunderforestNeighbourhood = new ol.source.XYZ({
         url: 'https://{a-c}.tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png' +
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
-
     var Layer_Base = new ol.layer.Tile({
         source: Source_HEREHybridDay
     });
     Layer_Base.set('name', 'Base');
     Layer_Base.setOpacity(1);
+    var layers = [];
+    layers.push(Layer_Base);
+</script>
+
+@* layers *@
+<script>
+    var geoserver_url = '@ViewBag.GeoserverAddress';
+    var Source_msk11pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk11pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk11pol = new ol.layer.Tile({
+        source: Source_msk11pol
+    });
+    Layer_msk11pol.set('name', 'mskpol');
+    layers.push(Layer_msk11pol);
+    var Source_msk39pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk39pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk39pol = new ol.layer.Tile({
+        source: Source_msk39pol
+    });
+    Layer_msk39pol.set('name', 'mskpol');
+    layers.push(Layer_msk39pol);
+    var Source_msk55pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk55pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk55pol = new ol.layer.Tile({
+        source: Source_msk55pol
+    });
+    Layer_msk55pol.set('name', 'mskpol');
+    layers.push(Layer_msk55pol);
+    var Source_msk59pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk59pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk59pol = new ol.layer.Tile({
+        source: Source_msk59pol
+    });
+    Layer_msk59pol.set('name', 'mskpol');
+    layers.push(Layer_msk59pol);
+    var Source_watering112018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112018 = new ol.layer.Tile({ source: Source_watering112018 }); Layer_watering112018.set('name', 'watering'); Layer_watering112018.set('year', '2018'); Layer_watering112018.setVisible(false); layers.push(Layer_watering112018);
+    var Source_watering112019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112019 = new ol.layer.Tile({ source: Source_watering112019 }); Layer_watering112019.set('name', 'watering'); Layer_watering112019.set('year', '2019'); Layer_watering112019.setVisible(false); layers.push(Layer_watering112019);
+    var Source_watering112020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112020 = new ol.layer.Tile({ source: Source_watering112020 }); Layer_watering112020.set('name', 'watering'); Layer_watering112020.set('year', '2020'); Layer_watering112020.setVisible(true); layers.push(Layer_watering112020);
+    var Source_watering152018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB15_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering152018 = new ol.layer.Tile({ source: Source_watering152018 }); Layer_watering152018.set('name', 'watering'); Layer_watering152018.set('year', '2018'); Layer_watering152018.setVisible(false); layers.push(Layer_watering152018);
+    var Source_watering152019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB15_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering152019 = new ol.layer.Tile({ source: Source_watering152019 }); Layer_watering152019.set('name', 'watering'); Layer_watering152019.set('year', '2019'); Layer_watering152019.setVisible(false); layers.push(Layer_watering152019);
+    var Source_watering152020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB15_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering152020 = new ol.layer.Tile({ source: Source_watering152020 }); Layer_watering152020.set('name', 'watering'); Layer_watering152020.set('year', '2020'); Layer_watering152020.setVisible(true); layers.push(Layer_watering152020);
+    var Source_watering192018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB19_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering192018 = new ol.layer.Tile({ source: Source_watering192018 }); Layer_watering192018.set('name', 'watering'); Layer_watering192018.set('year', '2018'); Layer_watering192018.setVisible(false); layers.push(Layer_watering192018);
+    var Source_watering192019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB19_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering192019 = new ol.layer.Tile({ source: Source_watering192019 }); Layer_watering192019.set('name', 'watering'); Layer_watering192019.set('year', '2019'); Layer_watering192019.setVisible(false); layers.push(Layer_watering192019);
+    var Source_watering192020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB19_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering192020 = new ol.layer.Tile({ source: Source_watering192020 }); Layer_watering192020.set('name', 'watering'); Layer_watering192020.set('year', '2020'); Layer_watering192020.setVisible(true); layers.push(Layer_watering192020);
+    var Source_watering272018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB27_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering272018 = new ol.layer.Tile({ source: Source_watering272018 }); Layer_watering272018.set('name', 'watering'); Layer_watering272018.set('year', '2018'); Layer_watering272018.setVisible(false); layers.push(Layer_watering272018);
+    var Source_watering272019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB27_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering272019 = new ol.layer.Tile({ source: Source_watering272019 }); Layer_watering272019.set('name', 'watering'); Layer_watering272019.set('year', '2019'); Layer_watering272019.setVisible(false); layers.push(Layer_watering272019);
+    var Source_watering272020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB27_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering272020 = new ol.layer.Tile({ source: Source_watering272020 }); Layer_watering272020.set('name', 'watering'); Layer_watering272020.set('year', '2020'); Layer_watering272020.setVisible(true); layers.push(Layer_watering272020);
+    var Source_watering392018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB39_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering392018 = new ol.layer.Tile({ source: Source_watering392018 }); Layer_watering392018.set('name', 'watering'); Layer_watering392018.set('year', '2018'); Layer_watering392018.setVisible(false); layers.push(Layer_watering392018);
+    var Source_watering392019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB39_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering392019 = new ol.layer.Tile({ source: Source_watering392019 }); Layer_watering392019.set('name', 'watering'); Layer_watering392019.set('year', '2019'); Layer_watering392019.setVisible(false); layers.push(Layer_watering392019);
+    var Source_watering392020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB39_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering392020 = new ol.layer.Tile({ source: Source_watering392020 }); Layer_watering392020.set('name', 'watering'); Layer_watering392020.set('year', '2020'); Layer_watering392020.setVisible(true); layers.push(Layer_watering392020);
+    var Source_watering432018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB43_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering432018 = new ol.layer.Tile({ source: Source_watering432018 }); Layer_watering432018.set('name', 'watering'); Layer_watering432018.set('year', '2018'); Layer_watering432018.setVisible(false); layers.push(Layer_watering432018);
+    var Source_watering432019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB43_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering432019 = new ol.layer.Tile({ source: Source_watering432019 }); Layer_watering432019.set('name', 'watering'); Layer_watering432019.set('year', '2019'); Layer_watering432019.setVisible(false); layers.push(Layer_watering432019);
+    var Source_watering432020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB43_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering432020 = new ol.layer.Tile({ source: Source_watering432020 }); Layer_watering432020.set('name', 'watering'); Layer_watering432020.set('year', '2020'); Layer_watering432020.setVisible(true); layers.push(Layer_watering432020);
+    var Source_watering552018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB55_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering552018 = new ol.layer.Tile({ source: Source_watering552018 }); Layer_watering552018.set('name', 'watering'); Layer_watering552018.set('year', '2018'); Layer_watering552018.setVisible(false); layers.push(Layer_watering552018);
+    var Source_watering552019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB55_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering552019 = new ol.layer.Tile({ source: Source_watering552019 }); Layer_watering552019.set('name', 'watering'); Layer_watering552019.set('year', '2019'); Layer_watering552019.setVisible(false); layers.push(Layer_watering552019);
+    var Source_watering552020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB55_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering552020 = new ol.layer.Tile({ source: Source_watering552020 }); Layer_watering552020.set('name', 'watering'); Layer_watering552020.set('year', '2020'); Layer_watering552020.setVisible(true); layers.push(Layer_watering552020);
+    var Source_watering592018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB59_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering592018 = new ol.layer.Tile({ source: Source_watering592018 }); Layer_watering592018.set('name', 'watering'); Layer_watering592018.set('year', '2018'); Layer_watering592018.setVisible(false); layers.push(Layer_watering592018);
+    var Source_watering592019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB59_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering592019 = new ol.layer.Tile({ source: Source_watering592019 }); Layer_watering592019.set('name', 'watering'); Layer_watering592019.set('year', '2019'); Layer_watering592019.setVisible(false); layers.push(Layer_watering592019);
+    var Source_watering592020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB59_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering592020 = new ol.layer.Tile({ source: Source_watering592020 }); Layer_watering592020.set('name', 'watering'); Layer_watering592020.set('year', '2020'); Layer_watering592020.setVisible(true); layers.push(Layer_watering592020);
+    var Source_watering612018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB61_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering612018 = new ol.layer.Tile({ source: Source_watering612018 }); Layer_watering612018.set('name', 'watering'); Layer_watering612018.set('year', '2018'); Layer_watering612018.setVisible(false); layers.push(Layer_watering612018);
+    var Source_watering612019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB61_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering612019 = new ol.layer.Tile({ source: Source_watering612019 }); Layer_watering612019.set('name', 'watering'); Layer_watering612019.set('year', '2019'); Layer_watering612019.setVisible(false); layers.push(Layer_watering612019);
+    var Source_watering612020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB61_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering612020 = new ol.layer.Tile({ source: Source_watering612020 }); Layer_watering612020.set('name', 'watering'); Layer_watering612020.set('year', '2020'); Layer_watering612020.setVisible(true); layers.push(Layer_watering612020);
+    var Source_hdrlin = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:hdrlin',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_hdrlin = new ol.layer.Tile({
+        source: Source_hdrlin
+    });
+    Layer_hdrlin.set('name', 'hdr');
+    layers.push(Layer_hdrlin);
+    var Source_hdrpol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:hdrpol',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_hdrpol = new ol.layer.Tile({
+        source: Source_hdrpol
+    });
+    Layer_hdrpol.set('name', 'hdr');
+    layers.push(Layer_hdrpol);
+    var Source_poppnt = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:poppnt',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_poppnt = new ol.layer.Tile({
+        source: Source_poppnt
+    });
+    Layer_poppnt.set('name', 'pop');
+    layers.push(Layer_poppnt);
+    var Source_poppol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:poppol',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_poppol = new ol.layer.Tile({
+        source: Source_poppol
+    });
+    Layer_poppol.set('name', 'pop');
+    layers.push(Layer_poppol);
+    var Source_rdslin = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:rdslin',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_rdslin = new ol.layer.Tile({
+        source: Source_rdslin
+    });
+    Layer_rdslin.set('name', 'rds');
+    layers.push(Layer_rdslin);
+    var Source_adm1pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:adm1pol20201005',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm1pol = new ol.layer.Tile({
+        source: Source_adm1pol
+    });
+    Layer_adm1pol.set('name', 'adm1pol');
+    layers.push(Layer_adm1pol);
+    var Source_adm2pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:adm2pol20201005',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_adm2pol = new ol.layer.Tile({
+        source: Source_adm2pol
+    });
+    Layer_adm2pol.set('name', 'adm2pol');
+    layers.push(Layer_adm2pol);
+    var Layer_admXpol_Navigate = new ol.layer.Vector({
+        style: new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: 'transparent'
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                width: 4
+            })
+        })
+    });
+    Layer_admXpol_Navigate.set('name', 'admxpolnavigate');
+    layers.push(Layer_admXpol_Navigate);
 </script>
 
 @* map *@
@@ -378,28 +585,12 @@
             rotation = parseFloat(parts[3]);
         }
     }
-
     var map = new ol.Map({
         target: 'map',
         controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
             new ol.control.ScaleLine()
         ]),
-        layers: [
-            Layer_Base,
-            //Layer_NDVI,
-            //Layer_Anomaly,
-            //Layer_pasturepol,
-            //Layer_select_pasturepol,
-            //Layer_pasfarmpol,
-            //Layer_hdrlin,
-            //Layer_rdslin,
-            //Layer_adm1pol,
-            //Layer_adm2pol,
-            //Layer_adm3pol,
-            //Layer_poppol,
-            //Layer_poppnt,
-            //Layer_hdrpol
-        ],
+        layers: layers,
         view: new ol.View({
             center: ol.proj.fromLonLat([66.902, 48.714]),
             zoom: 5,
@@ -407,7 +598,6 @@
             extent: [5028944.964937042, 4754994.655562972, 10214432.963802021, 7494497.74930296]
         })
     });
-
     // permalink
     var shouldUpdate = true;
     var view = map.getView();
@@ -430,9 +620,7 @@
         };
         window.history.pushState(state, 'map', hash);
     };
-
     map.on('moveend', updatePermalink);
-
     window.addEventListener('popstate', function (event) {
         if (event.state === null) {
             return;
@@ -442,10 +630,8 @@
         map.getView().setRotation(event.state.rotation);
         shouldUpdate = false;
     });
-
     function ToHome() {
         map.getView().fit([5028944.964937042, 4754994.655562972, 10214432.963802021, 7494497.74930296], map.getSize());
-
         Layer_select_pasturepol.getSource().clear();
         if (Layer_admXpol_Navigate.getSource()) {
             Layer_admXpol_Navigate.getSource().clear();
@@ -453,6 +639,7 @@
     };
 </script>
 
+@* ChangeLayers *@
 <script>
     function ChangeLayers() {
         map.getLayers().forEach(function (layer) {
@@ -523,10 +710,115 @@
                     layer.setSource(Source_ThunderforestNeighbourhood);
                 }
             }
+            if (layer.get('name') == 'adm1pol') {
+                layer.setVisible(document.getElementById("layeradm1polShow").checked);
+                layer.setOpacity($('#layeradm1polOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'adm2pol') {
+                layer.setVisible(document.getElementById("layeradm2polShow").checked);
+                layer.setOpacity($('#layeradm2polOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'mskpol') {
+                layer.setVisible(document.getElementById("layermskpolShow").checked);
+                layer.setOpacity($('#layermskpolOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'watering') {
+                if (layer.get('year') == $('#year').val()) {
+                    layer.setVisible(document.getElementById("layerwateringShow").checked);
+                }
+                else {
+                    layer.setVisible(false);
+                }
+                layer.setOpacity($('#layerwateringOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'hdr') {
+                layer.setVisible(document.getElementById("layerhdrShow").checked);
+                layer.setOpacity($('#layerhdrOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'pop') {
+                layer.setVisible(document.getElementById("layerpopShow").checked);
+                layer.setOpacity($('#layerpopOpacity').val() / 100);
+            }
+            if (layer.get('name') == 'rds') {
+                layer.setVisible(document.getElementById("layerrdsShow").checked);
+                layer.setOpacity($('#layerrdsOpacity').val() / 100);
+            }
         })
     }
 </script>
 
+@* NavigateToCATO *@
+<script>
+    function NavigateToCATO(te, layer) {
+        if (Layer_admXpol_Navigate.getSource() != null) {
+            Layer_admXpol_Navigate.getSource().clear();
+        }
+        if (te == '') {
+            Layer_admXpol_Navigate.getSource().clear();
+            return;
+        }
+        var filter = "kato_te = '" + te + "'";
+        var filterParams = {
+            'FILTER': null,
+            'CQL_FILTER': null,
+            'FEATUREID': null
+        };
+        if (filter.replace(/^\s\s*/, '').replace(/\s\s*$/, '') != "") {
+            filterParams["CQL_FILTER"] = filter;
+        }
+        url_admXpol_Navigate = "http://" + geoserver_url + "/geoserver/" + "Diseases/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Diseases:adm" + layer.toString() + "pol20201005&CQL_FILTER=" + filter + "&outputFormat=text/javascript&format_options=callback:getJson";
+        $.ajax({
+            jsonp: false,
+            jsonpCallback: 'getJson',
+            type: 'GET',
+            url: url_admXpol_Navigate,
+            async: false,
+            dataType: 'jsonp',
+            success: function (data_admXpol_Navigate) {
+                var features = (new ol.format.GeoJSON()).readFeatures(data_admXpol_Navigate, {
+                    featureProjection: 'EPSG:3857'
+                }),
+                    new_source = new ol.source.Vector({
+                        features: features
+                    });
+                Layer_admXpol_Navigate.setSource(new_source);
+                map.getView().fit(Layer_admXpol_Navigate.getSource().getExtent());
+                ChangeInfo();
+                if (layer == 1) {
+                    var ab = features[0].get('kato_te').toString().substr(0, 2);
+                    filter = "kato_te%20LIKE%20%27" + ab + "%25%27";
+                    layer = 2;
+                    url_admXpol_Navigate = "http://" + geoserver_url + "/geoserver/" + "Diseases/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Diseases:adm" + layer.toString() + "pol20201005&CQL_FILTER=" + filter + "&outputFormat=text/javascript&format_options=callback:getJson";
+                    $.ajax({
+                        jsonp: false,
+                        jsonpCallback: 'getJson',
+                        type: 'GET',
+                        url: url_admXpol_Navigate,
+                        async: false,
+                        dataType: 'jsonp',
+                        success: function (data_adm2pol) {
+                            var features_adm2pol = (new ol.format.GeoJSON()).readFeatures(data_adm2pol, {
+                                featureProjection: 'EPSG:3857'
+                            });
+                            $('#cato2').empty();
+                            $('#cato2').append($("<option />"));
+                            for (var i = 0; i < features_adm2pol.length; i++) {
+                                $('#cato2').append($("<option />").val(features_adm2pol[i].get('kato_te')).text(features_adm2pol[i].get('name_adm2')));
+                            }
+                            ChangeInfo();
+                        }
+                    })
+                }
+            }
+        });
+        ChangeInfo();
+    }
+    function ChangeInfo() {
+        $('#infoTitle').text($('#cato1 option:selected').text());
+        $('#infoText').text($('#cato2 option:selected').text());
+        $('#infoDate').text($('#year option:selected').text());
+    }
+</script>
 
 @* Menu *@
 <script>
@@ -538,7 +830,6 @@
             $('.sidebar').removeClass('active');
             $('.overlay').removeClass('active');
         });
-
         $('.open-menu').on('click', function (e) {
             e.preventDefault();
             $('.sidebar').addClass('active');
@@ -577,7 +868,7 @@
                 x: -10,
                 y: 70
             },
-            content: '<div class="card-body text-white text-center p-0"><h4 class="card-title">Satellite</h5><p class="card-text mb-1">Dataset</p><p class="card-text">YYYY. JDay: DD/MM - DD/MM</p></div >',
+            content: '<div class="card-body text-white text-center p-0"><h4 class="card-title" id="infoTitle">Satellite</h5><p class="card-text mb-1" ">Dataset</p><p class="card-text" id="infoDate">YYYY. JDay: DD/MM - DD/MM</p></div >',
             overlay: false,
             repositionOnOpen: false
         }).open();
@@ -617,6 +908,6 @@
             },
             outside: 'x' // Horizontal Tooltips need to change their outside position
         });
-
+        ChangeInfo();
     });
 </script>
