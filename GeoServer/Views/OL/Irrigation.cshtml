@@ -82,28 +82,28 @@
                         </select>
                         <div class="input-group-append">
                             <span class="input-group-text">
-                                <a href="#" target="_blank">
-                                    <i class="SomeInfo fa fa-info-circle" InfoTitle="Full Information"></i>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                    <!-- for Dataset -->
-                    <label class="m-0" for="DataSet">Dataset</label>
-                    <div class="input-group input-group-sm">
-                        <select class="form-control" id="DataSet">
-                            <option value="MNDVI">Орошаемые территории</option>
-                            <option value="NDVI">NDVI</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
                                 <a href="#" id="LegendBtn" class="target-click">
                                     <i class="SomeInfo fa fa-tag" InfoTitle="Legend"></i>
                                 </a>
                             </span>
                         </div>
                     </div>
-                    <input id="layerMODISOpacity" type="range" class="form-control-range" min="0" max="100" value="80" />
+                    <!-- for Dataset -->
+                    <label class="m-0" for="DataSet">C</label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-control" id="DataSet">
+                            <option value="layerwateringShow">Орошаемые территории</option>
+                            <option value="layermskpolShow">Посевные поля</option>
+                        </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <a href="#" target="_blank">
+                                    <input type="checkbox" id="layerwateringShow" checked="checked" oninput="ChangeLayers()">
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    <input id="layerwateringOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                     <!-- Year -->
                     <label class="m-0" for="year">Год</label>
                     <div class="input-group input-group-sm">
@@ -875,27 +875,14 @@
         // Map Legend
         new jBox('Modal', {
             attach: '#LegendBtn',
+            width: 250,
             id: 'modal-maptitle',
-            minWidth: 100,
-            zIndex: 'auto',
-            closeButton: true,
             overlay: false,
-            reload: 'strict',
-            animation: 'flip',
-            adjustPosition: false,
-            closeButton: true,
-            position: {
-                x: 'right',
-                y: 'bottom'
-            },
-            offset: {
-                x: -10,
-                y: -20
-            },
-            onOpen: function () {
-                this.setContent('<div class="p-0"><img id="legend" class="card-img-top" src="/esnow/img/logo/ESnow.svg"></div>');
-            }
-        }).open();
+            content: '<div class="p-0"><img id="legend" class="card-img-top" src="/images/Irrigation/Irrigation.svg"></div>',
+            draggable: true,
+            repositionOnOpen: true,
+            repositionOnContent: true
+        });
         // Tooltip below to the right
         new jBox('Tooltip', {
             theme: 'TooltipDark',
