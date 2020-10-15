@@ -89,21 +89,21 @@
                         </div>
                     </div>
                     <!-- for Dataset -->
-                    <label class="m-0" for="DataSet">Dataset</label>
+                    <label class="m-0" for="dataset">Набор данных</label>
                     <div class="input-group input-group-sm">
-                        <select class="form-control" id="DataSet">
-                            <option value="MNDVI">Орошаемые территории</option>
-                            <option value="NDVI">NDVI</option>
+                        <select class="form-control" id="dataset" onchange="ChangeLayers()">
+                            <option value="watering">Орошаемые территории</option>
+                            <option value="mskpol">Посевные поля</option>
                         </select>
                         <div class="input-group-append">
                             <span class="input-group-text">
-                                <a href="#" id="LegendBtn" class="target-click">
-                                    <i class="SomeInfo fa fa-tag" InfoTitle="Legend"></i>
+                                <a href="#" target="_blank">
+                                    <input type="checkbox" id="layerdatasetShow" checked="checked" onchange="ChangeLayers()">
                                 </a>
                             </span>
                         </div>
                     </div>
-                    <input id="layerMODISOpacity" type="range" class="form-control-range" min="0" max="100" value="80" />
+                    <input id="layerdatasetOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
                     <!-- Year -->
                     <label class="m-0" for="year">Год</label>
                     <div class="input-group input-group-sm">
@@ -122,20 +122,6 @@
                     </a>
                     <div id="TematicLayerSections" class="collapse show" aria-labelledby="headingOne" data-parent="#TematicLayerSections">
                         <div class="card-body">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layerwateringShow" checked="checked" onchange="ChangeLayers()">
-                                <label class="form-check-label" for="layerwateringShow">
-                                    Орошаемые территории
-                                </label>
-                                <input id="layerwateringOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="layermskpolShow" checked="checked" onchange="ChangeLayers()">
-                                <label class="form-check-label" for="layermskpolShow">
-                                    Посевные поля
-                                </label>
-                                <input id="layermskpolOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-                            </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="layerpopShow" checked="checked" onchange="ChangeLayers()">
                                 <label class="form-check-label" for="layerpopShow">
@@ -393,7 +379,9 @@
         source: Source_msk11pol
     });
     Layer_msk11pol.set('name', 'mskpol');
+    Layer_msk11pol.setVisible(false);
     layers.push(Layer_msk11pol);
+
     var Source_msk39pol = new ol.source.TileWMS({
         url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
         params: {
@@ -406,7 +394,9 @@
         source: Source_msk39pol
     });
     Layer_msk39pol.set('name', 'mskpol');
+    Layer_msk39pol.setVisible(false);
     layers.push(Layer_msk39pol);
+
     var Source_msk55pol = new ol.source.TileWMS({
         url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
         params: {
@@ -419,7 +409,9 @@
         source: Source_msk55pol
     });
     Layer_msk55pol.set('name', 'mskpol');
+    Layer_msk55pol.setVisible(false);
     layers.push(Layer_msk55pol);
+
     var Source_msk59pol = new ol.source.TileWMS({
         url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
         params: {
@@ -432,7 +424,9 @@
         source: Source_msk59pol
     });
     Layer_msk59pol.set('name', 'mskpol');
+    Layer_msk59pol.setVisible(false);
     layers.push(Layer_msk59pol);
+
     var Source_watering112018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112018 = new ol.layer.Tile({ source: Source_watering112018 }); Layer_watering112018.set('name', 'watering'); Layer_watering112018.set('year', '2018'); Layer_watering112018.setVisible(false); layers.push(Layer_watering112018);
     var Source_watering112019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112019 = new ol.layer.Tile({ source: Source_watering112019 }); Layer_watering112019.set('name', 'watering'); Layer_watering112019.set('year', '2019'); Layer_watering112019.setVisible(false); layers.push(Layer_watering112019);
     var Source_watering112020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112020 = new ol.layer.Tile({ source: Source_watering112020 }); Layer_watering112020.set('name', 'watering'); Layer_watering112020.set('year', '2020'); Layer_watering112020.setVisible(true); layers.push(Layer_watering112020);
@@ -719,17 +713,26 @@
                 layer.setOpacity($('#layeradm2polOpacity').val() / 100);
             }
             if (layer.get('name') == 'mskpol') {
-                layer.setVisible(document.getElementById("layermskpolShow").checked);
-                layer.setOpacity($('#layermskpolOpacity').val() / 100);
+                var visible = document.getElementById("layerdatasetShow").checked;
+                if ($('#dataset').val() != 'mskpol') {
+                    visible = false;
+                }
+                layer.setVisible(visible);
+                layer.setOpacity($('#layerdatasetOpacity').val() / 100);
             }
             if (layer.get('name') == 'watering') {
                 if (layer.get('year') == $('#year').val()) {
-                    layer.setVisible(document.getElementById("layerwateringShow").checked);
+                    //layer.setVisible(document.getElementById("layerwateringShow").checked);
+                    var visible = document.getElementById("layerdatasetShow").checked;
+                    if ($('#dataset').val() != 'watering') {
+                        visible = false;
+                    }
+                    layer.setVisible(visible);
                 }
                 else {
                     layer.setVisible(false);
                 }
-                layer.setOpacity($('#layerwateringOpacity').val() / 100);
+                layer.setOpacity($('#layerdatasetOpacity').val() / 100);
             }
             if (layer.get('name') == 'hdr') {
                 layer.setVisible(document.getElementById("layerhdrShow").checked);
@@ -755,6 +758,9 @@
         }
         if (te == '') {
             Layer_admXpol_Navigate.getSource().clear();
+            map.getView().fit([5028944.964937042, 4754994.655562972, 10214432.963802021, 7494497.74930296], map.getSize());
+            $('#cato2').empty();
+            $('#cato2').append($("<option />"));
             return;
         }
         var filter = "kato_te = '" + te + "'";
