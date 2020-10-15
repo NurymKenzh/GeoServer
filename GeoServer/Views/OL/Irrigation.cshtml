@@ -889,22 +889,15 @@
             zIndex: 'auto',
             closeButton: true,
             overlay: false,
-            reload: 'strict',
-            animation: 'flip',
-            adjustPosition: false,
-            closeButton: true,
+            content: '<div class="p-0"><img id="legend" class="card-img-top" src="/images/Irrigation/Irrigation.svg"></div>',
+            draggable: true,
+            repositionOnOpen: true,
+            repositionOnContent: true,
             position: {
                 x: 'right',
-                y: 'bottom'
+                y: 'center'
             },
-            offset: {
-                x: -10,
-                y: -20
-            },
-            onOpen: function () {
-                this.setContent('<div class="p-0"><img id="legend" class="card-img-top" src="/esnow/img/logo/ESnow.svg"></div>');
-            }
-        }).open();
+        });
         // Tooltip below to the right
         new jBox('Tooltip', {
             theme: 'TooltipDark',
