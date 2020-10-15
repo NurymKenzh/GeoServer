@@ -246,11 +246,17 @@
             <canvas id="chart1Canvas" class="chartjs-render-monitor my-0 mh-100" width="600" height="380"></canvas>
         </div>
         <div class="tab-pane fade" id="pills-table" role="tabpanel" aria-labelledby="pills-table-tab">
-            <table id="table1">
+            <table id="table1" class="table table-bordered">
                 <thead>
                     <tr>
                         <td>
-
+                            Год
+                        </td>
+                        <td>
+                            Административная единица
+                        </td>
+                        <td>
+                            Площадь
                         </td>
                     </tr>
                 </thead>
@@ -1011,6 +1017,25 @@
                         }
                     }
                 });
+                $('#table1').find('tr:gt(0)').remove();
+                if ($('#cato1').val() == '') {
+                    for (var y = 0; y < data.labels.length; y++) {
+                        for (var i = 0; i < data.w.length; i++) {
+                            if (data.w[i].year == data.labels[y]) {
+                                $('#table1').append($('<tr><td>' + data.w[i].year + '</td><td>' + data.w[i].adm1 + '</td><td>' + data.w[i].area.toFixed(2) + '</td></tr>'));
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (var y = 0; y < data.labels.length; y++) {
+                        for (var i = 0; i < data.w.length; i++) {
+                            if (data.w[i].year == data.labels[y]) {
+                                $('#table1').append($('<tr><td>' + data.w[i].year + '</td><td>' + data.w[i].adm2 + '</td><td>' + data.w[i].area.toFixed(2) + '</td></tr>'));
+                            }
+                        }
+                    }
+                }
             },
             error: function () {
                 
