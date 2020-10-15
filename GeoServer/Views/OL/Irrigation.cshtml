@@ -17,6 +17,7 @@
 <link href="~/lib/vendor/jBox/dist/jBox.all.css" rel="stylesheet" />
 <script src="~/lib/vendor/jBox/dist/jBox.all.js"></script>
 
+<script src="~/lib/chart.js/Chart.js"></script>
 
 <div class="container-fluid p-0">
     <!-- Wrapper -->
@@ -30,7 +31,7 @@
             <div class="logo">
                 <h3><a href="#">Меню</a></h3>
             </div>
-            <ul class="list-unstyled menu-elements m-0">                
+            <ul class="list-unstyled menu-elements m-0">
                 <li>
                     <a href="#FilterKatoSections" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="FilterKatoSections">
                         <i class="fa fa-filter"></i>Поиск по КАТО
@@ -72,7 +73,7 @@
                     </div>
                 </li>
             </ul>
-            <div class="card-body p-2">                
+            <div class="card-body p-2">
                 <form>
                     <label class="m-0" for="SourceProduct">Спутник</label>
                     <div class="input-group input-group-sm">
@@ -201,8 +202,8 @@
                 </li>
             </ul>
             <div class="to-top">
-                <a class="btn btn-primary btn-customized-3" href="#" role="button">
-                    <i class="fas fa-bar-chart"></i> Chart or Other
+                <a class="btn btn-primary btn-customized-3" role="button" onclick="Chart1()">
+                    <i class="fas fa-bar-chart"></i> Данные
                 </a>
             </div>
 
@@ -227,6 +228,35 @@
         <!-- End content -->
     </div>
     <!-- End wrapper -->
+</div>
+
+<div class="col-md-auto" style="display: none" id="InfoMapContent">
+    <ul class="nav nav-pills" id="InfoMapTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active text-white" id="pills-home-tab" data-toggle="pill" href="#pills-chart" role="tab" aria-controls="pills-chart" aria-selected="true">График</a>
+        </li>
+        <li class="nav-item text-white">
+            <a class="nav-link text-white" id="pills-table-tab" data-toggle="pill" href="#pills-table" role="tab" aria-controls="pills-table" aria-selected="false">Таблица</a>
+        </li>
+    </ul>
+    <div class="tab-content mt-n2" id="InfoMapTabContent">
+        <div class="tab-pane fade show active" id="pills-chart" role="tabpanel" aria-labelledby="pills-chart-tab">
+            <h3 id="ChartTitle" style="text-align: center;"></h3>
+            <h4 style="text-align: center;">Площадь орошамой территории, га</h4>
+            <canvas id="chart1Canvas" class="chartjs-render-monitor my-0 mh-100" width="600" height="380"></canvas>
+        </div>
+        <div class="tab-pane fade" id="pills-table" role="tabpanel" aria-labelledby="pills-table-tab">
+            <table id="table1">
+                <thead>
+                    <tr>
+                        <td>
+
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 </div>
 
 @* base layers *@
@@ -757,13 +787,18 @@
         if (Layer_admXpol_Navigate.getSource() != null) {
             Layer_admXpol_Navigate.getSource().clear();
         }
-        if (te == '') {
+        if (te == '' && layer == 1) {
             Layer_admXpol_Navigate.getSource().clear();
             map.getView().fit([5028944.964937042, 4754994.655562972, 10214432.963802021, 7494497.74930296], map.getSize());
-            $('#cato2').empty();
-            $('#cato2').append($("<option />"));
             ChangeInfo();
             return;
+        }
+        if (te == '' && layer == 2) {
+            te = $('#cato1').val();
+            layer = 1;
+        }
+        if (InfoMapModalOpened) {
+            Chart1();
         }
         var filter = "kato_te = '" + te + "'";
         var filterParams = {
@@ -827,6 +862,168 @@
         $('#infoDataset').text($('#dataset option:selected').text());
         $('#infoDate').text($('#year option:selected').text());
     }
+</script>
+
+@* Chart *@
+<script>
+    var InfoMapModal,
+        InfoMapModalOpened = false;
+    $(document).ready(function () {
+        InfoMapModal = new jBox('Modal', {
+            id: 'modal-info',
+            minWidth: 600,
+            maxHeight: 500,
+            adjustTracker: 'scroll',
+            zIndex: 'auto',
+            draggable: 'title',
+            closeOnClick: false,
+            closeButton: 'title',
+            animation: 'zoomIn',
+            overlay: false,
+            onOpen: function () {
+                // Add t
+                this.setContent($('#InfoMapTabContent'));
+                this.setTitle($('#InfoMapTab'));
+                InfoMapModalOpened = true;
+            },
+            onClose: function () {
+                InfoMapModalOpened = false;
+            }
+        });
+    });
+
+    var chart1 = null;
+    function Chart1() {
+        InfoMapModal.open();
+        var kato = $('#cato1').val();
+        if ($('#cato2').val() != '') {
+            kato = $('#cato2').val();
+        }
+        $.ajax({
+            url: '@Url.Action("GetIrrigationData")',
+            data: {
+                kato: kato
+            },
+            type: 'POST',
+            success: function (data) {
+                var title = $('#cato1 option:selected').text();
+                if ($('#cato2 option:selected').text() != '') {
+                    title = $('#cato2 option:selected').text();
+                }
+                $('#ChartTitle').text(title);
+                var chart1Data = {
+                    labels: data.labels,
+                    datasets: []
+                };
+                if ($('#cato1').val() == '') {
+                    for (var i = 0; i < data.w.length; i++) {
+                        var exist = false;
+                        for (var j = 0; j < chart1Data.datasets.length; j++) {
+                            if (data.w[i].adm1 == chart1Data.datasets[j].label) {
+                                exist = true;
+                                break;
+                            }
+                        }
+                        if (!exist) {
+                            var ddata = [];
+                            for (var j = 0; j < data.w.length; j++) {
+                                if (data.w[i].adm1 == data.w[j].adm1) {
+                                    ddata.push(data.w[j].area.toFixed(2));
+                                }
+                            }
+                            chart1Data.datasets.push({
+                                label: data.w[i].adm1,
+                                backgroundColor: dynamicColor(),
+                                borderColor: dynamicColor(),
+                                borderWidth: 1,
+                                data: ddata
+                            });
+                        }
+                    }
+                }
+                else if ($('#cato1').val() != '' && $('#cato2').val() == '') {
+                    for (var i = 0; i < data.w.length; i++) {
+                        var exist = false;
+                        for (var j = 0; j < chart1Data.datasets.length; j++) {
+                            if (data.w[i].adm2 == chart1Data.datasets[j].label) {
+                                exist = true;
+                                break;
+                            }
+                        }
+                        if (!exist) {
+                            var ddata = [];
+                            for (var j = 0; j < data.w.length; j++) {
+                                if (data.w[i].adm2 == data.w[j].adm2) {
+                                    ddata.push(data.w[j].area.toFixed(2));
+                                }
+                            }
+                            chart1Data.datasets.push({
+                                label: data.w[i].adm2,
+                                backgroundColor: dynamicColor(),
+                                borderColor: dynamicColor(),
+                                borderWidth: 1,
+                                data: ddata
+                            });
+                        }
+                    }
+                }
+                else {
+                    for (var i = 0; i < data.w.length; i++) {
+                        var exist = false;
+                        for (var j = 0; j < chart1Data.datasets.length; j++) {
+                            if (data.w[i].adm2 == chart1Data.datasets[j].label) {
+                                exist = true;
+                                break;
+                            }
+                        }
+                        if (!exist) {
+                            var ddata = [];
+                            for (var j = 0; j < data.w.length; j++) {
+                                if (data.w[i].adm2 == data.w[j].adm2) {
+                                    ddata.push(data.w[j].area.toFixed(2));
+                                }
+                            }
+                            chart1Data.datasets.push({
+                                label: data.w[i].adm2,
+                                backgroundColor: dynamicColor(),
+                                borderColor: dynamicColor(),
+                                borderWidth: 1,
+                                data: ddata
+                            });
+                        }
+                    }
+                }
+                var ctx1 = document.getElementById('chart1Canvas').getContext('2d');
+                if (chart1 != null) {
+                    chart1.destroy();
+                }
+                chart1 = new Chart(ctx1, {
+                    type: 'bar',
+                    data: chart1Data,
+                    options: {
+                        responsive: true,
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltips: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                });
+            },
+            error: function () {
+                
+            }
+        });
+    };
+
+    function dynamicColor() {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        return "rgb(" + r + "," + g + "," + b + ")";
+    };
 </script>
 
 @* Menu *@

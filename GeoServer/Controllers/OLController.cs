@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using GeoServer.Data;
 using GeoServer.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Npgsql;
 using OfficeOpenXml;
 
 namespace GeoServer.Controllers
@@ -23,6 +25,15 @@ namespace GeoServer.Controllers
         {
             public string Code;
             public string Name;
+        }
+
+        public class watering
+        {
+            public string adm1;
+            public string adm2;
+            public string kato;
+            public int year;
+            public decimal area;
         }
 
         public OLController(ApplicationDbContext context, IHostingEnvironment hostingEnvironment)
@@ -94,7 +105,7 @@ namespace GeoServer.Controllers
             ViewBag.ModisDataSet = ModisDataSet;
             ViewBag.Value = 0;
             ViewBag.ChartTitle = "Динамика за вегетационный период";
-            if(ModisDataSet.ToLower().Contains("ndvi"))
+            if (ModisDataSet.ToLower().Contains("ndvi"))
             {
                 ViewBag.ChartTitle = "Динамика NDVI за вегетационный период";
             }
@@ -110,7 +121,7 @@ namespace GeoServer.Controllers
                     z.ModisSource == ModisSource &&
                     z.ModisProduct == ModisProduct &&
                     z.DataSet == ModisDataSet)?.Value;
-                ViewBag.Value = Math.Round((decimal)v/10000, 2);
+                ViewBag.Value = Math.Round((decimal)v / 10000, 2);
 
                 v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
                     z.Year == Year &&
@@ -151,7 +162,7 @@ namespace GeoServer.Controllers
 
             int daymin = 0,
                 daymax = 356;
-            if(Date>=337 || Date<=49)
+            if (Date >= 337 || Date <= 49)
             {
                 daymin = 0;
                 daymax = 0;
@@ -196,7 +207,7 @@ namespace GeoServer.Controllers
             }
 
             ViewBag.ClassId = pasture?.class_id;
-            if(pasture!=null)
+            if (pasture != null)
             {
                 ViewBag.class_name = _context.PasClass.FirstOrDefault(p => p.Code == pasture.class_id)?.Name;
                 ViewBag.otdely_name = _context.PasOtdel.FirstOrDefault(p => p.Code == pasture.otdely_id)?.Name;
@@ -208,14 +219,14 @@ namespace GeoServer.Controllers
             if (kato != null)
             {
                 //сельский округ
-                if(kato.Number.Substring(4,2)!="00")
+                if (kato.Number.Substring(4, 2) != "00")
                 {
                     ViewBag.OblName = _context.KATO
                         .FirstOrDefault(k => k.Number.Substring(0, 2) == KATO.Substring(0, 2) && k.Level == 1)
                         .NameRU;
                     ViewBag.RayName = _context.KATO
                         .FirstOrDefault(k => k.Number.Substring(0, 4) == KATO.Substring(0, 4))// && //k.Level == 2 &&
-                            //KATO.Substring(4, 2) == "00" && KATO.Substring(2, 2) != "00")
+                                                                                              //KATO.Substring(4, 2) == "00" && KATO.Substring(2, 2) != "00")
                         .NameRU;
                 }
                 if (kato.Level == 2)
@@ -322,7 +333,7 @@ namespace GeoServer.Controllers
                     z.ModisSource == ModisSource &&
                     z.ModisProduct == ModisProduct &&
                     z.DataSet == ModisDataSet)?.Value;
-                ViewBag.Value = Math.Round((decimal)v/10000, 2);
+                ViewBag.Value = Math.Round((decimal)v / 10000, 2);
 
                 v = _context.ZonalStatPast.FirstOrDefault(z => z.DayOfYear == Date &&
                     z.Year == Year_ &&
@@ -331,7 +342,7 @@ namespace GeoServer.Controllers
                     z.ModisProduct == ModisProduct &&
                     z.DataSet == "250m16daysNDVI")?.Value;
                 v /= 10000;
-               
+
                 ViewBag.Crop = "Плохое";
                 if (v > 0.15M)
                 {
@@ -417,7 +428,7 @@ namespace GeoServer.Controllers
             }
             KATO kato = _context.KATO.FirstOrDefault(k => k.Number == KATO);
             ViewBag.KATOName = kato?.NameRU;
-            if(kato!=null)
+            if (kato != null)
             {
                 //сельский округ
                 if (kato.Number.Substring(4, 2) != "00")
@@ -433,11 +444,11 @@ namespace GeoServer.Controllers
                 if (kato.Level == 2)
                 {
                     ViewBag.OblName = _context.KATO
-                        .FirstOrDefault(k => k.Number.Substring(0,2) == KATO.Substring(0,2) && k.Level==1)
+                        .FirstOrDefault(k => k.Number.Substring(0, 2) == KATO.Substring(0, 2) && k.Level == 1)
                         .NameRU;
                 }
             }
-            
+
 
             int minYear = _context.ZonalStatKATO.Min(z => z.Year),
                 maxYear = _context.ZonalStatKATO.Max(z => z.Year);
@@ -1034,7 +1045,7 @@ namespace GeoServer.Controllers
                 e_krs = Convert.ToInt32(pasture.E_KRS),
                 e_horses = Convert.ToInt32(pasture.E_horses),
                 e_camels = Convert.ToInt32(pasture.E_camels);
-            if(otdely_id==12)
+            if (otdely_id == 12)
             {
                 e = 0;
                 e_krs = 0;
@@ -1326,8 +1337,9 @@ namespace GeoServer.Controllers
                     {
                         layerName = "Условия зимовки кубышек итальянского пруса";
                     }
-                    layers.Add(new Layer(){
-                        Code = fileName, 
+                    layers.Add(new Layer()
+                    {
+                        Code = fileName,
                         Name = layerName
                     });
                 }
@@ -1354,7 +1366,7 @@ namespace GeoServer.Controllers
                     {
                         layerName = "Содержание влаги в растениях, по данным TERRA\\MODIS";
                     }
-                    if(layers.Count(l => l.Code == fileName.Split('_')[0]) == 0)
+                    if (layers.Count(l => l.Code == fileName.Split('_')[0]) == 0)
                     {
                         layers.Add(new Layer()
                         {
@@ -1395,7 +1407,7 @@ namespace GeoServer.Controllers
             string geoserverDir = Startup.Configuration["DiseasesGeoServerDir"].ToString();
             if (Area == "kz")
             {
-                
+
             }
             else
             {
@@ -1418,6 +1430,141 @@ namespace GeoServer.Controllers
             return Json(new
             {
                 dates
+            });
+        }
+
+        public async Task<IActionResult> GetIrrigationData(
+            string kato)
+        {
+            if (kato == null)
+            {
+                kato = "";
+            }
+            List<watering> waterings = new List<watering>();
+            using (var connection = new NpgsqlConnection(Startup.Configuration["ConnectionStrings:DefaultConnection"].ToString()))
+            {
+                connection.Open();
+                if (kato == "")
+                {
+                    waterings = connection.Query<watering>($"SELECT adm1, adm2, kato, year, area FROM public.watering WHERE kato LIKE '{kato}%';").ToList();
+                }
+                else if (kato.Substring(2, 2) == "00")
+                {
+                    waterings = connection.Query<watering>($"SELECT adm1, adm2, kato, year, area FROM public.watering WHERE kato LIKE '{kato.Substring(0, 2)}%';").ToList();
+                }
+                else
+                {
+                    waterings = connection.Query<watering>($"SELECT adm1, adm2, kato, year, area FROM public.watering WHERE kato LIKE '{kato.Substring(0, 4)}%';").ToList();
+                }
+                connection.Close();
+            }
+            waterings = waterings.OrderBy(v => v.year).ThenBy(v => v.adm1).ThenBy(v => v.adm2).ToList();
+            List<watering> w = new List<watering>();
+            if (kato == "")
+            {
+                for (int i = 0; i < waterings.Count(); i++)
+                {
+                    bool added = false;
+                    for (int j = 0; j < w.Count(); j++)
+                    {
+                        if (waterings[i].kato.Substring(0, 2) == w[j].kato.Substring(0, 2) && waterings[i].year == w[j].year)
+                        {
+                            w[j].area += waterings[i].area;
+                            added = true;
+                        }
+                    }
+                    if (!added)
+                    {
+                        w.Add(new watering()
+                        {
+                            adm1 = waterings[i].adm1,
+                            adm2 = "",
+                            area = waterings[i].area,
+                            kato = waterings[i].kato.Substring(0, 2) + "0000000",
+                            year = waterings[i].year
+                        });
+                    }
+                }
+            }
+            else if (kato.Substring(2, 2) == "00")
+            {
+                for (int i = 0; i < waterings.Count(); i++)
+                {
+                    bool added = false;
+                    for (int j = 0; j < w.Count(); j++)
+                    {
+                        if (waterings[i].kato.Substring(0, 4) == w[j].kato.Substring(0, 4) && waterings[i].year == w[j].year)
+                        {
+                            w[j].area += waterings[i].area;
+                            added = true;
+                        }
+                    }
+                    if (!added)
+                    {
+                        w.Add(new watering()
+                        {
+                            adm1 = waterings[i].adm1,
+                            adm2 = waterings[i].adm2,
+                            area = waterings[i].area,
+                            kato = waterings[i].kato,
+                            year = waterings[i].year
+                        });
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < waterings.Count(); i++)
+                {
+                    bool added = false;
+                    for (int j = 0; j < w.Count(); j++)
+                    {
+                        if (waterings[i].kato.Substring(0, 4) == w[j].kato.Substring(0, 4) && waterings[i].year == w[j].year)
+                        {
+                            w[j].area += waterings[i].area;
+                            added = true;
+                        }
+                    }
+                    if (!added)
+                    {
+                        w.Add(new watering()
+                        {
+                            adm1 = waterings[i].adm1,
+                            adm2 = waterings[i].adm2,
+                            area = waterings[i].area,
+                            kato = waterings[i].kato,
+                            year = waterings[i].year
+                        });
+                    }
+                }
+            }
+
+            List<int> labels = w.Select(v => v.year).Distinct().OrderBy(v => v).ToList();
+            List<watering> w0 = new List<watering>();
+            foreach (string katoC in w.Select(v => v.kato).Distinct())
+            {
+                foreach(int year in labels)
+                {
+                    if (w.FirstOrDefault(v => v.kato == katoC && v.year == year) == null)
+                    {
+                        w0.Add(new watering()
+                        {
+                            adm1 = w.FirstOrDefault(v => v.kato == katoC)?.adm1,
+                            adm2 = w.FirstOrDefault(v => v.kato == katoC)?.adm2,
+                            area = 0,
+                            kato = katoC,
+                            year = year
+                        });
+                    }
+                }
+            }
+            w.AddRange(w0);
+            w = w.OrderBy(v => v.adm2).ThenBy(v => v.adm1).ThenBy(v => v.year).ToList();
+
+            return Json(new
+            {
+                w,
+                labels
             });
         }
     }
