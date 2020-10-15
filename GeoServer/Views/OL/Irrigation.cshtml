@@ -746,7 +746,8 @@
                 layer.setVisible(document.getElementById("layerrdsShow").checked);
                 layer.setOpacity($('#layerrdsOpacity').val() / 100);
             }
-        })
+        });
+        ChangeInfo();
     }
 </script>
 
@@ -761,6 +762,7 @@
             map.getView().fit([5028944.964937042, 4754994.655562972, 10214432.963802021, 7494497.74930296], map.getSize());
             $('#cato2').empty();
             $('#cato2').append($("<option />"));
+            ChangeInfo();
             return;
         }
         var filter = "kato_te = '" + te + "'";
@@ -822,6 +824,7 @@
     function ChangeInfo() {
         $('#infoTitle').text($('#cato1 option:selected').text());
         $('#infoText').text($('#cato2 option:selected').text());
+        $('#infoDataset').text($('#dataset option:selected').text());
         $('#infoDate').text($('#year option:selected').text());
     }
 </script>
@@ -874,7 +877,7 @@
                 x: -10,
                 y: 70
             },
-            content: '<div class="card-body text-white text-center p-0"><h4 class="card-title" id="infoTitle">Satellite</h5><p class="card-text mb-1" ">Dataset</p><p class="card-text" id="infoDate">YYYY. JDay: DD/MM - DD/MM</p></div >',
+            content: '<div class="card-body text-white text-center p-0"><h4 class="card-title" id="infoTitle">Satellite</h5><p class="card-text mb-1" id="infoDataset">Dataset</p><p class="card-text" id="infoDate">YYYY. JDay: DD/MM - DD/MM</p></div >',
             overlay: false,
             repositionOnOpen: false
         }).open();
