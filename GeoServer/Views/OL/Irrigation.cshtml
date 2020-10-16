@@ -16,7 +16,7 @@
 @*jBox*@
 <link href="~/lib/vendor/jBox/dist/jBox.all.css" rel="stylesheet" />
 <script src="~/lib/vendor/jBox/dist/jBox.all.js"></script>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
 <script src="~/lib/chart.js/Chart.js"></script>
 
 <div class="container-fluid p-0">
@@ -31,7 +31,50 @@
             <div class="logo">
                 <h3><a href="#">Меню</a></h3>
             </div>
-            <ul class="list-unstyled menu-elements m-0">
+            <div class="card-body p-2">
+                <form>
+                    <label class="m-0" for="SourceProduct">Спутник</label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-control" id="SourceProduct">
+                            <option value="0">Sentinel-2</option>
+                            <option value="1">Landsat</option>
+                        </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <a href="#" id="LegendBtn" class="target-click">
+                                    <i class="SomeInfo fa fa-tag" InfoTitle="Legend"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- for Dataset -->
+                    <label class="m-0" for="dataset">Набор данных</label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-control" id="dataset" onchange="ChangeLayers()">
+                            <option value="watering">Орошаемые территории</option>
+                            <option value="mskpol">Посевные поля</option>
+                        </select>
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <a href="#" target="_blank">
+                                    <input type="checkbox" id="layerdatasetShow" checked="checked" onchange="ChangeLayers()">
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    <input id="layerdatasetOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+                    <!-- Year -->
+                    <label class="m-0" for="year">Год</label>
+                    <div class="input-group input-group-sm">
+                        <select class="form-control" id="year" onchange="ChangeLayers()">
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020" selected>2020</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <ul class="list-unstyled menu-elements">
                 <li>
                     <a href="#FilterKatoSections" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="FilterKatoSections">
                         <i class="fa fa-filter"></i>Поиск по КАТО
@@ -69,54 +112,15 @@
                                     </select>
                                 </div>
                             </form>
+                            <div class="to-top">
+                                <a class="btn btn-success" role="button" onclick="Chart1()">
+                                    <i class="fas fa-chart-line"></i> Данные
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </li>
-            </ul>
-            <div class="card-body p-2">
-                <form>
-                    <label class="m-0" for="SourceProduct">Спутник</label>
-                    <div class="input-group input-group-sm">
-                        <select class="form-control" id="SourceProduct">
-                            <option value="0">Sentinel-2</option>
-                            <option value="1">Landsat</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <a href="#" target="_blank">
-                                    <i class="SomeInfo fa fa-info-circle" InfoTitle="Full Information"></i>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                    <!-- for Dataset -->
-                    <label class="m-0" for="dataset">Набор данных</label>
-                    <div class="input-group input-group-sm">
-                        <select class="form-control" id="dataset" onchange="ChangeLayers()">
-                            <option value="watering">Орошаемые территории</option>
-                            <option value="mskpol">Посевные поля</option>
-                        </select>
-                        <div class="input-group-append">
-                            <span class="input-group-text">
-                                <a href="#" target="_blank">
-                                    <input type="checkbox" id="layerdatasetShow" checked="checked" onchange="ChangeLayers()">
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                    <input id="layerdatasetOpacity" type="range" class="form-control-range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-                    <!-- Year -->
-                    <label class="m-0" for="year">Год</label>
-                    <div class="input-group input-group-sm">
-                        <select class="form-control" id="year" onchange="ChangeLayers()">
-                            <option value="2018">2018</option>
-                            <option value="2019">2019</option>
-                            <option value="2020" selected>2020</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <ul class="list-unstyled menu-elements">
+
                 <li class="">
                     <a href="#TematicLayerSections" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button" aria-controls="TematicLayerSections">
                         <i class="fa fa-layer-group"></i>Тематические слои
@@ -201,16 +205,12 @@
                     </div>
                 </li>
             </ul>
-            <div class="to-top">
-                <a class="btn btn-primary btn-customized-3" role="button" onclick="Chart1()">
-                    <i class="fas fa-bar-chart"></i> Данные
-                </a>
-            </div>
+            
 
-            <div class="dark-light-buttons">
+            @*<div class="dark-light-buttons">
                 <a class="btn btn-primary btn-customized-4 btn-customized-dark" href="#" role="button">Dark</a>
                 <a class="btn btn-primary btn-customized-4 btn-customized-light" href="#" role="button">Light</a>
-            </div>
+            </div>*@
         </nav>
         <!-- End sidebar -->
         <!-- Dark overlay -->
@@ -222,7 +222,7 @@
                 <i class="fas fa-align-left"></i> <span>Меню</span>
             </a>
             <!-- Map content -->
-            <div id="map" class="position-fixed col-md-12 col-lg-12 m-0 p-0 bg-light"></div>
+            <div id="map" class="position-fixed col-md-12 col-lg-12 m-0 p-0 bg-light" style="height: 94vh;"></div>
             <!-- Footer -->
         </div>
         <!-- End content -->
@@ -246,9 +246,9 @@
             <canvas id="chart1Canvas" class="chartjs-render-monitor my-0 mh-100" width="600" height="380"></canvas>
         </div>
         <div class="tab-pane fade" id="pills-table" role="tabpanel" aria-labelledby="pills-table-tab">
-            <table id="table1" class="table table-bordered">
+            <table id="table1" class="table table-sm table-bordered">
                 <thead>
-                    <tr>
+                    <tr class="table-primary">
                         <td>
                             Год
                         </td>
@@ -256,7 +256,7 @@
                             Административная единица
                         </td>
                         <td>
-                            Площадь
+                            Площадь (га)
                         </td>
                     </tr>
                 </thead>
@@ -1107,18 +1107,19 @@
         new jBox('Modal', {
             attach: '#LegendBtn',
             id: 'modal-maptitle',
-            minWidth: 100,
-            zIndex: 'auto',
-            closeButton: true,
+            width: 220,
             overlay: false,
-            content: '<div class="p-0"><img id="legend" class="card-img-top" src="/images/Irrigation/Irrigation.svg"></div>',
-            draggable: true,
-            repositionOnOpen: true,
-            repositionOnContent: true,
+            content: '<div class= "p-0" > <img id="legend" class="card-img-top" src="/images/Irrigation/Irrigation.svg"></div>',
+            draggable: 'title',
+            repositionOnOpen: false,
+            repositionOnContent: false,
             position: {
                 x: 'right',
                 y: 'center'
             },
+            offset: {
+                x: -10
+            }
         });
         // Tooltip below to the right
         new jBox('Tooltip', {

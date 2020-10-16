@@ -12,7 +12,7 @@
 }
 
 .jBox-container {
-  background: #3a465d;
+    background: #326295;
 }
 #modal-white .jBox-container {
     border: 1px solid #fff;
@@ -133,7 +133,7 @@
 }
 
 .jBox-Modal .jBox-content {
-  padding: 10px 10px;
+  padding: 5px 5px;
 }
 
 .jBox-Modal .jBox-title {
@@ -146,14 +146,14 @@
 #modal-white .jBox-title {
     border-radius: 0 0 0 0;
     padding: 10px 20px;
-    background: #3a465d;
+    background: #326295;
     color: #fafafa;
     border-bottom: 1px solid #eee;
 }
 #modal-info .jBox-title {
     border-radius: 0 0 0 0;
     padding: 10px 20px;
-    background: #3a465d;
+    background: #326295;
     color: #fafafa;
     border-bottom: 1px solid #eee;
 }
