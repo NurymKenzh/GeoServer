@@ -402,6 +402,7 @@
 @* layers *@
 <script>
     var geoserver_url = '@ViewBag.GeoserverAddress';
+
     var Source_msk11pol = new ol.source.TileWMS({
         url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
         params: {
@@ -416,6 +417,21 @@
     Layer_msk11pol.set('name', 'mskpol');
     Layer_msk11pol.setVisible(false);
     layers.push(Layer_msk11pol);
+
+    var Source_msk19pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk19pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk19pol = new ol.layer.Tile({
+        source: Source_msk19pol
+    });
+    Layer_msk19pol.set('name', 'mskpol');
+    Layer_msk19pol.setVisible(false);
+    layers.push(Layer_msk19pol);
 
     var Source_msk31pol = new ol.source.TileWMS({
         url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
@@ -446,6 +462,21 @@
     Layer_msk39pol.set('name', 'mskpol');
     Layer_msk39pol.setVisible(false);
     layers.push(Layer_msk39pol);
+
+    var Source_msk43pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk43pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk43pol = new ol.layer.Tile({
+        source: Source_msk43pol
+    });
+    Layer_msk43pol.set('name', 'mskpol');
+    Layer_msk43pol.setVisible(false);
+    layers.push(Layer_msk43pol);
 
     var Source_msk55pol = new ol.source.TileWMS({
         url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
