@@ -418,6 +418,21 @@
     Layer_msk11pol.setVisible(false);
     layers.push(Layer_msk11pol);
 
+    var Source_msk31pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk31pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk31pol = new ol.layer.Tile({
+        source: Source_msk31pol
+    });
+    Layer_msk31pol.set('name', 'mskpol');
+    Layer_msk31pol.setVisible(false);
+    layers.push(Layer_msk31pol);
+
     var Source_msk39pol = new ol.source.TileWMS({
         url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
         params: {
@@ -463,6 +478,21 @@
     Layer_msk59pol.setVisible(false);
     layers.push(Layer_msk59pol);
 
+    var Source_msk61pol = new ol.source.TileWMS({
+        url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?',
+        params: {
+            'LAYERS': 'Diseases:msk61pol_4326',
+            'FORMAT': 'image/png',
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_msk61pol = new ol.layer.Tile({
+        source: Source_msk61pol
+    });
+    Layer_msk61pol.set('name', 'mskpol');
+    Layer_msk61pol.setVisible(false);
+    layers.push(Layer_msk61pol);
+
     var Source_watering112018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112018 = new ol.layer.Tile({ source: Source_watering112018 }); Layer_watering112018.set('name', 'watering'); Layer_watering112018.set('year', '2018'); Layer_watering112018.setVisible(false); layers.push(Layer_watering112018);
     var Source_watering112019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112019 = new ol.layer.Tile({ source: Source_watering112019 }); Layer_watering112019.set('name', 'watering'); Layer_watering112019.set('year', '2019'); Layer_watering112019.setVisible(false); layers.push(Layer_watering112019);
     var Source_watering112020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB11_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering112020 = new ol.layer.Tile({ source: Source_watering112020 }); Layer_watering112020.set('name', 'watering'); Layer_watering112020.set('year', '2020'); Layer_watering112020.setVisible(true); layers.push(Layer_watering112020);
@@ -475,6 +505,9 @@
     var Source_watering272018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB27_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering272018 = new ol.layer.Tile({ source: Source_watering272018 }); Layer_watering272018.set('name', 'watering'); Layer_watering272018.set('year', '2018'); Layer_watering272018.setVisible(false); layers.push(Layer_watering272018);
     var Source_watering272019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB27_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering272019 = new ol.layer.Tile({ source: Source_watering272019 }); Layer_watering272019.set('name', 'watering'); Layer_watering272019.set('year', '2019'); Layer_watering272019.setVisible(false); layers.push(Layer_watering272019);
     var Source_watering272020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB27_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering272020 = new ol.layer.Tile({ source: Source_watering272020 }); Layer_watering272020.set('name', 'watering'); Layer_watering272020.set('year', '2020'); Layer_watering272020.setVisible(true); layers.push(Layer_watering272020);
+    var Source_watering312018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB31_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering312018 = new ol.layer.Tile({ source: Source_watering312018 }); Layer_watering312018.set('name', 'watering'); Layer_watering312018.set('year', '2018'); Layer_watering312018.setVisible(false); layers.push(Layer_watering312018);
+    var Source_watering312019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB31_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering312019 = new ol.layer.Tile({ source: Source_watering312019 }); Layer_watering312019.set('name', 'watering'); Layer_watering312019.set('year', '2019'); Layer_watering312019.setVisible(false); layers.push(Layer_watering312019);
+    var Source_watering312020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB31_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering312020 = new ol.layer.Tile({ source: Source_watering312020 }); Layer_watering312020.set('name', 'watering'); Layer_watering312020.set('year', '2020'); Layer_watering312020.setVisible(true); layers.push(Layer_watering312020);
     var Source_watering392018 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB39_2018_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering392018 = new ol.layer.Tile({ source: Source_watering392018 }); Layer_watering392018.set('name', 'watering'); Layer_watering392018.set('year', '2018'); Layer_watering392018.setVisible(false); layers.push(Layer_watering392018);
     var Source_watering392019 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB39_2019_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering392019 = new ol.layer.Tile({ source: Source_watering392019 }); Layer_watering392019.set('name', 'watering'); Layer_watering392019.set('year', '2019'); Layer_watering392019.setVisible(false); layers.push(Layer_watering392019);
     var Source_watering392020 = new ol.source.TileWMS({ url: 'http://' + geoserver_url + '/geoserver/Diseases/wms?', params: { 'LAYERS': 'Diseases:AB39_2020_watering_4326', 'FORMAT': 'image/png' }, serverType: 'geoserver' }); var Layer_watering392020 = new ol.layer.Tile({ source: Source_watering392020 }); Layer_watering392020.set('name', 'watering'); Layer_watering392020.set('year', '2020'); Layer_watering392020.setVisible(true); layers.push(Layer_watering392020);
