@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Dapper;
 using GeoServer.Data;
 using GeoServer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
@@ -42,6 +43,7 @@ namespace GeoServer.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult ViewModis()
         {
             Response.Cookies.Append(
@@ -73,6 +75,7 @@ namespace GeoServer.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult Diseases()
         {
             ViewBag.GeoserverAddress = $"{Startup.Configuration["GeoServer:Address"]}:{Startup.Configuration["GeoServer:Port"]}";
