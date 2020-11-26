@@ -75,7 +75,6 @@ namespace GeoServer.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrator")]
         public IActionResult Diseases()
         {
             ViewBag.GeoserverAddress = $"{Startup.Configuration["GeoServer:Address"]}:{Startup.Configuration["GeoServer:Port"]}";
